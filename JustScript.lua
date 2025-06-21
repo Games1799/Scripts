@@ -156,16 +156,39 @@ end
 end)
 
 Section:CreateButton("FireAllTouchinterest", function()
-local char = game.Players.LocalPlayer.Character
-local hrp = char and char:FindFirstChild("HumanoidRootPart")
+local player = speaker or game:GetService("Players").LocalPlayer
+if not player or not player.Character then return end
 
-for _, v in ipairs(workspace:GetDescendants()) do
-    if v:IsA("BasePart") and v:IsDescendantOf(workspace) and v.CanTouch then
-        firetouchinterest(hrp, v, 0)
-        task.wait(0.1)
-        firetouchinterest(hrp, v, 1)
-         end
-   end
+-- Заменяем getRoot на стандартный поиск HumanoidRootPart или первичной части
+local root = player.Character:FindFirstChild("HumanoidRootPart") or player.Character:FindFirstChildWhichIsA("BasePart")
+if not root then return end
+
+local function touch(x)
+    local part = x:FindFirstAncestorWhichIsA("BasePart")
+    if not part then return end
+
+    if firetouchinterest then
+        firetouchinterest(part, root, 1)
+        task.wait()
+        firetouchinterest(part, root, 0)
+    end
+    part.CFrame = root.CFrame
+end
+
+if args and args[1] then
+    local name = tostring(args[1]):lower()
+    for _, v in next, workspace:GetDescendants() do
+        if v:IsA("TouchTransmitter") and (v.Name:lower() == name or v.Parent.Name:lower() == name) then
+            touch(v)
+        end
+    end
+else
+    for _, v in next, workspace:GetDescendants() do
+        if v:IsA("TouchTransmitter") then
+            touch(v)
+        end
+    end
+        end
 end)
 
 local Window = Library:NewWindow("Создатель скрипта")
