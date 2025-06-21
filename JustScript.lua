@@ -8,6 +8,8 @@ local CoreGui = gethui and gethui() or player:WaitForChild("CoreGui")
 local ScreenGui = gethui and gethui() or player:WaitForChild("ScreenGui")
 
 _G.TP = false
+_G.HideAll = false
+
 local player = game.Players.LocalPlayer
 local humanoid = player.Character:FindFirstChild("Humanoid")
 local mouse = player:GetMouse()
@@ -18,6 +20,18 @@ if humanoid.Sit then return end
 if not player.Character then return end 
 if not mouse.Target then return end
 player.Character:PivotTo(CFrame.new(mouse.Hit.Position + Vector3.new(0, 3, 0)))
+end)
+
+spawn(function()
+    while task.wait() do
+        if _G.HideAll then
+            for _, v in pairs(game.Players:GetPlayers()) do
+                if v ~= player and v.Character then
+                    v.Character:Destroy()
+                end
+            end
+        end
+    end
 end)
 
 local player = game.Players.LocalPlayer
@@ -108,6 +122,14 @@ setclipboard(tostring(copy))
 end)
 
 local Section = Window:NewSection("Полезные инструменты")
+
+Section:CreateToggle("Скрыть игроков", function(state)
+    if state then
+        _G.HideAll = true
+    else
+        _G.HideAll = false
+    end
+end)
 
 Section:CreateButton("FireProximityPrompt", function()
 for _, v in ipairs(workspace:GetDescendants()) do
