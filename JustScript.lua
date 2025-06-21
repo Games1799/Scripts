@@ -148,7 +148,7 @@ end)
 
 local Window = Library:NewWindow("Создатель скрипта")
 
-local Section = Window:NewSection("ТелеграмТелеграм")
+local Section = Window:NewSection("Телеграм")
 
 Section:CreateButton("Телеграм канал", function()local copy  = "https://t.me/roblox_free_ugc_2025"
 setclipboard(tostring(copy))
