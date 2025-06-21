@@ -159,33 +159,37 @@ Section:CreateButton("FireAllTouchinterest", function()
 local player = speaker or game:GetService("Players").LocalPlayer
 if not player or not player.Character then return end
 
--- Заменяем getRoot на стандартный поиск HumanoidRootPart или первичной части
 local root = player.Character:FindFirstChild("HumanoidRootPart") or player.Character:FindFirstChildWhichIsA("BasePart")
 if not root then return end
 
 local function touch(x)
-    local part = x:FindFirstAncestorWhichIsA("BasePart")
-    if not part then return end
-
+    if not x then return end
+    x = x:FindFirstAncestorWhichIsA("Part")
+    if not x then return end
+    
     if firetouchinterest then
-        firetouchinterest(part, root, 1)
-        task.wait()
-        firetouchinterest(part, root, 0)
+        task.spawn(function()
+            firetouchinterest(x, root, 1)
+            task.wait()
+            firetouchinterest(x, root, 0)
+        end)
     end
-    part.CFrame = root.CFrame
+    x.CFrame = root.CFrame
 end
 
 if args and args[1] then
-    local name = tostring(args[1]):lower()
-    for _, v in next, workspace:GetDescendants() do
-        if v:IsA("TouchTransmitter") and (v.Name:lower() == name or v.Parent.Name:lower() == name) then
-            touch(v)
+    local name = tostring(args[1])
+    for _, descendant in ipairs(workspace:GetDescendants()) do
+        if descendant:IsA("TouchTransmitter") then
+            if (descendant.Name == name) or (descendant.Parent and descendant.Parent.Name == name) then
+                touch(descendant)
+            end
         end
     end
 else
-    for _, v in next, workspace:GetDescendants() do
-        if v:IsA("TouchTransmitter") then
-            touch(v)
+    for _, descendant in ipairs(workspace:GetDescendants()) do
+        if descendant:IsA("TouchTransmitter") then
+            touch(descendant)
         end
     end
         end
