@@ -121,7 +121,7 @@ end]], pos.X, pos.Y, pos.Z)
 setclipboard(tostring(copy)) 
 end)
 
-local Section = Window:NewSection("Полезные инструменты")
+local Section = Window:NewSection("Инструменты")
 
 Section:CreateToggle("Скрыть игроков", function(state)
     if state then
