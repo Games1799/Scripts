@@ -146,7 +146,9 @@ for _, v in ipairs(workspace:GetDescendants()) do
    end
 end)
 
-local Section = Window:NewSection("Автор скрипта")
+local Window = Library:NewWindow("Создатель скрипта")
+
+local Section = Window:NewSection("ТелеграмТелеграм")
 
 Section:CreateButton("Телеграм канал", function()local copy  = "https://t.me/roblox_free_ugc_2025"
 setclipboard(tostring(copy))
