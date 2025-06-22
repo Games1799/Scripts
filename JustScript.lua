@@ -92,7 +92,7 @@ end)
 Section:CreateButton("Скопировать TweenService", function()
 local pos = hum.position
 local copy  = string.format([[local tweenInfo = TweenInfo.new(2)
-local goal = {CFrame = CFrame.new("%f, %f, %f")}
+local goal = {CFrame = CFrame.new(%f, %f, %f)}
 local tween = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, tweenInfo, goal)
 tween:Play()]], pos.X, pos.Y, pos.Z)
 setclipboard(tostring(copy)) 
