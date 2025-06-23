@@ -155,6 +155,36 @@ for _, v in ipairs(workspace:GetDescendants()) do
 end
 end)
 
+Section:CreateButton("Kill aura", function()
+    local range = 9999999999999
+    local player = game:GetService("Players").LocalPlayer
+
+    local connection
+    connection = game:GetService("RunService").RenderStepped:Connect(function()
+        local players = game.Players:GetPlayers()
+        for i = 2, #players do
+            local target = players[i].Character
+            if target
+                and target:FindFirstChild("Humanoid")
+                and target.Humanoid.Health > 0
+                and target:FindFirstChild("HumanoidRootPart")
+                and player:DistanceFromCharacter(target.HumanoidRootPart.Position) <= range
+            then
+                local tool = player.Character and player.Character:FindFirstChildOfClass("Tool")
+                if tool and tool:FindFirstChild("Handle") then
+                    tool:Activate()
+                    for _, part in ipairs(target:GetChildren()) do
+                        if part:IsA("BasePart") then
+                            firetouchinterest(tool.Handle, part, 0)
+                            firetouchinterest(tool.Handle, part, 1)
+                        end
+                    end
+                end
+            end
+        end
+    end)
+end)
+
 Section:CreateButton("FireAllTouchinterest", function()
 local player = speaker or game:GetService("Players").LocalPlayer
 if not player or not player.Character then return end
