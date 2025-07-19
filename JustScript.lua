@@ -142,7 +142,7 @@ Section:CreateToggle("Скрыть игроков", function(state)
     end
 end)
 
-Section:CreateButton("FireProximityPrompt", function()
+Section:CreateButton("FireAllProximityPrompts", function()
 for _, v in ipairs(workspace:GetDescendants()) do
     if v:IsA("ProximityPrompt") then
         fireproximityprompt(v)
@@ -196,7 +196,7 @@ Section:CreateButton("KillAura", function()
     end)
 end)
 
-Section:CreateButton("FireAllTouchinterest", function()
+Section:CreateButton("FireAllTouchinterests", function()
 local player = speaker or game:GetService("Players").LocalPlayer
 if not player or not player.Character then return end
 
