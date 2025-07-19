@@ -2,7 +2,8 @@
 -- https://t.me/Games1799
 -- https://t.me/Roblox_free_ugc_2025
 
-local player = game.Players.LocalPlayer
+local players = Game:GetService("Players")
+local player = game.Players.LocalPlayer or players:GetPropertyChangedSignal("LocalPlayer"):Wait()
 
 _G.TP = false
 _G.HideAll = false
@@ -50,7 +51,7 @@ Section:CreateButton("Ремот спай", function()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/SimpleSpyV3/main.lua"))()
 end)
 
-Section:CreateButton("Браузер ремоутов", function()
+Section:CreateButton("Ремоут браузер", function()
 loadstring(Game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/RemoteBrowser"))()
 end)
 
@@ -142,7 +143,7 @@ Section:CreateToggle("Скрыть игроков", function(state)
     end
 end)
 
-Section:CreateButton("FireAllProximityPrompts", function()
+Section:CreateButton("FireProximityPrompt", function()
 for _, v in ipairs(workspace:GetDescendants()) do
     if v:IsA("ProximityPrompt") then
         fireproximityprompt(v)
@@ -196,7 +197,7 @@ Section:CreateButton("KillAura", function()
     end)
 end)
 
-Section:CreateButton("FireAllTouchinterests", function()
+Section:CreateButton("FireAllTouchinterest", function()
 local player = speaker or game:GetService("Players").LocalPlayer
 if not player or not player.Character then return end
 
