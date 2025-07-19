@@ -69,8 +69,8 @@ Section:CreateToggle("Телепорт мышкой", function(state)
 end)
 
 Section:CreateButton("Скопировать координаты", function()
-local hum = player.Character:WaitForChild("HumanoidRootPart")
 if not him then return end
+local hum = player.Character:WaitForChild("HumanoidRootPart")
 local pos = hum.position
 local copy  = string.format("%f, %f, %f", pos.X, pos.Y, pos.Z)
 setclipboard(tostring(copy)) 
