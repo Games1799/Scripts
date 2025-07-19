@@ -2,21 +2,15 @@
 -- https://t.me/Games1799
 -- https://t.me/Roblox_free_ugc_2025
 
-local PlayerGui = gethui and gethui() or player:WaitForChild("PlayerGui")
-local StarterGui = gethui and gethui() or player:WaitForChild("StarterGui")
-local CoreGui = gethui and gethui() or player:WaitForChild("CoreGui")
-local ScreenGui = gethui and gethui() or player:WaitForChild("ScreenGui")
+local player = game.Players.LocalPlayer
 
 _G.TP = false
 _G.HideAll = false
 
-local player = game.Players.LocalPlayer
-local humanoid = player.Character:FindFirstChild("Humanoid")
 local mouse = player:GetMouse()
 mouse.Button1Down:Connect(function()
 if not _G.TP then return end
 if not player then return end
-if humanoid.Sit then return end
 if not player.Character then return end 
 if not mouse.Target then return end
 player.Character:PivotTo(CFrame.new(mouse.Hit.Position + Vector3.new(0, 3, 0)))
@@ -34,12 +28,9 @@ spawn(function()
     end
 end)
 
-local player = game.Players.LocalPlayer
-local hum = player.Character:WaitForChild("HumanoidRootPart")
-
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
-local Window = Library:NewWindow("Just script v1.2")
+local Window = Library:NewWindow("Just script v1.3")
 
 local Section = Window:NewSection("Полезные скрипты")
 
@@ -78,18 +69,24 @@ Section:CreateToggle("Телепорт мышкой", function(state)
 end)
 
 Section:CreateButton("Скопировать координаты", function()
+local hum = player.Character:WaitForChild("HumanoidRootPart")
+if not him then return end
 local pos = hum.position
 local copy  = string.format("%f, %f, %f", pos.X, pos.Y, pos.Z)
 setclipboard(tostring(copy)) 
 end)
 
 Section:CreateButton("Скопировать Teleport", function()
+if not him then return end
+local hum = player.Character:WaitForChild("HumanoidRootPart")
 local pos = hum.position
 local copy  = string.format("game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(%f, %f, %f)))", pos.X, pos.Y, pos.Z)
 setclipboard(tostring(copy)) 
 end)
 
 Section:CreateButton("Скопировать TweenService", function()
+if not him then return end
+local hum = player.Character:WaitForChild("HumanoidRootPart")
 local pos = hum.position
 local copy  = string.format([[local tweenInfo = TweenInfo.new(2)
 local goal = {CFrame = CFrame.new(%f, %f, %f)}
@@ -99,6 +96,8 @@ setclipboard(tostring(copy))
 end)
 
 Section:CreateButton("Скопировать MoveTo", function()
+if not him then return end
+local hum = player.Character:WaitForChild("HumanoidRootPart")
 local pos = hum.position
 local copy  = string.format([[local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
 local position = "%f, %f, %f"
@@ -111,6 +110,8 @@ setclipboard(tostring(copy))
 end)
 
 Section:CreateButton("Скопировать Lerp", function()
+if not him then return end
+local hum = player.Character:WaitForChild("HumanoidRootPart")
 local pos = hum.position
 local copy  = string.format([[local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
 local goal = CFrame.new(%f, %f, %f)
@@ -155,7 +156,7 @@ for _, v in ipairs(workspace:GetDescendants()) do
 end
 end)
 
-Section:CreateButton("Kill aura", function()
+Section:CreateButton("KillAura", function()
     local range = 9999999999999
     local player = game:GetService("Players").LocalPlayer
 
