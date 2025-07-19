@@ -2,8 +2,8 @@
 -- https://t.me/Games1799
 -- https://t.me/Roblox_free_ugc_2025
 
-local players = Game:GetService("Players")
-local player = game.Players.LocalPlayer or players:GetPropertyChangedSignal("LocalPlayer"):Wait()
+local players = game:GetService("Players")
+local player = players.LocalPlayer or players:GetPropertyChangedSignal("LocalPlayer"):Wait()
 
 _G.TP = false
 _G.HideAll = false
