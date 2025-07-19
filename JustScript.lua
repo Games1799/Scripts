@@ -50,8 +50,8 @@ Section:CreateButton("Ремот спай", function()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/SimpleSpyV3/main.lua"))()
 end)
 
-Section:CreateButton("???", function()
-return nil
+Section:CreateButton("Браузер ремоутов", function()
+loadstring(Game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/RemoteBrowser"))()
 end)
 
 Section:CreateButton("???", function()
@@ -69,7 +69,9 @@ Section:CreateToggle("Телепорт мышкой", function(state)
 end)
 
 Section:CreateButton("Скопировать координаты", function()
-local hum = player.Character:WaitForChild("HumanoidRootPart")
+local character = player.Character
+if not character then return end 
+local hum = player.Character:FindFirstChild("HumanoidRootPart")
 if not hum then return end
 local pos = hum.position
 local copy  = string.format("%f, %f, %f", pos.X, pos.Y, pos.Z)
@@ -77,18 +79,22 @@ setclipboard(tostring(copy))
 end)
 
 Section:CreateButton("Скопировать Teleport", function()
-local hum = player.Character:WaitForChild("HumanoidRootPart")
+local character = player.Character
+if not character then return end 
+local hum = player.Character:FindFirstChild("HumanoidRootPart")
 if not hum then return end
 local pos = hum.position
-local copy  = string.format("game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(%f, %f, %f)))", pos.X, pos.Y, pos.Z)
+local copy = string.format("game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(%f, %f, %f)))", pos.X, pos.Y, pos.Z)
 setclipboard(tostring(copy)) 
 end)
 
 Section:CreateButton("Скопировать TweenService", function()
-local hum = player.Character:WaitForChild("HumanoidRootPart")
+local character = player.Character
+if not character then return end 
+local hum = player.Character:FindFirstChild("HumanoidRootPart")
 if not hum then return end
 local pos = hum.position
-local copy  = string.format([[local tweenInfo = TweenInfo.new(2)
+local copy = string.format([[local tweenInfo = TweenInfo.new(2)
 local goal = {CFrame = CFrame.new(%f, %f, %f)}
 local tween = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, tweenInfo, goal)
 tween:Play()]], pos.X, pos.Y, pos.Z)
@@ -96,10 +102,12 @@ setclipboard(tostring(copy))
 end)
 
 Section:CreateButton("Скопировать MoveTo", function()
-local hum = player.Character:WaitForChild("HumanoidRootPart")
+local character = player.Character
+if not character then return end 
+local hum = player.Character:FindFirstChild("HumanoidRootPart")
 if not hum then return end
 local pos = hum.position
-local copy  = string.format([[local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+local copy = string.format([[local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
 local position = "%f, %f, %f"
 local humanoid = game.Players.LocalPlayer.Character.Humanoid
 humanoid.WalkSpeed = 16
@@ -110,7 +118,9 @@ setclipboard(tostring(copy))
 end)
 
 Section:CreateButton("Скопировать Lerp", function()
-local hum = player.Character:WaitForChild("HumanoidRootPart")
+local character = player.Character
+if not character then return end 
+local hum = player.Character:FindFirstChild("HumanoidRootPart")
 if not hum then return end
 local pos = hum.position
 local copy  = string.format([[local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
