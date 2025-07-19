@@ -69,24 +69,24 @@ Section:CreateToggle("Телепорт мышкой", function(state)
 end)
 
 Section:CreateButton("Скопировать координаты", function()
-if not him then return end
 local hum = player.Character:WaitForChild("HumanoidRootPart")
+if not hum then return end
 local pos = hum.position
 local copy  = string.format("%f, %f, %f", pos.X, pos.Y, pos.Z)
 setclipboard(tostring(copy)) 
 end)
 
 Section:CreateButton("Скопировать Teleport", function()
-if not him then return end
 local hum = player.Character:WaitForChild("HumanoidRootPart")
+if not hum then return end
 local pos = hum.position
 local copy  = string.format("game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(%f, %f, %f)))", pos.X, pos.Y, pos.Z)
 setclipboard(tostring(copy)) 
 end)
 
 Section:CreateButton("Скопировать TweenService", function()
-if not him then return end
 local hum = player.Character:WaitForChild("HumanoidRootPart")
+if not hum then return end
 local pos = hum.position
 local copy  = string.format([[local tweenInfo = TweenInfo.new(2)
 local goal = {CFrame = CFrame.new(%f, %f, %f)}
@@ -96,8 +96,8 @@ setclipboard(tostring(copy))
 end)
 
 Section:CreateButton("Скопировать MoveTo", function()
-if not him then return end
 local hum = player.Character:WaitForChild("HumanoidRootPart")
+if not hum then return end
 local pos = hum.position
 local copy  = string.format([[local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
 local position = "%f, %f, %f"
@@ -110,8 +110,8 @@ setclipboard(tostring(copy))
 end)
 
 Section:CreateButton("Скопировать Lerp", function()
-if not him then return end
 local hum = player.Character:WaitForChild("HumanoidRootPart")
+if not hum then return end
 local pos = hum.position
 local copy  = string.format([[local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
 local goal = CFrame.new(%f, %f, %f)
