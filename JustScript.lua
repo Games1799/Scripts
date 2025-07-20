@@ -4,6 +4,7 @@
 
 local players = game:GetService("Players")
 local player = players.LocalPlayer or players:GetPropertyChangedSignal("LocalPlayer"):Wait()
+local StarterGui = game:GetService("StarterGui")
 
 _G.TP = false
 _G.HideAll = false
