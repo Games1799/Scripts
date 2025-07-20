@@ -18,12 +18,10 @@ player.Character:PivotTo(CFrame.new(mouse.Hit.Position + Vector3.new(0, 3, 0)))
 end)
 
 spawn(function()
-    while task.wait() do
-        if _G.HideAll then
-            for _, v in pairs(game.Players:GetPlayers()) do
-                if v ~= player and v.Character then
-                    v.Character:Destroy()
-                end
+    while task.wait(0.1) do
+        for _, v in pairs(game.Players:GetPlayers()) do
+            if v ~= player and v.Character then
+                v.Character.Parent = _G.HideAll and nil or workspace
             end
         end
     end
