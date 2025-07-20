@@ -17,11 +17,22 @@ if not mouse.Target then return end
 player.Character:PivotTo(CFrame.new(mouse.Hit.Position + Vector3.new(0, 3, 0)))
 end)
 
+local HidePlayers = {}
+
 spawn(function()
-    while task.wait(0.1) do
+    while task.wait() do
         for _, v in pairs(game.Players:GetPlayers()) do
             if v ~= player and v.Character then
-                v.Character.Parent = _G.HideAll and nil or workspace
+                if _G.HideAll then
+                    if not HidePlayers[v] then
+                        HidePlayers[v] = v.Character.Parent
+                    end
+                    v.Character.Parent = nil
+                else
+                    if HidePlayers[v] and v.Character.Parent == nil then
+                        v.Character.Parent = HidePlayers[v]
+                    end
+                end
             end
         end
     end
@@ -29,7 +40,7 @@ end)
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
-local Window = Library:NewWindow("Just script v1.3")
+local Window = Library:NewWindow("Just script v1.4")
 
 local Section = Window:NewSection("Полезные скрипты")
 
