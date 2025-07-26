@@ -88,6 +88,10 @@ if not hi then
         end
 end)
 
+Section:CreateButton("???", function()
+return nil
+end)
+
 local Section = Window:NewSection("Перемещение")
 
 Section:CreateToggle("Телепорт мышкой", function(state)
