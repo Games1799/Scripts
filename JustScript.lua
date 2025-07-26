@@ -41,7 +41,7 @@ end)
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
-local Window = Library:NewWindow("Just script v1.4")
+local Window = Library:NewWindow("Just script v1.5")
 
 local Section = Window:NewSection("Полезные скрипты")
 
@@ -63,6 +63,10 @@ end)
 
 Section:CreateButton("Ремоут браузер", function()
 loadstring(Game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/RemoteBrowser"))()
+end)
+
+Section:CreateButton("Dev Products Purchaser", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ckw69/Wyborn/refs/heads/main/Dev%20Product%20Purchase"))()
 end)
 
 Section:CreateButton("???", function()
