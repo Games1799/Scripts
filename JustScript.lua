@@ -80,7 +80,7 @@ for i, v in pairs(game:GetDescendants()) do
 end
 
 if not hi then
-    game:GetService("StarterGui"):SetCore("SendNotification", { 
+    StarterGui:SetCore("SendNotification", { 
         Title = "Не найдено",
         Text = "Адонис не найден",
         Duration = 5,
