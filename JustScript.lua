@@ -5,6 +5,7 @@
 local players = game:GetService("Players")
 local player = players.LocalPlayer or players:GetPropertyChangedSignal("LocalPlayer"):Wait()
 local StarterGui = game:GetService("StarterGui")
+local hi = false
 
 _G.TP = false
 _G.HideAll = false
@@ -69,8 +70,22 @@ Section:CreateButton("Dev Products Purchaser", function()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/ckw69/Wyborn/refs/heads/main/Dev%20Product%20Purchase"))()
 end)
 
-Section:CreateButton("???", function()
-return nil
+Section:CreateButton("Адонис байпас", function()
+for i, v in pairs(game:GetDescendants()) do
+    if v.Name == "__FUNCTION" then
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua'))()
+        hi = true
+        break
+    end
+end
+
+if not hi then
+    game:GetService("StarterGui"):SetCore("SendNotification", { 
+        Title = "Не найдено",
+        Text = "Адонис не найден",
+        Duration = 5,
+    })
+        end
 end)
 
 local Section = Window:NewSection("Перемещение")
