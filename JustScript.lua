@@ -289,8 +289,6 @@ end)
 
 if not _G.Prompt then
     _G.Prompt = true
-    local CoreGui = game:GetService("CoreGui")
-    local StarterGui = game:GetService("StarterGui")
 
     while task.wait(1) do
         local purchasePrompt = CoreGui:FindFirstChild("PurchasePromptApp")
