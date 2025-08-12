@@ -43,7 +43,7 @@ end)
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
-local Window = Library:NewWindow("Just script v1.6")
+local Window = Library:NewWindow("Just script v1.5")
 
 local Section = Window:NewSection("Полезные скрипты")
 
@@ -287,33 +287,52 @@ Section:CreateButton("Скрыть это окно", function()
 game:GetService("CoreGui").WizardLibrary.Container["\208\161\208\190\208\183\208\180\208\176\209\130\208\181\208\187\209\140\209\129\208\186\209\128\208\184\208\191\209\130\208\176Window"]:Destroy()
 end)
 
-if not _G.Prompt then 
-_G.Prompt = true 
-while task.wait(1) do
-    if CoreGui:FindFirstChild("PurchasePromptApp")
-        and CoreGui.PurchasePromptApp:FindFirstChild("ProductPurchaseContainer")
-        and CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator:FindFirstChild("ProductPurchaseModal")
-        and CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchaseModal:FindFirstChild("AlertContents") then
-        
-        local modal = CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchaseModal
-        local alert = modal.AlertContents
+if not _G.Prompt then
+    _G.Prompt = true
+    local CoreGui = game:GetService("CoreGui")
+    local StarterGui = game:GetService("StarterGui")
 
-        local price = alert.Footer.Buttons["1"].ButtonContent.ButtonMiddleContent.Text.Text
-        local icon = alert.MiddleContent.Content.ItemIcon.Image
+    while task.wait(1) do
+        local purchasePrompt = CoreGui:FindFirstChild("PurchasePromptApp")
+        if purchasePrompt then
+            local price, image, priceText, imageSrc
 
-        StarterGui:SetCore("SendNotification", {
-            Title = "Появилось окно покупки!",
-            Text = "Стоимость — "..price,
-            Icon = icon,
-            Duration = 5,
-        })
+            local productPurchase = purchasePrompt:FindFirstChild("ProductPurchaseContainer")
+            if productPurchase and productPurchase.Animator:FindFirstChild("ProductPurchaseModal") then
+                local alert = productPurchase.Animator.ProductPurchaseModal:FindFirstChild("AlertContents")
+                if alert then
+                    price = alert.Footer.Buttons["1"].ButtonContent.ButtonMiddleContent.Text
+                    image = alert.MiddleContent.Content.ItemIcon
+                    priceText = price.Text
+                    imageSrc = image.Image
+                end
+            end
 
-        repeat task.wait(1) until not (
-            CoreGui:FindFirstChild("PurchasePromptApp")
-            and CoreGui.PurchasePromptApp:FindFirstChild("ProductPurchaseContainer")
-            and CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator:FindFirstChild("ProductPurchaseModal")
-            and CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchaseModal:FindFirstChild("AlertContents")
-        )
+            if not priceText then
+                local robuxUpsell = purchasePrompt:FindFirstChild("RobuxUpsellContainer")
+                if robuxUpsell and robuxUpsell:FindFirstChild("Prompt") then
+                    local children = robuxUpsell.Prompt.Children:GetChildren()
+                    if children[8] and children[8]:FindFirstChild("1") then
+                        local upsell = children[8]["1"].RobuxUpsellModal.AlertContents.MiddleContent.Content.ProductDetails
+                        price = upsell.ItemDetailsFrame.ItemDetails.ItemCost
+                        image = upsell.ItemIcon
+                        priceText = price.Text
+                        imageSrc = image.Image
+                    end
+                end
+            end
+
+            if priceText and imageSrc then
+                StarterGui:SetCore("SendNotification", {
+                    Title = "Появилось окно покупки!",
+                    Text = "Стоимость — "..priceText,
+                    Icon = imageSrc,
+                    Duration = 5,
+                })
+
+                repeat task.wait(1)
+                until not (price and price.Parent and image and image.Parent)
+            end
+        end
     end
-end
 end
