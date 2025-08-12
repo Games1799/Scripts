@@ -4,6 +4,7 @@
 
 local players = game:GetService("Players")
 local player = players.LocalPlayer or players:GetPropertyChangedSignal("LocalPlayer"):Wait()
+local CoreGui = game:GetService("CoreGui")
 local StarterGui = game:GetService("StarterGui")
 local hi = false
 
@@ -285,3 +286,34 @@ end)
 Section:CreateButton("Скрыть это окно", function()
 game:GetService("CoreGui").WizardLibrary.Container["\208\161\208\190\208\183\208\180\208\176\209\130\208\181\208\187\209\140\209\129\208\186\209\128\208\184\208\191\209\130\208\176Window"]:Destroy()
 end)
+
+if not _G.Prompt then 
+_G.Prompt = true 
+while task.wait(1) do
+    if CoreGui:FindFirstChild("PurchasePromptApp")
+        and CoreGui.PurchasePromptApp:FindFirstChild("ProductPurchaseContainer")
+        and CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator:FindFirstChild("ProductPurchaseModal")
+        and CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchaseModal:FindFirstChild("AlertContents") then
+        
+        local modal = CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchaseModal
+        local alert = modal.AlertContents
+
+        local price = alert.Footer.Buttons["1"].ButtonContent.ButtonMiddleContent.Text.Text
+        local icon = alert.MiddleContent.Content.ItemIcon.Image
+
+        StarterGui:SetCore("SendNotification", {
+            Title = "Появилось окно покупки!",
+            Text = "Стоимость — "..price,
+            Icon = icon,
+            Duration = 5,
+        })
+
+        repeat task.wait(1) until not (
+            CoreGui:FindFirstChild("PurchasePromptApp")
+            and CoreGui.PurchasePromptApp:FindFirstChild("ProductPurchaseContainer")
+            and CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator:FindFirstChild("ProductPurchaseModal")
+            and CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchaseModal:FindFirstChild("AlertContents")
+        )
+    end
+end
+end
