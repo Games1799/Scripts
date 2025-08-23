@@ -5,10 +5,9 @@ local Window = Library:NewWindow("Click For Free UGC Items")
 local Section = Window:NewSection("Основное")
 
 Section:CreateButton("Ввести все коды", function()
-    local args = {
- "RELEASE"
-}
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("UseCode"):FireServer(unpack(args))
+    for _, codes in ipairs(game:GetService("Players").LocalPlayer.Codes:GetChildren()) do
+    game:GetService("ReplicatedStorage").Remotes.UseCode:FireServer(codes.Name)
+        end
 end)
 
 getgenv().hi = {toggle = false}
