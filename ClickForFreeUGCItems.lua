@@ -13,7 +13,7 @@ end)
 
 getgenv().hi = {toggle = false}
 
-Section:CreateToggle("Авто кликер", function(state)
+Section:CreateToggle("Автокликер", function(state)
     task.spawn(function()
         hi.toggle = state
         while true do
