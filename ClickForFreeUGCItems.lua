@@ -28,7 +28,7 @@ end)
 
 getgenv().hi1 = {toggle = false}
 
-Section:CreateToggle("Назание", function(state)
+Section:CreateToggle("Авто спин", function(state)
     task.spawn(function()
         hi1.toggle = state
         while true do
