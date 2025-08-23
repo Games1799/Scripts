@@ -26,6 +26,19 @@ Section:CreateToggle("Автокликер", function(state)
     end)
 end)
 
+getgenv().hi1 = {toggle = false}
+
+Section:CreateToggle("Назание", function(state)
+    task.spawn(function()
+        hi1.toggle = state
+        while true do
+            if not hi1.toggle then return end
+            game:GetService("ReplicatedStorage").Remotes.SpinWheel:FireServer()
+            task.wait(1)
+        end
+    end)
+end)
+
 Section:CreateButton("Анти афк", function()
 game:GetService("Players").LocalPlayer.Idled:Connect(function()
     VirtualUser:CaptureController()VirtualUser:ClickButton2(Vector2.new())
