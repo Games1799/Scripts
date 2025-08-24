@@ -16,7 +16,10 @@ connection = RunService.RenderStepped:Connect(function()
         wizardLibrary.Parent = player.PlayerGui
         wizardLibrary.Parent = gethui()
         connection:Disconnect()
-    end
+local part = Instance.new("Part")
+part.Name = "WizardLibrary"
+part.Parent = game:GetService("CoreGui")
+        end
 end)
 
 _G.TP = false
