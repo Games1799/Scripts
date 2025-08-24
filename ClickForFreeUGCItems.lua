@@ -1,6 +1,19 @@
 local PlaceId = game.PlaceId
 local StarterGui = game:GetService("StarterGui")
 local VirtualUser = game:GetService("VirtualUser")
+
+getgenv().hi = {toggle = false}
+getgenv().hi1 = {toggle = false}
+getgenv().Com = {toggle = false}
+getgenv().Cow = {toggle = false}
+getgenv().Jun = {toggle = false}
+getgenv().Saf = {toggle = false}
+getgenv().Cac = {toggle = false}
+getgenv().Case1 = {toggle = false}
+getgenv().Case2 = {toggle = false}
+getgenv().Case3 = {toggle = false}
+getgenv().Case4 = {toggle = false}
+
 if PlaceId == 99096766260885 then
 local Library = loadstring(Game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
@@ -14,8 +27,6 @@ Section:CreateButton("Ввести все коды", function()
         end
 end)
 
-getgenv().hi = {toggle = false}
-
 Section:CreateToggle("Автокликер", function(state)
     task.spawn(function()
         hi.toggle = state
@@ -26,8 +37,6 @@ Section:CreateToggle("Автокликер", function(state)
         end
     end)
 end)
-
-getgenv().hi1 = {toggle = false}
 
 Section:CreateToggle("Авто спин", function(state)
     task.spawn(function()
@@ -50,6 +59,163 @@ StarterGui:SetCore("SendNotification", {
     Duration = 5
 })
 end)
+
+local Section = Window:NewSection("Авто открытие яиц")
+
+Section:CreateToggle("Common Egg (10к)", function(state)
+    task.spawn(function()
+        Com.toggle = state
+        while true do
+            if not Com.toggle then return end
+local clicks = game:GetService("Players").LocalPlayer.leaderstats.Clicks.Value
+            if clicks >= 10000 then 
+local args = {
+ "Common Egg",
+ 1,
+ {}
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("BuyEgg"):InvokeServer(unpack(args))
+end
+            task.wait(10)
+        end
+    end)
+end)
+
+Section:CreateToggle("Cow Egg (50к)", function(state)
+    task.spawn(function()
+        Cow.toggle = state
+        while true do
+            if not Cow.toggle then return end
+local clicks = game:GetService("Players").LocalPlayer.leaderstats.Clicks.Value
+            if clicks >= 50000 then 
+local args = {
+ "Cow Egg",
+ 1,
+ {}
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("BuyEgg"):InvokeServer(unpack(args))
+end
+            task.wait(10)
+        end
+    end)
+end)
+
+Section:CreateToggle("Jungle Egg (150к)", function(state)
+    task.spawn(function()
+        Jun.toggle = state
+        while true do
+            if not Jun.toggle then return end
+local clicks = game:GetService("Players").LocalPlayer.leaderstats.Clicks.Value
+            if clicks >= 150000 then 
+local args = {
+ "Jungle Egg",
+ 1,
+ {}
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("BuyEgg"):InvokeServer(unpack(args))
+end
+            task.wait(10)
+        end
+    end)
+end)
+
+Section:CreateToggle("Safari Egg (500к)", function(state)
+    task.spawn(function()
+        Saf.toggle = state
+        while true do
+            if not Saf.toggle then return end
+local clicks = game:GetService("Players").LocalPlayer.leaderstats.Clicks.Value
+            if clicks >= 500000 then 
+local args = {
+	"Safari Egg",
+	1,
+	{}
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("BuyEgg"):InvokeServer(unpack(args))
+end
+            task.wait(10)
+        end
+    end)
+end)
+
+Section:CreateToggle("Jungle Egg (1.5м)", function(state)
+    task.spawn(function()
+        Cac.toggle = state
+        while true do
+            if not Cac.toggle then return end
+local clicks = game:GetService("Players").LocalPlayer.leaderstats.Clicks.Value
+            if clicks >= 1500000 then 
+local args = {
+	"Cactus Egg",
+	1,
+	{}
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("BuyEgg"):InvokeServer(unpack(args))
+end
+            task.wait(10)
+        end
+    end)
+end)
+
+local Section = Window:NewSection("Авто открытие кейсов")
+
+Section:CreateToggle("Small Vault (25к)", function(state)
+    task.spawn(function()
+        Case1.toggle = state
+        while true do
+            if not Case1.toggle then return end
+local clicks = game:GetService("Players").LocalPlayer.leaderstats.Clicks.Value
+            if clicks >= 25000 then 
+game:GetService("ReplicatedStorage").Remotes.OpenCase:FireServer("Small Vault")
+end
+            task.wait(10)
+        end
+    end)
+end)
+
+Section:CreateToggle("Basic Case (100к)", function(state)
+    task.spawn(function()
+        Case2.toggle = state
+        while true do
+            if not Case2.toggle then return end
+local clicks = game:GetService("Players").LocalPlayer.leaderstats.Clicks.Value
+            if clicks >= 100000 then 
+game:GetService("ReplicatedStorage").Remotes.OpenCase:FireServer("Basic Case")
+end
+            task.wait(10)
+        end
+    end)
+end)
+
+Section:CreateToggle("Big Vault (500к)", function(state)
+    task.spawn(function()
+        Case3.toggle = state
+        while true do
+            if not Case3.toggle then return end
+local clicks = game:GetService("Players").LocalPlayer.leaderstats.Clicks.Value
+            if clicks >= 500000 then 
+game:GetService("ReplicatedStorage").Remotes.OpenCase:FireServer("Big Vault")
+end
+            task.wait(10)
+        end
+    end)
+end)
+
+Section:CreateToggle("Diamond Case (1.5м)", function(state)
+    task.spawn(function()
+        Case4.toggle = state
+        while true do
+            if not Case4.toggle then return end
+local clicks = game:GetService("Players").LocalPlayer.leaderstats.Clicks.Value
+            if clicks >= 1500000 then 
+game:GetService("ReplicatedStorage").Remotes.OpenCase:FireServer("Diamond Case")
+end
+            task.wait(10)
+        end
+    end)
+end)
+
+
 
 local Window = Library:NewWindow("Создатель скрипта")
 
