@@ -9,19 +9,6 @@ local StarterGui = game:GetService("StarterGui")
 local RunService = game:GetService("RunService")
 local hi = false
 
-local connection
-connection = RunService.RenderStepped:Connect(function()
-    local wizardLibrary = game:GetService("CoreGui"):FindFirstChild("WizardLibrary")
-    if wizardLibrary then
-        wizardLibrary.Parent = player.PlayerGui
-        wizardLibrary.Parent = gethui()
-        connection:Disconnect()
-local part = Instance.new("Part")
-part.Name = "WizardLibrary"
-part.Parent = game:GetService("CoreGui")
-        end
-end)
-
 _G.TP = false
 _G.HideAll = false
 
@@ -57,7 +44,7 @@ end)
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
-local Window = Library:NewWindow("Just script v1.7")
+local Window = Library:NewWindow("Just script v1.6")
 
 local Section = Window:NewSection("Полезные скрипты")
 
@@ -298,7 +285,7 @@ setclipboard(tostring(copy))
 end)
 
 Section:CreateButton("Скрыть это окно", function()
-gethui().WizardLibrary.Container["\208\161\208\190\208\183\208\180\208\176\209\130\208\181\208\187\209\140\209\129\208\186\209\128\208\184\208\191\209\130\208\176Window"]:Destroy()
+game:GetService("CoreGui").WizardLibrary.Container["\208\161\208\190\208\183\208\180\208\176\209\130\208\181\208\187\209\140\209\129\208\186\209\128\208\184\208\191\209\130\208\176Window"]:Destroy()
 end)
 
 if not _G.Prompt then
