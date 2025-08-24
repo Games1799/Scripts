@@ -6,7 +6,18 @@ local players = game:GetService("Players")
 local player = players.LocalPlayer or players:GetPropertyChangedSignal("LocalPlayer"):Wait()
 local CoreGui = game:GetService("CoreGui")
 local StarterGui = game:GetService("StarterGui")
+local RunService = game:GetService("RunService")
 local hi = false
+
+local connection
+connection = RunService.RenderStepped:Connect(function()
+    local wizardLibrary = game:GetService("CoreGui"):FindFirstChild("WizardLibrary")
+    if wizardLibrary then
+        wizardLibrary.Parent = LocalPlayer.PlayerGui
+        wizardLibrary.Parent = gethui()
+        connection:Disconnect()
+    end
+end)
 
 _G.TP = false
 _G.HideAll = false
