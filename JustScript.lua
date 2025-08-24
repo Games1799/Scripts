@@ -13,7 +13,7 @@ local connection
 connection = RunService.RenderStepped:Connect(function()
     local wizardLibrary = game:GetService("CoreGui"):FindFirstChild("WizardLibrary")
     if wizardLibrary then
-        wizardLibrary.Parent = LocalPlayer.PlayerGui
+        wizardLibrary.Parent = player.PlayerGui
         wizardLibrary.Parent = gethui()
         connection:Disconnect()
     end
@@ -54,7 +54,7 @@ end)
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
-local Window = Library:NewWindow("Just script v1.6")
+local Window = Library:NewWindow("Just script v1.7")
 
 local Section = Window:NewSection("Полезные скрипты")
 
