@@ -295,7 +295,7 @@ setclipboard(tostring(copy))
 end)
 
 Section:CreateButton("Скрыть это окно", function()
-game:GetService("CoreGui").WizardLibrary.Container["\208\161\208\190\208\183\208\180\208\176\209\130\208\181\208\187\209\140\209\129\208\186\209\128\208\184\208\191\209\130\208\176Window"]:Destroy()
+gethui().WizardLibrary.Container["\208\161\208\190\208\183\208\180\208\176\209\130\208\181\208\187\209\140\209\129\208\186\209\128\208\184\208\191\209\130\208\176Window"]:Destroy()
 end)
 
 if not _G.Prompt then
