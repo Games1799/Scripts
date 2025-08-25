@@ -138,7 +138,7 @@ end
     end)
 end)
 
-Section:CreateToggle("Jungle Egg (1.5м)", function(state)
+Section:CreateToggle("Cactus Egg (1.5м)", function(state)
     task.spawn(function()
         Cac.toggle = state
         while true do
