@@ -203,8 +203,8 @@ Section:CreateTextbox("SignalPurchaseFinished (id)", function(id)
     local successDev, devInfo = pcall(MarketplaceService.GetProductInfo, MarketplaceService, Id, Enum.InfoType.Product)
     if successDev and devInfo then
         pcall(function()
-            MarketplaceService:SignalDeveloperProductPurchaseFinished(player, Id, true)
-            MarketplaceService:SignalDeveloperProductPurchaseFinished(player, Id, false)
+            MarketplaceService:SignalPromptProductPurchaseFinished(player.UserId, Id, true)
+            MarketplaceService:SignalPromptProductPurchaseFinished(player.UserId, Id, false)
         end)
         return
     end
