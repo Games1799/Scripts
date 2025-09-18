@@ -44,7 +44,7 @@ end)
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
-local Window = Library:NewWindow("Just script v1.6")
+local Window = Library:NewWindow("Just script v1.7")
 
 local Section = Window:NewSection("Полезные скрипты")
 
@@ -176,6 +176,10 @@ Section:CreateToggle("Скрыть игроков", function(state)
     else
         _G.HideAll = false
     end
+end)
+
+Section:CreateTextbox("SignalPromptPurchaseFinish...", function(id)
+    game.MarketplaceService:SignalPromptPurchaseFinished(game.Players.LocalPlayer,(id),false)
 end)
 
 Section:CreateButton("FireProximityPrompt", function()
