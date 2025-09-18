@@ -178,8 +178,17 @@ Section:CreateToggle("Скрыть игроков", function(state)
     end
 end)
 
-Section:CreateTextbox("SignalPromptPurchaseFinish...", function(id)
-    game.MarketplaceService:SignalPromptPurchaseFinished(game.Players.LocalPlayer,(id),false)
+Section:CreateTextbox("SignalPromptPurchaseFinish..", function(id)
+if tonumber(id) then  
+    game.MarketplaceService:SignalPromptPurchaseFinished(game.Players.LocalPlayer,tonumber(id),false)
+else
+StarterGui:SetCore("SendNotification", { 
+        Title = "Как использовать?",
+        Text = "Для использования этой функции нужно вставить id предмета в текстовое поле (без ссылки)",
+        Button1 = "Понял",
+        Duration = 5,
+    })
+        end
 end)
 
 Section:CreateButton("FireProximityPrompt", function()
