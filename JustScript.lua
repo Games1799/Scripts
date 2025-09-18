@@ -181,7 +181,15 @@ end)
 
 Section:CreateTextbox("SignalPurchaseFinished (id)", function(id)
     local Id = tonumber(id)
-    if not Id then return end
+    if not Id then 
+    StarterGui:SetCore("SendNotification", {
+            Title = "Как использовать?",
+            Text = "Чтобы использовать эту функцию нужно вставить id в текстовое поле (без ссылки)",
+            Button1 = "Понял",
+            Duration = 5,
+        })
+        return 
+    end
 
     local successPass = pcall(MarketplaceService.GetProductInfo, MarketplaceService, Id, Enum.InfoType.GamePass)
     if successPass then
@@ -248,8 +256,14 @@ MarketplaceService:SignalPromptPurchaseCompleted(player.UserId, Id)
 MarketplaceService:SignalPromptPurchaseFailed(player, Id)
 MarketplaceService:SignalPromptPurchaseFailed(player.UserId, Id)
         end)
-        return
+    return
     end
+        StarterGui:SetCore("SendNotification", {
+        Title = "Ошибка!",
+        Text = "Ошибка, этот id не существует!",
+        Button1 = "Ок",
+        Duration = 5,
+    })
 end)
 
 Section:CreateButton("FireProximityPrompt", function()
