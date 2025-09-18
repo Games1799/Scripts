@@ -8,6 +8,7 @@ local CoreGui = game:GetService("CoreGui")
 local StarterGui = game:GetService("StarterGui")
 local RunService = game:GetService("RunService")
 local hi = false
+local MarketplaceService = game:GetService("MarketplaceService")
 
 _G.TP = false
 _G.HideAll = false
@@ -178,17 +179,51 @@ Section:CreateToggle("Скрыть игроков", function(state)
     end
 end)
 
-Section:CreateTextbox("SignalPromptPurchaseFinish..", function(id)
-if tonumber(id) then  
-    game.MarketplaceService:SignalPromptPurchaseFinished(game.Players.LocalPlayer,tonumber(id),false)
-else
-StarterGui:SetCore("SendNotification", { 
-        Title = "Как использовать?",
-        Text = "Для использования этой функции нужно вставить id предмета в текстовое поле (без ссылки)",
-        Button1 = "Понял",
+Section:CreateTextbox("SignalPurchaseFinish (id)", function(id)
+    local Id = tonumber(id)
+
+    if not Id then
+        StarterGui:SetCore("SendNotification", {
+            Title = "Ошибка",
+            Text = "Для использования этой функции нужно вставить id предмета в текстовое поле (без ссылки)",
+            Button1 = "Понял",
+            Duration = 5,
+        })
+        return
+    end
+
+    local successPass, passInfo = pcall(MarketplaceService.GetProductInfo, MarketplaceService, Id, Enum.InfoType.GamePass)
+    if successPass and passInfo then MarketplaceService:SignalPromptGamePassPurchaseFinished(player, Id, true)
+MarketplaceService:SignalPromptGamePassPurchaseFinished(player, Id, false)
+        return
+    end
+
+    local successDev, devInfo = pcall(MarketplaceService.GetProductInfo, MarketplaceService, Id, Enum.InfoType.Product)
+    if successDev and devInfo then   MarketplaceService:SignalDeveloperProductPurchaseFinished(player, Id, true)
+MarketplaceService:SignalDeveloperProductPurchaseFinished(player, Id, false)
+        return
+    end
+
+local successBundle, duninfo = pcall(MarketplaceService.GetProductInfo, MarketplaceService, Id, Enum.InfoType.Bundle)
+    if successBundle and duninfo then
+        MarketplaceService:SignalPromptBundlePurchaseFinished(player, Id, true)
+        MarketplaceService:SignalPromptBundlePurchaseFinished(player, Id, false)
+        return
+    end
+
+
+    local successUGC, ugcInfo = pcall(MarketplaceService.GetProductInfo, MarketplaceService, Id, Enum.InfoType.Asset)
+    if successUGC and ugcInfo then MarketplaceService:SignalPromptPurchaseFinished(player, Id, true)
+MarketplaceService:SignalPromptPurchaseFinished(player, Id, false)
+        return
+    end
+
+    StarterGui:SetCore("SendNotification", {
+        Title = "Ошибка!",
+        Text = "Ошибка! Этот id не существует",
+        Button1 = "Ок",
         Duration = 5,
     })
-        end
 end)
 
 Section:CreateButton("FireProximityPrompt", function()
