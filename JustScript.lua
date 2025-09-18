@@ -183,8 +183,8 @@ Section:CreateTextbox("SignalPurchaseFinished (id)", function(id)
     local Id = tonumber(id)
     if not Id then
         StarterGui:SetCore("SendNotification", {
-            Title = "Ошибка",
-            Text = "Введите корректный ID предмета (без ссылки)",
+            Title = "Ошибка!",
+            Text = "Для использования этой функции нужно вставить id предмета в текстовое поле (без ссылки)",
             Button1 = "Понял",
             Duration = 5,
         })
@@ -229,7 +229,7 @@ Section:CreateTextbox("SignalPurchaseFinished (id)", function(id)
 
     StarterGui:SetCore("SendNotification", {
         Title = "Ошибка!",
-        Text = "ID не найден или тип продукта неизвестен",
+        Text = "Этот Id не существует",
         Button1 = "Ок",
         Duration = 5,
     })
