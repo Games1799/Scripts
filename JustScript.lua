@@ -179,7 +179,7 @@ Section:CreateToggle("Скрыть игроков", function(state)
     end
 end)
 
-Section:CreateTextbox("SignalPurchaseFinish (id)", function(id)
+Section:CreateTextbox("SignalPurchaseFinished (id)", function(id)
     local Id = tonumber(id)
 
     if not Id then
