@@ -45,7 +45,7 @@ end)
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
-local Window = Library:NewWindow("Just script v1.8")
+local Window = Library:NewWindow("Just script v1.7")
 
 local Section = Window:NewSection("Полезные скрипты")
 
@@ -181,11 +181,10 @@ end)
 
 Section:CreateTextbox("SignalPurchaseFinished (id)", function(id)
     local Id = tonumber(id)
-
     if not Id then
         StarterGui:SetCore("SendNotification", {
             Title = "Ошибка",
-            Text = "Для использования этой функции нужно вставить id предмета в текстовое поле (без ссылки)",
+            Text = "Введите корректный ID предмета (без ссылки)",
             Button1 = "Понял",
             Duration = 5,
         })
@@ -194,36 +193,43 @@ Section:CreateTextbox("SignalPurchaseFinished (id)", function(id)
 
     local successPass, passInfo = pcall(MarketplaceService.GetProductInfo, MarketplaceService, Id, Enum.InfoType.GamePass)
     if successPass and passInfo then
-        MarketplaceService:SignalPromptGamePassPurchaseFinished(player, Id, true)
-        MarketplaceService:SignalPromptGamePassPurchaseFinished(player, Id, false)
+        pcall(function()
+            MarketplaceService:SignalPromptGamePassPurchaseFinished(player, Id, true)
+            MarketplaceService:SignalPromptGamePassPurchaseFinished(player, Id, false)
+        end)
         return
     end
 
     local successDev, devInfo = pcall(MarketplaceService.GetProductInfo, MarketplaceService, Id, Enum.InfoType.Product)
     if successDev and devInfo then
-        MarketplaceService:SignalDeveloperProductPurchaseFinished(player, Id, true)
-        MarketplaceService:SignalDeveloperProductPurchaseFinished(player, Id, false)
+        pcall(function()
+            MarketplaceService:SignalDeveloperProductPurchaseFinished(player, Id, true)
+            MarketplaceService:SignalDeveloperProductPurchaseFinished(player, Id, false)
+        end)
         return
     end
 
-local successBundle, duninfo = pcall(MarketplaceService.GetProductInfo, MarketplaceService, Id, Enum.InfoType.Bundle)
-    if successBundle and duninfo then
-        MarketplaceService:SignalPromptBundlePurchaseFinished(player, Id, true)
-        MarketplaceService:SignalPromptBundlePurchaseFinished(player, Id, false)
+    local successBundle, bundleInfo = pcall(MarketplaceService.GetProductInfo, MarketplaceService, Id, Enum.InfoType.Bundle)
+    if successBundle and bundleInfo then
+        pcall(function()
+            MarketplaceService:SignalPromptBundlePurchaseFinished(player, Id, true)
+            MarketplaceService:SignalPromptBundlePurchaseFinished(player, Id, false)
+        end)
         return
     end
-
 
     local successUGC, ugcInfo = pcall(MarketplaceService.GetProductInfo, MarketplaceService, Id, Enum.InfoType.Asset)
     if successUGC and ugcInfo then
-        MarketplaceService:SignalPromptPurchaseFinished(player, Id, true)
-        MarketplaceService:SignalPromptPurchaseFinished(player, Id, false)
+        pcall(function()
+            MarketplaceService:SignalPromptPurchaseFinished(player, Id, true)
+            MarketplaceService:SignalPromptPurchaseFinished(player, Id, false)
+        end)
         return
     end
 
     StarterGui:SetCore("SendNotification", {
         Title = "Ошибка!",
-        Text = "Ошибка! Этот id не существует",
+        Text = "ID не найден или тип продукта неизвестен",
         Button1 = "Ок",
         Duration = 5,
     })
