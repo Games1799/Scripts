@@ -9,6 +9,7 @@ local StarterGui = game:GetService("StarterGui")
 local RunService = game:GetService("RunService")
 local hi = false
 local MarketplaceService = game:GetService("MarketplaceService")
+local hi1 = false
 
 _G.TP = false
 _G.HideAll = false
@@ -45,7 +46,7 @@ end)
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
-local Window = Library:NewWindow("Just script v1.8")
+local Window = Library:NewWindow("Just script v1.9")
 
 local Section = Window:NewSection("Полезные скрипты")
 
@@ -375,6 +376,19 @@ end)
 Section:CreateButton("Скрыть это окно", function()
 game:GetService("CoreGui").WizardLibrary.Container["\208\161\208\190\208\183\208\180\208\176\209\130\208\181\208\187\209\140\209\129\208\186\209\128\208\184\208\191\209\130\208\176Window"]:Destroy()
 end)
+
+for i, v in pairs(game:GetDescendants()) do
+    if v.Name == "__FUNCTION" then
+        StarterGui:SetCore("SendNotification", { 
+        Title = "Найден адонис!",
+        Text = "Проверьте !Buyitem и !Buyasset",
+        Button1 = "Ок",
+        Duration = 5,
+    })
+        hi1 = true
+        break
+    end
+end
 
 if not _G.Prompt then
     _G.Prompt = true
