@@ -26,7 +26,7 @@ end)
 local HidePlayers = {}
 
 spawn(function()
-    while task.wait() do
+    while task.wait(0.1) do
         for _, v in pairs(game.Players:GetPlayers()) do
             if v ~= player and v.Character then
                 if _G.HideAll then
