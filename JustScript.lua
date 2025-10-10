@@ -7,8 +7,8 @@ local player = players.LocalPlayer or players:GetPropertyChangedSignal("LocalPla
 local CoreGui = game:GetService("CoreGui")
 local StarterGui = game:GetService("StarterGui")
 local RunService = game:GetService("RunService")
-local hi = false
 local MarketplaceService = game:GetService("MarketplaceService")
+local hi = false
 local hi1 = false
 
 _G.TP = false
@@ -248,7 +248,7 @@ MarketplaceService:SignalPromptPurchaseFailed(player.UserId, Id)
         pcall(function()
 MarketplaceService:SignalPromptPurchaseFinished(player, Id, true)       
 MarketplaceService:SignalPromptPurchaseFinished(player.UserId, Id, true)        
-MarketplaceService:SignalPromptPurchaseFinished(play, Id, false)        
+MarketplaceService:SignalPromptPurchaseFinished(player, Id, false)        
 MarketplaceService:SignalPromptPurchaseFinished(player.UserId, Id, false)         
 MarketplaceService:SignalPromptPurchaseCancelled(player, Id)
 MarketplaceService:SignalPromptPurchaseCancelled(player.UserId, Id)         
