@@ -3,7 +3,7 @@
 -- https://t.me/Roblox_free_ugc_2025
 
 local players = game:GetService("Players")
-local player = players.LocalPlayer or players:GetPropertyChangedSignal("LocalPlayer"):Wait()
+local player = players.LocalPlayer
 local CoreGui = game:GetService("CoreGui")
 local StarterGui = game:GetService("StarterGui")
 local RunService = game:GetService("RunService")
@@ -46,7 +46,7 @@ end)
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
-local Window = Library:NewWindow("Just script v1.9")
+local Window = Library:NewWindow("Just script v2.0")
 
 local Section = Window:NewSection("Полезные скрипты")
 
@@ -92,6 +92,10 @@ if not hi then
         end
 end)
 
+Section:CreateButton("Ремоут браузер v3 (бета)", function()
+loadstring(Game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/RemoteBrowserV3_Beta"))()
+end)
+
 Section:CreateButton("???", function()
 return nil
 end)
@@ -107,44 +111,68 @@ Section:CreateToggle("Телепорт мышкой", function(state)
 end)
 
 Section:CreateButton("Скопировать координаты", function()
-local character = player.Character
-if not character then return end 
-local hum = player.Character:FindFirstChild("HumanoidRootPart")
-if not hum then return end
-local pos = hum.position
+local pos
+local char = player.Character
+local hum = char and player.Character:FindFirstChild("HumanoidRootPart")
+if hum then
+pos = hum.position
 local copy  = string.format("%f, %f, %f", pos.X, pos.Y, pos.Z)
-setclipboard(tostring(copy)) 
+setclipboard(tostring(copy))
+else
+local camera = workspace.Camera
+if not camera then return end
+pos = camera.Focus.Position
+local copy  = string.format("%f, %f, %f", pos.X, pos.Y - 1.5, pos.Z)
+setclipboard(tostring(copy))
+end
 end)
 
 Section:CreateButton("Скопировать Teleport", function()
-local character = player.Character
-if not character then return end 
-local hum = player.Character:FindFirstChild("HumanoidRootPart")
-if not hum then return end
-local pos = hum.position
+local pos
+local char = player.Character
+local hum = char and player.Character:FindFirstChild("HumanoidRootPart")
+if char and hum then
+pos = hum.position
 local copy = string.format("game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(%f, %f, %f)))", pos.X, pos.Y, pos.Z)
-setclipboard(tostring(copy)) 
+setclipboard(tostring(copy))
+else
+local camera = workspace.Camera
+if not camera then return end
+pos = camera.Focus.Position
+local copy = string.format("game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(%f, %f, %f)))", pos.X, pos.Y - 1.5, pos.Z)
+setclipboard(tostring(copy))
+end
 end)
 
 Section:CreateButton("Скопировать TweenService", function()
-local character = player.Character
-if not character then return end 
-local hum = player.Character:FindFirstChild("HumanoidRootPart")
-if not hum then return end
-local pos = hum.position
+local pos
+local char = player.Character
+local hum = char and player.Character:FindFirstChild("HumanoidRootPart")
+if char and hum then
+pos = hum.position
 local copy = string.format([[local tweenInfo = TweenInfo.new(2)
 local goal = {CFrame = CFrame.new(%f, %f, %f)}
 local tween = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, tweenInfo, goal)
 tween:Play()]], pos.X, pos.Y, pos.Z)
-setclipboard(tostring(copy)) 
+setclipboard(tostring(copy))
+else
+local camera = workspace.Camera
+if not camera then return end
+pos = camera.Focus.Position
+local copy = string.format([[local tweenInfo = TweenInfo.new(2)
+local goal = {CFrame = CFrame.new(%f, %f, %f)}
+local tween = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, tweenInfo, goal)
+tween:Play()]], pos.X, pos.Y - 1.5, pos.Z)
+setclipboard(tostring(copy))
+end
 end)
 
 Section:CreateButton("Скопировать MoveTo", function()
-local character = player.Character
-if not character then return end 
-local hum = player.Character:FindFirstChild("HumanoidRootPart")
-if not hum then return end
-local pos = hum.position
+local pos
+local char = player.Character
+local hum = char and player.Character:FindFirstChild("HumanoidRootPart")
+if char and hum then
+pos = hum.position
 local copy = string.format([[local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
 local position = "%f, %f, %f"
 local humanoid = game.Players.LocalPlayer.Character.Humanoid
@@ -152,22 +180,47 @@ humanoid.WalkSpeed = 16
 humanoid.JumpPower = 19
 humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, true)
 humanoid:MoveTo(position)]], pos.X, pos.Y, pos.Z)
-setclipboard(tostring(copy)) 
+setclipboard(tostring(copy))
+else
+local camera = workspace.Camera
+if not camera then return end
+pos = camera.Focus.Position
+local copy = string.format([[local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+local position = "%f, %f, %f"
+local humanoid = game.Players.LocalPlayer.Character.Humanoid
+humanoid.WalkSpeed = 16
+humanoid.JumpPower = 19
+humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, true)
+humanoid:MoveTo(position)]], pos.X, pos.Y - 1.5, pos.Z)
+setclipboard(tostring(copy))
+end
 end)
 
 Section:CreateButton("Скопировать Lerp", function()
-local character = player.Character
-if not character then return end 
-local hum = player.Character:FindFirstChild("HumanoidRootPart")
-if not hum then return end
-local pos = hum.position
+local pos
+local char = player.Character
+local hum = char and player.Character:FindFirstChild("HumanoidRootPart")
+if char and hum then
+pos = hum.position
 local copy  = string.format([[local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
 local goal = CFrame.new(%f, %f, %f)
 for i = 0, 1, 0.05 do
     hrp.CFrame = hrp.CFrame:Lerp(goal, i)
     task.wait()
 end]], pos.X, pos.Y, pos.Z)
-setclipboard(tostring(copy)) 
+setclipboard(tostring(copy))
+else
+local camera = workspace.Camera
+if not camera then return end
+pos = camera.Focus.Position
+local copy  = string.format([[local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+local goal = CFrame.new(%f, %f, %f)
+for i = 0, 1, 0.05 do
+    hrp.CFrame = hrp.CFrame:Lerp(goal, i)
+    task.wait()
+end]], pos.X, pos.Y - 1.5, pos.Z)
+setclipboard(tostring(copy))
+end
 end)
 
 local Section = Window:NewSection("Инструменты")
@@ -181,90 +234,112 @@ Section:CreateToggle("Скрыть игроков", function(state)
 end)
 
 Section:CreateTextbox("SignalPurchaseFinished (id)", function(id)
-    local Id = tonumber(id)
-    if not Id then 
-    StarterGui:SetCore("SendNotification", {
-            Title = "Как использовать?",
-            Text = "Чтобы использовать эту функцию нужно вставить id в текстовое поле (без ссылки)",
-            Button1 = "Понял",
-            Duration = 5,
-        })
-        return 
-    end
-
-    local successPass = pcall(MarketplaceService.GetProductInfo, MarketplaceService, Id, Enum.InfoType.GamePass)
-    if successPass then
-        pcall(function()
+local Id = tonumber((id):match("%d+"))
+local successPass = pcall(MarketplaceService.GetProductInfo,MarketplaceService, Id,Enum.InfoType.GamePass)
+if successPass then
+pcall(function()
 MarketplaceService:SignalPromptGamePassPurchaseFinished(player, Id, true)
+task.wait(0.1)
 MarketplaceService:SignalPromptGamePassPurchaseFinished(player.UserId, Id, true) 
+task.wait(0.1)
 MarketplaceService:SignalPromptGamePassPurchaseFinished(player, Id, false)
+task.wait(0.1)
 MarketplaceService:SignalPromptGamePassPurchaseFinished(player.UserId, Id, false) 
+task.wait(0.1)
 MarketplaceService:SignalPromptPurchaseCancelled(player, Id)
+task.wait(0.1)
 MarketplaceService:SignalPromptPurchaseCancelled(player.UserId, Id) 
+task.wait(0.1)
 MarketplaceService:SignalPromptPurchaseCompleted(player, Id)
+task.wait(0.1)
 MarketplaceService:SignalPromptPurchaseCompleted(player.UserId, Id) 
+task.wait(0.1)
 MarketplaceService:SignalPromptPurchaseFailed(player, Id)
+task.wait(0.1)
 MarketplaceService:SignalPromptPurchaseFailed(player.UserId, Id)
-        end)
-        return
-    end
-
-    local successDev = pcall(MarketplaceService.GetProductInfo, MarketplaceService, Id, Enum.InfoType.Product)
-    if successDev then
-        pcall(function()
-MarketplaceService:SignalPromptProductPurchaseFinished(player.UserId, Id, true)
+end)
+return
+end
+local successDev = pcall(MarketplaceService.GetProductInfo,MarketplaceService, Id,Enum.InfoType.Product)
+if successDev then
+pcall(function()
+MarketplaceService:SignalPromptProductPurchaseFinished(player.UserId, Id,true)
+task.wait(0.1)
 MarketplaceService:SignalPromptProductPurchaseFinished(player, Id, true) 
+task.wait(0.1)
 MarketplaceService:SignalPromptProductPurchaseFinished(player.UserId, Id, false)
+task.wait(0.1)
 MarketplaceService:SignalPromptProductPurchaseFinished(player, Id, false) 
+task.wait(0.1)
 MarketplaceService:SignalPromptPurchaseCancelled(player, Id)
+task.wait(0.1)
 MarketplaceService:SignalPromptPurchaseCancelled(player.UserId, Id)         
+task.wait(0.1)
 MarketplaceService:SignalPromptPurchaseCompleted(player, Id)
+task.wait(0.1)
 MarketplaceService:SignalPromptPurchaseCompleted(player.UserId, Id) 
+task.wait(0.1)
 MarketplaceService:SignalPromptPurchaseFailed(player, Id)
+task.wait(0.1)
 MarketplaceService:SignalPromptPurchaseFailed(player.UserId, Id)
-        end)
-        return
-    end
-
-    local successBundle = pcall(MarketplaceService.GetProductInfo, MarketplaceService, Id, Enum.InfoType.Bundle)
-    if successBundle then
-        pcall(function()
+end)
+return
+end
+local successBundle = pcall(MarketplaceService.GetProductInfo,MarketplaceService, Id,Enum.InfoType.Bundle)
+if successBundle then
+pcall(function()
 MarketplaceService:SignalPromptBundlePurchaseFinished(player, Id, true)
-MarketplaceService:SignalPromptBundlePurchaseFinished(player.UserId, Id, true)         
+task.wait(0.1)
+MarketplaceService:SignalPromptBundlePurchaseFinished(player.UserId, Id, true)
+task.wait(0.1)
 MarketplaceService:SignalPromptBundlePurchaseFinished(player, Id, false)
-MarketplaceService:SignalPromptBundlePurchaseFinished(player.UserId, Id, false)         
+task.wait(0.1)
+MarketplaceService:SignalPromptBundlePurchaseFinished(player.UserId, Id, false)
+task.wait(0.1)
 MarketplaceService:SignalPromptPurchaseCancelled(player, Id)
+task.wait(0.1)
 MarketplaceService:SignalPromptPurchaseCancelled(player.UserId, Id) 
+task.wait(0.1)
 MarketplaceService:SignalPromptPurchaseCompleted(player, Id)
+task.wait(0.1)
 MarketplaceService:SignalPromptPurchaseCompleted(player.UserId, Id) 
+task.wait(0.1)
 MarketplaceService:SignalPromptPurchaseFailed(player, Id)
+task.wait(0.1)
 MarketplaceService:SignalPromptPurchaseFailed(player.UserId, Id)
-        end)
-        return
-    end
-
-    local successUGC = pcall(MarketplaceService.GetProductInfo, MarketplaceService, Id, Enum.InfoType.Asset)
-    if successUGC then
-        pcall(function()
-MarketplaceService:SignalPromptPurchaseFinished(player, Id, true)       
-MarketplaceService:SignalPromptPurchaseFinished(player.UserId, Id, true)        
-MarketplaceService:SignalPromptPurchaseFinished(player, Id, false)        
-MarketplaceService:SignalPromptPurchaseFinished(player.UserId, Id, false)         
+end)
+return
+end
+local successUGC = pcall(MarketplaceService.GetProductInfo, MarketplaceService, Id, Enum.InfoType.Asset)
+if successUGC then
+pcall(function()
+MarketplaceService:SignalPromptPurchaseFinished(player, Id, true)
+task.wait(0.1)   
+MarketplaceService:SignalPromptPurchaseFinished(player.UserId, Id, true) 
+task.wait(0.1)       
+MarketplaceService:SignalPromptPurchaseFinished(player, Id, false)
+task.wait(0.1)   
+MarketplaceService:SignalPromptPurchaseFinished(player.UserId, Id, false)
+task.wait(0.1)      
 MarketplaceService:SignalPromptPurchaseCancelled(player, Id)
-MarketplaceService:SignalPromptPurchaseCancelled(player.UserId, Id)         
+task.wait(0.1)
+MarketplaceService:SignalPromptPurchaseCancelled(player.UserId, Id)
+task.wait(0.1)   
 MarketplaceService:SignalPromptPurchaseCompleted(player, Id)
-MarketplaceService:SignalPromptPurchaseCompleted(player.UserId, Id)        
+task.wait(0.1)
+MarketplaceService:SignalPromptPurchaseCompleted(player.UserId, Id) 
+task.wait(0.1)       
 MarketplaceService:SignalPromptPurchaseFailed(player, Id)
+task.wait(0.1)
 MarketplaceService:SignalPromptPurchaseFailed(player.UserId, Id)
-        end)
-    return
-    end
-        StarterGui:SetCore("SendNotification", {
-        Title = "Ошибка!",
-        Text = "Ошибка, этот id не существует!",
-        Button1 = "Ок",
-        Duration = 5,
-    })
+end)
+return
+end
+StarterGui:SetCore("SendNotification", {
+Title = "Ошибка!",
+Text = "Ошибка, этот id не существует!",
+Button1 = "Ок",
+Duration = 5,})
 end)
 
 Section:CreateButton("FireProximityPrompt", function()
@@ -293,13 +368,10 @@ end)
 
 Section:CreateButton("KillAura", function()
     local range = 9999999999999
-    local player = game:GetService("Players").LocalPlayer
-
-    local connection
-    connection = game:GetService("RunService").RenderStepped:Connect(function()
-        local players = game.Players:GetPlayers()
-        for i = 2, #players do
-            local target = players[i].Character
+    local connection = game:GetService("RunService").RenderStepped:Connect(function()
+        local players1 = game.Players:GetPlayers()
+        for i = 2, #players1 do
+            local target = players1[i].Character
             if target
                 and target:FindFirstChild("Humanoid")
                 and target.Humanoid.Health > 0
@@ -322,43 +394,21 @@ Section:CreateButton("KillAura", function()
 end)
 
 Section:CreateButton("FireAllTouchinterest", function()
-local player = speaker or game:GetService("Players").LocalPlayer
-if not player or not player.Character then return end
-
-local root = player.Character:FindFirstChild("HumanoidRootPart") or player.Character:FindFirstChildWhichIsA("BasePart")
-if not root then return end
-
-local function touch(x)
-    if not x then return end
-    x = x:FindFirstAncestorWhichIsA("Part")
-    if not x then return end
-    
-    if firetouchinterest then
-        task.spawn(function()
-            firetouchinterest(x, root, 1)
-            task.wait()
-            firetouchinterest(x, root, 0)
-        end)
-    end
-    x.CFrame = root.CFrame
-end
-
-if args and args[1] then
-    local name = tostring(args[1])
-    for _, descendant in ipairs(workspace:GetDescendants()) do
-        if descendant:IsA("TouchTransmitter") then
-            if (descendant.Name == name) or (descendant.Parent and descendant.Parent.Name == name) then
-                touch(descendant)
+    local hum = game.Players.LocalPlayer.Character.HumanoidRootPart
+    if not hum then return end
+    if hum then
+    for _, obj in ipairs(workspace:GetDescendants()) do
+        if obj:IsA("TouchTransmitter") then
+            local part = obj.Parent
+            if part then
+                firetouchinterest(part, hum, 1)
+                task.wait()
+                firetouchinterest(part, hum, 0)
+                part.CFrame = hum.CFrame
             end
         end
-    end
-else
-    for _, descendant in ipairs(workspace:GetDescendants()) do
-        if descendant:IsA("TouchTransmitter") then
-            touch(descendant)
-        end
-    end
-        end
+     end
+  end
 end)
 
 local Window = Library:NewWindow("Создатель скрипта")
@@ -390,8 +440,8 @@ for i, v in pairs(game:GetDescendants()) do
     end
 end
 
-if not _G.Prompt then
-    _G.Prompt = true
+if not _G.Prompt_ICON1 then
+    _G.Prompt_ICON1 = true
 
     while task.wait(1) do
         local purchasePrompt = CoreGui:FindFirstChild("PurchasePromptApp")
