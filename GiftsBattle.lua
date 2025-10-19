@@ -24,7 +24,8 @@ Section:CreateToggle("Авто апгрейд", function(state)
     task.spawn(function()
         hi1.toggle = state
         while true do
-            if not hi1.toggle then return end              game:GetService("ReplicatedStorage").Select:FireServer("Sh","Fast")
+            if not hi1.toggle then return end              
+            game:GetService("ReplicatedStorage").Select:FireServer("Sh","Fast")
             task.wait(0.5)
             game:GetService("ReplicatedStorage").Up:FireServer()
             task.wait(1)
