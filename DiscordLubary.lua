@@ -94,7 +94,7 @@ end
 
 local Discord = Instance.new("ScreenGui")
 Discord.Name = getName(10,25)
-Discord.Parent = gethui and gethui() or cloneref(game:GetService("CoreGui"))
+Discord.Parent = gethui and gethui() or game:GetService("CoreGui")
 Discord.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 Discord.DisplayOrder = 9999999999
 
