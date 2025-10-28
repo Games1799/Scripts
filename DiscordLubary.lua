@@ -1,14 +1,14 @@
--- Discord Lubary modified by @Games1799 
--- https://t.me/Games1799
-local chars = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890"
 local DiscordLib = {}
+local chars = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890
 local UserInputService = cloneref(game:GetService("UserInputService"))
 local TweenService = cloneref(game:GetService("TweenService"))
 local RunService = cloneref(game:GetService("RunService"))
 local LocalPlayer = cloneref(game:GetService("Players")).LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local HttpService = cloneref(game:GetService("HttpService"))
-local pfp,user,tag
+local pfp
+local user
+local tag
 local userinfo = {}
 
 local function getName(m,b)
@@ -37,7 +37,11 @@ local function SaveInfo()
 end
 
 local function MakeDraggable(topbarobject, object)
-	local Dragging,DragInput,DragStart,StartPosition = nil
+	local Dragging = nil
+	local DragInput = nil
+	local DragStart = nil
+	local StartPosition = nil
+
 	local function Update(input)
 		local Delta = input.Position - DragStart
 		local pos =
@@ -87,17 +91,18 @@ local function MakeDraggable(topbarobject, object)
 		end
 	)
 end
-local folder = Instance.new("Folder")
-folder.Name = getName(10,20)
-folder.Parent = gethui and gethui() or game:GetService("CoreGui")
+
 local Discord = Instance.new("ScreenGui")
-Discord.Name = getName(7,15)
-Discord.Parent = folder
+Discord.Name = getName(10,25)
+Discord.Parent = gethui and gethui() or cloneref(game:GetService("CoreGui"))
 Discord.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-Discord.DisplayOrder = math.huge
+Discord.DisplayOrder = 9999999999
+
 function DiscordLib:Window(text)
 	local currentservertoggled = ""
-	local minimized,fs,settingsopened = false
+	local minimized = false
+	local fs = false
+	local settingsopened = false
 	local MainFrame = Instance.new("Frame")
 	local TopFrame = Instance.new("Frame")
 	local Title = Instance.new("TextLabel")
