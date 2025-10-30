@@ -1,5 +1,4 @@
 local DiscordLib = {}
-local chars = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890"
 local UserInputService = cloneref(game:GetService("UserInputService"))
 local TweenService = cloneref(game:GetService("TweenService"))
 local RunService = cloneref(game:GetService("RunService"))
@@ -11,12 +10,17 @@ local user
 local tag
 local userinfo = {}
 
-local function getName(m,b)
-    local l = math.random(m,b)
+local chars = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890"
+local hidden = {"\u{200B}","\u{200C}","\u{200D}","\u{FEFF}","\u{2060}","\u{180E}","\u{202F}","\u{205F}","\u{00A0}","\u{200A}","\u{2009}","\u{2008}","\u{2007}","\u{2006}"}
+
+local function getName(minLen, maxLen)
+    local len = math.random(minLen, maxLen)
     local t = {}
-    for i = 1, l do
-        local x = math.random(1,#chars)
-        t[#t + 1] = chars:sub(x,x)
+    for i = 1, len do
+        t[#t+1] = chars:sub(math.random(1,#chars), math.random(1,#chars))
+        if math.random() < 0.5 then
+            t[#t+1] = hidden[math.random(1,#hidden)]
+        end
     end
     return table.concat(t)
 end
@@ -124,7 +128,7 @@ function DiscordLib:Window(text)
 	local ServersHoldPadding = Instance.new("UIPadding")
 	local TopFrameHolder = Instance.new("Frame")
 
-	MainFrame.Name = "MainFrame"
+	MainFrame.Name = getName(8,20)
 	MainFrame.Parent = Discord
 	MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 	MainFrame.BackgroundColor3 = Color3.fromRGB(32, 34, 37)
