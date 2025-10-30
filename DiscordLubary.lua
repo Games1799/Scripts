@@ -10,7 +10,7 @@ local user
 local tag
 local userinfo = {}
 
-local chars = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890"
+local chars = "qV8YTzSeRXLhIMrDFumJwkloBOjcf6pgCH7itEbvAn3Us42a5xWKN19QZydPG0"
 local hidden = {"\u{200B}","\u{200C}","\u{200D}","\u{FEFF}","\u{2060}","\u{180E}","\u{202F}","\u{205F}","\u{00A0}","\u{200A}","\u{2009}","\u{2008}","\u{2007}","\u{2006}"}
 
 local function getName(minLen, maxLen)
