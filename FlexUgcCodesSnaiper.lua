@@ -1,8 +1,9 @@
+-- Beta version v0.1
 local code = getgenv().code
 local time = getgenv().time
 local TestMode = getgenv().TestMode
 local RunService = game:GetService("RunService")
-local Conn
+local conn
 if TestMode then
 conn = RunService.RenderStepped:Connect(function()
     if tick() >= time - 0.5 then
