@@ -8,6 +8,7 @@ conn = RunService.RenderStepped:Connect(function()
     if tick() >= time - 0.5 then
         game:GetService("ReplicatedStorage").RedeemCode:InvokeServer(code)
         conn:Disconnect()
+        warn("Snaiper for"..code.."code finished [Beta]")
     end
 end)
 else
@@ -15,6 +16,8 @@ conn = RunService.RenderStepped:Connect(function()
     if tick() >= time then
         game:GetService("ReplicatedStorage").RedeemCode:InvokeServer(code)
         conn:Disconnect()
+        warn("Snaiper for"..code.."code finished")
     end
 end)
 end
+warn("Snaiper for"..code.."code started")
