@@ -21,9 +21,9 @@ if remaining <= 0 then break end
 StarterGui:SetCore("SendNotification",{
 Title = "Snaiper",
 Text = string.format("Осталось: %s", formatTime(remaining)),
-Duration = 3
+Duration = 0.9
 })
-task.wait(5)
+task.wait(1)
 end
 end)
 
