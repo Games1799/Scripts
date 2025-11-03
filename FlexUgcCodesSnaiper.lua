@@ -1,4 +1,4 @@
--- Beta version v0.3
+-- Beta version v0.4
 local code = getgenv().code
 local time = getgenv().time
 local TestMode = getgenv().TestMode
@@ -30,18 +30,18 @@ end)
 if TestMode then
 conn = RunService.RenderStepped:Connect(function()
     if os.time() >= time - 0.5 then
+        done = true
         game:GetService("ReplicatedStorage").RedeemCode:InvokeServer(code)
         conn:Disconnect()
-        done = true
         warn("snaiper for ".. code .." code finished [Beta]")
     end
 end)
 else
 conn = RunService.RenderStepped:Connect(function()
     if os.time() >= time then
+        done = true
         game:GetService("ReplicatedStorage").RedeemCode:InvokeServer(code)
         conn:Disconnect()
-        done = true
         warn("Snaiper for ".. code .." code finished")
         end
     end)
