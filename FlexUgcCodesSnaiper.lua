@@ -1,4 +1,4 @@
--- Beta version v0.2
+-- Beta version v0.3
 local code = getgenv().code
 local time = getgenv().time
 local TestMode = getgenv().TestMode
@@ -7,13 +7,20 @@ local StarterGui = game:GetService("StarterGui")
 local conn
 local done = false
 
+local function formatTime(seconds)
+    local h = math.floor(seconds / 3600)
+    local m = math.floor((seconds % 3600) / 60)
+    local s = math.floor(seconds % 60)
+    return string.format("%02d:%02d:%02d", h, m, s)
+end
+
 task.spawn(function()
 while not done do
-local remaining = time - tick()
+local remaining = time - os.time()
 if remaining <= 0 then break end
 StarterGui:SetCore("SendNotification",{
 Title = "Snaiper",
-Text = string.format("Осталось: %.1f сек.",remaining),
+Text = string.format("Осталось: %s", formatTime(remaining)),
 Duration = 3
 })
 task.wait(5)
@@ -22,7 +29,7 @@ end)
 
 if TestMode then
 conn = RunService.RenderStepped:Connect(function()
-    if tick() >= time - 0.5 then
+    if os.time() >= time - 0.5 then
         game:GetService("ReplicatedStorage").RedeemCode:InvokeServer(code)
         conn:Disconnect()
         done = true
@@ -31,7 +38,7 @@ conn = RunService.RenderStepped:Connect(function()
 end)
 else
 conn = RunService.RenderStepped:Connect(function()
-    if tick() >= time then
+    if os.time() >= time then
         game:GetService("ReplicatedStorage").RedeemCode:InvokeServer(code)
         conn:Disconnect()
         done = true
