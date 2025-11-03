@@ -29,7 +29,7 @@ end)
 
 if TestMode then
 conn = RunService.RenderStepped:Connect(function()
-    if os.time() >= time - 0.5 then
+    if os.time() >= time - 0.5 and not done then
         done = true
         game:GetService("ReplicatedStorage").RedeemCode:InvokeServer(code)
         conn:Disconnect()
@@ -38,7 +38,7 @@ conn = RunService.RenderStepped:Connect(function()
 end)
 else
 conn = RunService.RenderStepped:Connect(function()
-    if os.time() >= time then
+    if os.time() >= time and not done then
         done = true
         game:GetService("ReplicatedStorage").RedeemCode:InvokeServer(code)
         conn:Disconnect()
