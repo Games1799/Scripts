@@ -13,7 +13,7 @@ local remaining = time - tick()
 if remaining <= 0 then break end
 StarterGui:SetCore("SendNotification",{
 Title = "Snaiper",
-Text = string.format("Осталось: %.1% сек.",remaining),
+Text = string.format("Осталось: %.1f сек.",remaining),
 Duration = 3
 })
 task.wait(5)
@@ -26,17 +26,17 @@ conn = RunService.RenderStepped:Connect(function()
         game:GetService("ReplicatedStorage").RedeemCode:InvokeServer(code)
         conn:Disconnect()
         done = true
-        warn("snaiper for ".. code .."finished [Beta]")
+        warn("snaiper for ".. code .." code finished [Beta]")
     end
 end)
 else
 conn = RunService.RenderStepped:Connect(function()
-    if tick() >= time time
+    if tick() >= time then
         game:GetService("ReplicatedStorage").RedeemCode:InvokeServer(code)
         conn:Disconnect()
         done = true
-        warn("Snaiper for".. code .."finished")
+        warn("Snaiper for ".. code .." code finished")
         end
     end)
 end
-warn("Snaiper for".. code .."code started")
+warn("Snaiper for ".. code .." code started")
