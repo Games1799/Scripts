@@ -1,4 +1,4 @@
-setclipboard("-- Official Wyborn Script\nloadstring(game:HttpGet('https://raw.githubusercontent.com/ckw69/Wyborn/main/wyborn', true))()")
+setclipboard("-- Official Wyborn Script\nloadstring(game:HttpGet('https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/FixWyborn.lua', true))()")
 local wybornsuccess,wyvernerror = pcall(function()
 getgenv().wyvern_version = "1.5.6"
 
