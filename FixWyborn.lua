@@ -2061,28 +2061,9 @@ task.spawn(
                     if gamepass then
                         pcall(
                             function()
-                                stealth_call(
                                     "MarketplaceService:SignalPromptGamePassPurchaseFinished(game.Players.LocalPlayer, " ..
                                         tostring(gamepass) .. ", true)"
-                                )
-                            end
-                        )
-                        task.wait(0.2)
-                        if not Visit:FindFirstChild("LocalScript") then
-                            discord:Notification(
-                                "Error",
-                                "Your executor blocked function SignalPromptGamePassPurchaseFinished.",
-                                "Okay!"
-                            )
-                        else
-                            discord:Notification(
-                                "Success",
-                                "Fired PromptProductGamePassPurchaseFinished signal to server with productId: " ..
-                                    tostring(gamepass),
-                                "Okay!"
-                            )
-                            Visit:FindFirstChild("LocalScript"):Destroy()
-                        end
+                        end)
                     else
                         discord:Notification("Error", "Something went wrong but I don't know what.", "Okay!")
                     end
