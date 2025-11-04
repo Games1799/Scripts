@@ -2039,7 +2039,7 @@ task.spawn(
             local gproductIds = {}
             for i, v in pairs(wyverngamepass.data) do
                 table.insert(gnames, v.name)
-                table.insert(gproductIds, v.assetId)
+                table.insert(gproductIds, v.gamePassId)
             end
             local gamepass
             purchase:Dropdown(
@@ -2250,4 +2250,8 @@ task.spawn(
 end)
 if not wyvernsuccess or wyvernerror ~= nil then
     print(wyvernerror)
+end
+
+for i, v in pairs(wyverngamepass.data) do
+    print(v)
 end
