@@ -2039,7 +2039,7 @@ task.spawn(
             local gproductIds = {}
             for i, v in pairs(wyverngamepass.data) do
                 table.insert(gnames, v.name)
-                table.insert(gproductIds, v.id)
+                table.insert(gproductIds, v.assetId)
             end
             local gamepass
             purchase:Dropdown(
