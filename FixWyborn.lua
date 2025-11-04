@@ -1,4 +1,4 @@
-setclipboard("-- Official Wyborn Script\nloadstring(game:HttpGet('https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/FixWyborn.lua', true))()")
+setclipboard("-- Official Wyborn Script\nloadstring(game:HttpGet('https://raw.githubusercontent.com/ckw69/Wyborn/main/wyborn', true))()")
 local wybornsuccess,wyvernerror = pcall(function()
 getgenv().wyvern_version = "1.5.6"
 
@@ -420,35 +420,35 @@ task.spawn(
                                                 local price = 0
                                                 if getgenv().BuyPaidItems == true then
                                                     price = info.PriceInRobux
-                                                else
-                                                    price = 0
-                                                end
-                                                local collectibleItemId = info.CollectibleItemId
-                                                local collectibleProductId = info.CollectibleProductId
-                                                print("Double checking if we got the right info...")
-                                                print("PurchaseAuthToken: " .. purchaseAuthToken)
-                                                print("IdempotencyKey: " .. idempotencyKey)
-                                                print("CollectibleItemId: " .. collectibleItemId)
-                                                print("CollectibleProductId: " .. collectibleProductId)
-                                                print("ProductId (SHOULD BE 0): " .. productId)
-                                                print("Price: " .. price)
-                                                print("-------------------------------------------------------")
-                                                warn("FIRST PURCHASE ATTEMPT")
-                                                for i, v in pairs(
-                                                    MarketplaceService:PerformPurchase(
-                                                        Enum.InfoType.Asset,
-                                                        productId,
-                                                        price,
-                                                        tostring(game:GetService("HttpService"):GenerateGUID(false)),
-                                                        true,
-                                                        collectibleItemId,
-                                                        collectibleProductId,
-                                                        idempotencyKey,
-                                                        tostring(purchaseAuthToken)
-                                                    )
-                                                ) do
-                                                    print(i, v)
-                                                end
+ в противном случае
+ цена = 0
+ конец
+ местный идентификатор коллекционного предмета = info.CollectibleItemId
+ местный идентификатор коллекционного товара = info.CollectibleProductId
+ print("Перепроверяем, правильно ли мы получили информацию...")
+ print("Token для авторизации при покупке: " .. purchaseAuthToken)
+ print("Ключ идемпотентности: " .. idempotencyKey)
+ print("Идентификатор коллекционного предмета: " .. collectibleItemId)
+ print("CollectibleProductId: " .. collectibleProductId)
+ print("ProductId (ДОЛЖЕН БЫТЬ 0): " .. productId)
+ print("Цена: " .. price)
+ print("-------------------------------------------------------")
+ предупредить ("ПЕРВАЯ ПОПЫТКА ПОКУПКИ") 
+ для i, v в парах (
+ Услуга на рынке: выполнить покупку (
+ Перечисление.Информационный тип.Актив, 
+ProductID, 
+цена, 
+tostring(игра: GetService("HTTPService"): GenerateGUID(false)), 
+true, 
+collectibleItemId, 
+collectibleProductId, 
+idempotencyKey, 
+tostring(purchaseAuthToken) 
+ )
+ ) do
+ print(i, v)
+ end
                                                 local endTime = tick()
                                                 local duration = endTime - startTime
                                                 print("Bought Item! Took " .. tostring(duration) .. " seconds")
@@ -496,164 +496,162 @@ task.spawn(
                                             function(...)
                                                 discord:Notification(
                                                     "Prompt Detected",
-                                                    "If this is a UGC item, this script will attempt purchase. Please check console.",
-                                                    "Okay!"
-                                                )
-                                                local startTime = tick()
-                                                t = {...}
-                                                local assetId = t[2]
-                                                local info = MarketplaceService:GetProductInfo(assetId)
-                                                pcall(
-                                                    function()
-                                                        local starttickxd = tick()
-                                                        local prricee = 0
-                                                        if getgenv().BuyPaidItems == true then
-                                                            prricee = info.PriceInRobux
-                                                        else
-                                                            prricee = 0
-                                                        end
-                                                        local data =
-                                                            '{"collectibleItemId":"' ..
-                                                            tostring(info.CollectibleItemId) ..
-                                                                '","collectibleProductId":"' ..
-                                                                    tostring(info.CollectibleProductId) ..
-                                                                        '","expectedCurrency":1,"expectedPrice":' ..
-                                                                            tostring(prricee) ..
-                                                                                ',"idempotencyKey":"' ..
-                                                                                    tostring(
-                                                                                        game:GetService("HttpService"):GenerateGUID(
-                                                                                            false
-                                                                                        )
-                                                                                    ) ..
-                                                                                        '","expectedSellerId":' ..
-                                                                                            tostring(info.Creator.Id) ..
-                                                                                                ',"expectedSellerType":"' ..
-                                                                                                    tostring(
-                                                                                                        info.Creator.CreatorType
-                                                                                                    ) ..
-                                                                                                        '","expectedPurchaserType":"User","expectedPurchaserId":' ..
-                                                                                                            tostring(
-                                                                                                                game.Players.LocalPlayer.UserId
-                                                                                                            ) ..
-                                                                                                                "}"
-                                                        print(data)
-                                                        -- setclipboard(data)
-                                                        _post(
-                                                            "https://apis.roblox.com/marketplace-sales/v1/item/" ..
-                                                                tostring(info.CollectibleItemId) .. "/purchase-item",
-                                                            data
-                                                        )
-                                                        wait()
-                                                        local endTime = tick()
-                                                        local duration = endTime - startTime
-                                                        print("Bought Item! Took " .. tostring(duration) .. " seconds")
-                                                    end
-                                                )
-                                            end
-                                        )
-                                    end
-                                )
-                                hookmetamethod(game, "__index", old)
-                                return old(a, b)
-                            end
-                        )
-                    else
-                        getgenv().promptpurchaserequestedv2:Disconnect()
-                        discord:Notification(
-                            "Stopped",
-                            "Stopped waiting for any free UGC item to be prompted...",
-                            "Okay!"
-                        )
-                    end
-                end
-            )
+ «Если это пользовательский контент, скрипт попытается совершить покупку. Пожалуйста, проверьте консоль».
+ «Хорошо!»
+ )
+ local startTime = tick()
+ t = {...}
+ local assetId = t[2]
+ local info = MarketplaceService:GetProductInfo(assetId)
+ pcall(
+ function()
+ local starttickxd = tick()
+ local prricee = 0
+ if getgenv().BuyPaidItems == true then
+ prricee = info.PriceInRobux
+ else
+ prricee = 0
+ end
+ local data =
+ '{"collectibleItemId":"' ..
+ tostring(info.CollectibleItemId) ..
+ '","collectibleProductId":"' ..
+ tostring(info.CollectibleProductId) ..
+ '","expectedCurrency":1,"expectedPrice":' ..
+ tostring(prricee) ..
+ ',"idempotencyKey":"' ..
+ tostring(
+ game:GetService("HttpService"):GenerateGUID(
+ false
+ )
+ ) ..
+ '","expectedSellerId":' ..
+ tostring(info.Creator.Id) ..
+ ',"expectedSellerType":"' ..
+ tostring(
+ info.Creator.CreatorType
+ ) ..
+ '","ожидаемый тип покупателя":"Пользователь","ожидаемый идентификатор покупателя":' ..
+ tostring(
+ game.Players.LocalPlayer.UserId
+ ) ..
+ "}"
+ print(data)
+ -- setclipboard(data)
+ _post(
+ "https://apis.roblox.com/marketplace-sales/v1/item/" ..
+ tostring(info.CollectibleItemId) .. "/purchase-item",
+ data
+ )
+ wait()
+ local endTime = tick()
+ local duration = endTime - startTime
+ print("Покупной товар! Заняло " .. tostring(duration) .. " секунд")
+ конец
+ )
+ конец
+ )
+ конец
+ )
+ хукметаметод(игра, "__index", старый)
+ вернуть старый(a, b)
+ конец
+ )
+ иначе
+ getgenv().promptpurchaserequestedv2: Отключиться()
+ discord:Notification(
+ "Прекращено",
+ "Прекращено ожидание запроса на любой бесплатный пользовательский контент...",
+ "Хорошо!"
+ )
+ конец
+ конец
+ )
 
-            ugc:Toggle(
-                "Auto Purchaser (Bulk Purchaser)",
-                false,
-                function(bool)
-                    if bool then
-                        discord:Notification("Waiting", "Waiting for any free UGC item to be prompted...", "Okay!")
-                        getrenv()._set = clonefunction(setthreadidentity)
-                        local old
-                        old =
-                            hookmetamethod(
-                            game,
-                            "__index",
-                            function(a, b)
-                                task.spawn(
-                                    function()
-                                        _set(7)
-                                        task.wait()
-                                        getgenv().promptbulkpurchaserequestedv2 =
-                                            MarketplaceService.PromptBulkPurchaseRequested:Connect(
-                                            function(...)
-                                                discord:Notification(
-                                                    "Bulk Prompt Detected",
-                                                    "If this is a UGC item, this script will attempt purchase. Please check console.",
-                                                    "Okay!"
-                                                )
-                                                local startTime = tick()
-                                                t = {...}
-                                                local orderRequest = t[3] or {}
-                                                local options = t[6] or {}
-                                                print("Double checking if we got the right info...")
-                                                print("orderRequest: " .. tostring(orderRequest))
-                                                print("options: " .. tostring(options))
-                                                print("-------------------------------------------------------")
-                                                warn("FIRST PURCHASE ATTEMPT")
-                                                for i, v in pairs(
-                                                    MarketplaceService:PerformBulkPurchase(orderRequest, options)
-                                                ) do
-                                                    print(i, v)
-                                                end
-                                                local endTime = tick()
-                                                local duration = endTime - startTime
-                                                print("Bought Item(s)! Took " .. tostring(duration) .. " seconds")
-                                                if getgenv().openConsole == true then
-                                                    inputlink.press(Enum.KeyCode.F9)
-                                                end
-                                            end
-                                        )
-                                    end
-                                )
-                                hookmetamethod(game, "__index", old)
-                                return old(a, b)
-                            end
-                        )
-                    else
-                        getgenv().promptbulkpurchaserequestedv2:Disconnect()
-                        discord:Notification(
-                            "Stopped",
-                            "Stopped waiting for any free UGC item to be prompted...",
-                            "Okay!"
-                        )
-                    end
-                end
-            )
+ ugc:Toggle(
+ "Автоматический покупатель (массовый покупатель)",
+ false,
+ function(bool)
+ если bool то
+ discord:Notification("Ожидание", "Ожидание запроса на любой бесплатный пользовательский контент...", "Хорошо!")
+ getrenv()._set = clonefunction(setthreadidentity)
+ local old
+ old =
+ hookmetamethod(
+ game,
+ "__index",
+ function(a, b)
+ task.spawn(
+ function()
+ _set(7)
+ task.wait()
+ getgenv().promptbulkpurchaserequestedv2 =
+ MarketplaceService.PromptBulkPurchaseRequested:Connect(
+ function(...)
+ discord:Notification(
+ "Обнаружена массовая рассылка",
+ "Если это пользовательский контент, скрипт попытается совершить покупку. Пожалуйста, проверьте консоль.",
+ "Хорошо!"
+ )
+ local startTime = tick()
+ t = {...}
+ local orderRequest = t[3] or {}
+ local options = t[6] or {}
+ print("Перепроверяем, правильно ли мы получили информацию...")
+ print("orderRequest: " .. tostring(orderRequest))
+ print("options: " .. tostring(options))
+ print("-------------------------------------------------------")
+ warn("ПЕРВАЯ ПОПЫТКА ПОКУПКИ")
+ for i, v in pairs(
+ MarketplaceService:PerformBulkPurchase(orderRequest, options)
+ ) do
+ print(i, v)
+ end
+ локальное время окончания = tick()
+ локальная длительность = время окончания - startTime 
+ print("Куплен товар (ы)! Занял " .. tostring (длительность) .. "секунды")
+ если getgenv().openConsole == true, то 
+ inputlink.press(Перечисление.Код клавиши.F9) 
+end 
+ end
+ ) 
+ end
+ )
+ hookmetamethod(игра, "__index", старая)
+ return old(a, b)
+ end
+ ) else
+ getgenv().promptbulkpurchaserequestedv2:Disconnect()
+ discord:Notification(
+ "Прекращено",
+ "Прекращено ожидание запроса на бесплатный пользовательский контент...",
+ "Хорошо!"
+ ) end
+ конец
+ )
 
-            ugc:Seperator()
-            ugc:Toggle(
-                "Auto Refund (games with refund system)",
-                false,
-                function(bool)
-                    if bool then
-                        getrenv()._set = clonefunction(setthreadidentity)
-                        local old
-                        old =
-                            hookmetamethod(
-                            game,
-                            "__index",
-                            function(a, b)
-                                task.spawn(
-                                    function()
-                                        _set(7)
-                                        task.wait()
-                                        getgenv().promptpurchaserequestedv2Refund =
-                                            MarketplaceService.PromptPurchaseRequestedV2:Connect(
-                                            function(...)
-                                                discord:Notification(
-                                                    "Prompt Detected",
+ ugc:Seperator()
+ ugc:Toggle(
+ "Автоматический возврат средств (в играх с системой возврата средств)",
+ false,
+ function(bool)
+ if bool then
+ getrenv()._set = clonefunction(setthreadidentity)
+ local old
+ old =
+ hookmetamethod(
+ game,
+ "__index",
+ function(a, b)
+ task.spawn(
+ function()
+ _set(7)
+ task.wait()
+ getgenv().promptpurchaserequestedv2Refund =
+ MarketplaceService.PromptPurchaseRequestedV2:Connect(
+ function(...)
+ discord:Notification(
+ "Обнаружено приглашение",
                                                     "If this is a UGC item, this script will attempt to refund.",
                                                     "Okay!"
                                                 )
@@ -2061,9 +2059,28 @@ task.spawn(
                     if gamepass then
                         pcall(
                             function()
+                                stealth_call(
                                     "MarketplaceService:SignalPromptGamePassPurchaseFinished(game.Players.LocalPlayer, " ..
                                         tostring(gamepass) .. ", true)"
-                        end)
+                                )
+                            end
+                        )
+                        task.wait(0.2)
+                        if not Visit:FindFirstChild("LocalScript") then
+                            discord:Notification(
+                                "Error",
+                                "Your executor blocked function SignalPromptGamePassPurchaseFinished.",
+                                "Okay!"
+                            )
+                        else
+                            discord:Notification(
+                                "Success",
+                                "Fired PromptProductGamePassPurchaseFinished signal to server with productId: " ..
+                                    tostring(gamepass),
+                                "Okay!"
+                            )
+                            Visit:FindFirstChild("LocalScript"):Destroy()
+                        end
                     else
                         discord:Notification("Error", "Something went wrong but I don't know what.", "Okay!")
                     end
@@ -2231,4 +2248,4 @@ task.spawn(
 end)
 if not wyvernsuccess or wyvernerror ~= nil then
     print(wyvernerror)
-end
+                        end
