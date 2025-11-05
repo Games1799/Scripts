@@ -36,7 +36,7 @@ end
 
 task.spawn(function()
 while not done do
-local remaining = time - os.time()
+local remaining = time - tick()
 if remaining <= 0 then break end
 StarterGui:SetCore("SendNotification",{
 Title = "Snaiper",
