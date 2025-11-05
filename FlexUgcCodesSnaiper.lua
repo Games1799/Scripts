@@ -49,7 +49,7 @@ end)
 
 if TestMode then
 conn = RunService.RenderStepped:Connect(function()
-    if os.time() >= getgenv().time - TestModeTime and not done then
+    if tick() >= getgenv().time - TestModeTime and not done then
         done = true
         game:GetService("ReplicatedStorage").RedeemCode:InvokeServer(code)
         conn:Disconnect()
