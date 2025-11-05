@@ -4,12 +4,7 @@ local StarterGui = game:GetService("StarterGui")
 
 local Webhook = getgenv().Webhook 
 if not Webhook then
-StarterGui:SetCore("SendNotification",{
-Title = "Snaiper error",
-Text = "Ошибка — введите вебхук",
-Duration = 3,
-Button1 = "Ок"
-})
+StarterGui:SetCore("SendNotification",{Title = "Rspy eror",Text = "Ошибка — введите вебхук",Duration = 3,Button1 = "Ок"})
 return
 end
 
@@ -32,3 +27,5 @@ end)
 end
 return old(self,...)
 end)
+
+StarterGui:SetCore("SendNotification",{Title = "Rspy started",Text = "Ремот спай успешно запущен ✅",Duration = 3,Button1 = "Ок"})
