@@ -14,12 +14,6 @@ Duration = 3
 return
 end
 
-if getgenv().TestMode then
-local TestMode = getgenv().TestMode
-else
-local TestMode = false
-end
-
 local time = getgenv().time
 if not time then
 StarterGui:SetCore("SendNotification",{
@@ -31,6 +25,7 @@ return
 end
 
 local TestMode = getgenv().TestMode or false
+local TestModeTime = getgenv().TestModeTimer or 0.49
 
 local function formatTime(seconds)
     local h = math.floor(seconds / 3600)
