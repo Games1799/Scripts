@@ -1,4 +1,4 @@
--- Beta version v0.4
+-- Beta version v0.5
 local code = getgenv().code
 local time = getgenv().time
 local TestMode = getgenv().TestMode
@@ -6,6 +6,14 @@ local RunService = game:GetService("RunService")
 local StarterGui = game:GetService("StarterGui")
 local conn
 local done = false
+
+if getgenv().TestMode then
+if not getgenv().TestModeTimer then 
+local TestModeTime = 0.49 
+else 
+local TestModeTime = getgenv().TestModeTimer
+end
+end
 
 local function formatTime(seconds)
     local h = math.floor(seconds / 3600)
@@ -29,7 +37,7 @@ end)
 
 if TestMode then
 conn = RunService.RenderStepped:Connect(function()
-    if os.time() >= getgenv().time - 0.5 and not done then
+    if os.time() >= getgenv().time - TestModeTime and not done then
         done = true
         game:GetService("ReplicatedStorage").RedeemCode:InvokeServer(code)
         conn:Disconnect()
