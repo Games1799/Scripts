@@ -1,11 +1,29 @@
--- Beta version v0.5
-local code = getgenv().code
-local time = getgenv().time
+-- Beta version v0.6
 local TestMode = getgenv().TestMode
 local RunService = game:GetService("RunService")
 local StarterGui = game:GetService("StarterGui")
 local conn
 local done = false
+
+if getgenv().code then
+local code = getgenv().code
+else
+StarterGui:SetCore("SendNotification",{
+Title = "Snaiper eror",
+Text = "Ошибка — введите код",
+Duration = 3
+})
+end
+
+if getgenv().time then
+local time = getgenv().time
+else
+StarterGui:SetCore("SendNotification",{
+Title = "Snaiper eror",
+Text = "Ошибка — введите время",
+Duration = 3
+})
+end
 
 if getgenv().TestMode then
 if not getgenv().TestModeTimer then 
