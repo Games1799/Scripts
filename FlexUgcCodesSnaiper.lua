@@ -1,5 +1,4 @@
--- Beta version v0.6
-local TestMode = getgenv().TestMode
+-- Beta version v0.7
 local RunService = game:GetService("RunService")
 local StarterGui = game:GetService("StarterGui")
 local conn
@@ -13,6 +12,12 @@ Title = "Snaiper eror",
 Text = "Ошибка — введите код",
 Duration = 3
 })
+end
+
+if TestMode = getgenv().TestMode then
+local TestMode = getgenv().TestMode
+else
+local TestMode = false
 end
 
 if getgenv().time then
