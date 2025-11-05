@@ -14,7 +14,7 @@ Duration = 3
 })
 end
 
-if TestMode = getgenv().TestMode then
+if getgenv().TestMode then
 local TestMode = getgenv().TestMode
 else
 local TestMode = false
