@@ -4,14 +4,14 @@ local StarterGui = game:GetService("StarterGui")
 local conn
 local done = false
 
-if getgenv().code then
 local code = getgenv().code
-else
+if not code or code == " " then
 StarterGui:SetCore("SendNotification",{
-Title = "Snaiper eror",
+Title = "Snaiper error",
 Text = "Ошибка — введите код",
 Duration = 3
 })
+return
 end
 
 if getgenv().TestMode then
@@ -20,23 +20,17 @@ else
 local TestMode = false
 end
 
-if getgenv().time then
 local time = getgenv().time
-else
+if not time then
 StarterGui:SetCore("SendNotification",{
-Title = "Snaiper eror",
+Title = "Snaiper error",
 Text = "Ошибка — введите время",
 Duration = 3
 })
+return
 end
 
-if getgenv().TestMode then
-if not getgenv().TestModeTimer then 
-local TestModeTime = 0.49 
-else 
-local TestModeTime = getgenv().TestModeTimer
-end
-end
+local TestMode = getgenv().TestMode or false
 
 local function formatTime(seconds)
     local h = math.floor(seconds / 3600)
