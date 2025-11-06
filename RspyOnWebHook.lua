@@ -12,7 +12,7 @@ local Color = getgenv().Color or 16711680
 local Webhook = getgenv().Webhook 
 if not Webhook then
 StarterGui:SetCore("SendNotification",{
-Title = "Snaiper error",
+Title = "Rspy error",
 Text = "Ошибка — введите вебхук",
 Duration = 3,
 Button1 = "Ок"
