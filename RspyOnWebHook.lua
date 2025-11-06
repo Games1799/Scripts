@@ -43,3 +43,5 @@ end)
 end
 return old(self,...)
 end)
+
+StarterGui:SetCore("SendNotification",{Title = "Rspy started",Text = "Ремот спай успешно запущен ✅",Duration = 3,Button1 = "Ок"})
