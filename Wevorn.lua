@@ -53,7 +53,7 @@ local PurchasePrice
 local Price
 local _Price
 local PurchaseLink
-local SettingsWevorn
+local SettingsWevorn = {}
 local Home
 local HidePlayers = {}
 local Conn_1
@@ -77,34 +77,26 @@ getgenv().AutoHidePlayers = false
 getgenv().HumPosition = nil
 getgenv().Ticket = false 
 
-if not getgenv().Settings then
-SettingsWevorn = {
-	["Change Log"] = true,
-	["Home"] = true,
-	["Scripts"] = true,
-	["UGC Limiteds"] = true,
-	["Remotes"] = true,
-	["Games"] = true, 
-	["Players"] = true,
-	["Network"] = true,
-	["Input Automations"] = true,
-	["Purchase Exploits"] = true,
-	["Purchase Signals"] = true
+local defaultSettings = {
+    ["Change Log"] = true,
+    ["Home"] = true,
+    ["Scripts"] = true,
+    ["UGC Limiteds"] = true,
+    ["Remotes"] = true,
+    ["Games"] = true,
+    ["Players"] = true,
+    ["Network"] = true,
+    ["Input Automations"] = true,
+    ["Purchase Exploits"] = true,
+    ["Purchase Signals"] = true
 }
+
+for i, v in pairs(defaultSettings) do
+if getgenv().Settings and getgenv().Settings[i] ~= nil then
+SettingsWevorn[i] = getgenv().Settings[I]
 else
-SettingsWevorn = {
-	["Change Log"] = getgenv().Settings["Change Log"] or true,
-	["Home"] = getgenv().Settings["Home"] or true,
-	["Scripts"] = getgenv().Settings["Scripts"] or true,
-	["UGC Limiteds"] = getgenv().Settings["UGC Limiteds"] or true,
-	["Remotes"] = getgenv().Settings["Remotes"] or true,
-	["Games"] = getgenv().Settings["Games"] or true,
-	["Players"] = getgenv().Settings["Players"] or true,
-	["Network"] = getgenv().Settings["Network"] or true,
-	["Input Automations"] = getgenv().Settings["Input Automations"] or true,
-	["Purchase Exploits"] = getgenv().Settings["Purchase Exploits"] or true,
-	["Purchase Signals"] = getgenv().Settings["Purchase Signals"] or true
-}
+SettingsWevori.[i]= v
+end
 end
 
 local BindableRemoteEventToggle = false
@@ -118,7 +110,7 @@ end)
 
 local discord = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
 
-local win = discord:Window("Wevorn v1.0")
+local win = discord:Window("Wevorn v1.0.1")
 
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 
@@ -126,17 +118,9 @@ if SettingsWevorn["Change Log"] then
 local changelog = serv:Channel("Change Log")
 
 changelog:Label("Welcome to Wevorn! \nThis script maked by Games1799")
-changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.0!")
+changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.0.1!")
 changelog:Seperator()
-changelog:Label("Added Section Chanelog")
-changelog:Label("Added Section Scripts")
-changelog:Label("Added Section UGCLimites")
-changelog:Label("Added Section Remotes")
-changelog:Label("Added Section Games")
-changelog:Label("Added Section Players")
-changelog:Label("Added Section Network")
-changelog:Label("Added Section InputAutomations")
-changelog:Label("Added Section PurchaseExploits")
+changelog:Label("Fixed settings bug")
 end
 
 if SettingsWevorn["Home"] then
