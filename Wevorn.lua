@@ -93,7 +93,7 @@ local defaultSettings = {
 
 for i, v in pairs(defaultSettings) do
 if getgenv().Settings and getgenv().Settings[i] ~= nil then
-SettingsWevorn[i] = getgenv().Settings[I]
+SettingsWevorn[i] = getgenv().Settings[i]
 else
 SettingsWevori.[i]= v
 end
