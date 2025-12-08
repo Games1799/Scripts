@@ -93,7 +93,7 @@ SettingsWevorn = {
 }
 else
 SettingsWevorn = {
-	["Change Log"] = getgenv().Settings["Change log"] or true,
+	["Change Log"] = getgenv().Settings["Change Log"] or true,
 	["Home"] = getgenv().Settings["Home"] or true,
 	["Scripts"] = getgenv().Settings["Scripts"] or true,
 	["UGC Limiteds"] = getgenv().Settings["UGC Limiteds"] or true,
