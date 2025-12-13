@@ -4,6 +4,7 @@ local VirtualInputManager = game:GetService("VirtualInputManager")
 local ProximityPromptService = game:GetService("ProximityPromptService")
 local HttpRbxApiService = game:GetService("HttpRbxApiService")
 local MarketplaceService  = game:GetService("MarketplaceService")
+local TweenService  = game:GetService("TweenService") 
 local CoreGui  = game:GetService("CoreGui")
 local VirtualUser  = game:GetService("VirtualUser")
 local Lighting = game:GetService("Lighting")
@@ -58,6 +59,10 @@ local Home
 local HidePlayers = {}
 local Conn_1
 local old_namecall = nil
+local Conn_2
+local Conn_3
+local Conn_Id_1
+local Conn_Id_2
 getgenv().NotificationRemotes = true
 getgenv().EnableNumber = false
 getgenv().AutoClickerPurchase = false
@@ -76,6 +81,8 @@ getgenv().LoopFireGamePass = false
 getgenv().AutoHidePlayers = false
 getgenv().HumPosition = nil
 getgenv().Ticket = false 
+getgenv().YourFireRemotesMethod = nil
+getgenv().UseTableInMyFireRemotesMethod = false
 
 local defaultSettings = {
     ["Change Log"] = true,
@@ -110,30 +117,44 @@ end)
 
 local discord = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
 
-local win = discord:Window("Wevorn v1.0.1")
+local win = discord:Window("Wevorn v1.1")
 
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 
 if SettingsWevorn["Change Log"] then
 local changelog = serv:Channel("Change Log")
 
-changelog:Label("Welcome to Wevorn! \nThis script maked by Games1799")
-changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.0.1!")
+changelog:Label("Welcome to Wevorn! \nThis script was made by Games1799")
+changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.1!")
 changelog:Seperator()
-changelog:Label("Fixed settings bug")
+changelog:Label("Added Tween to Waypoint")
+changelog:Label("Added Fire Remotes/Remote on your fire method")
+changelog:Label("Added Auto Signal True On PromptPurchase")
+changelog:Label("Added Auto Signal False On PromptPurchase")
+changelog:Label("Fixed Auto Purchase")
+changelog:Label("Fixed Open Console  After  Purchase")
+changelog:Label("Fixed Auto Purchase Paid Items")
+changelog:Label("Fixed Fire Remote Notifications")
+changelog:Label("Fixed Infinite  ProximityPrompts Range")
+changelog:Label("Fixed Error On Names") 
 end
 
 if SettingsWevorn["Home"] then
 Home = serv:Channel("Home")
 Home:Label("\nThank you for using Wevorn!\nThe #2 UGC Games Penetration Testing Tool! (mine is still better)")
-Home:Label("Check out the other Discord channels to see our available tools!")
+Home:Label("Check out the other Discord channels to see our available tools")
+
+Home:Button("Copy Script  Wevorn",function()
+setclipboard('loadstring(Game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/Wevorn.lua"))()')
+end)
+
 Home:Seperator()
 end
 
 if SettingsWevorn["Scripts"] then
 local Scripts = serv:Channel("Scripts")
 
-Scripts:Label("All popular script worthy of your attention ")
+Scripts:Label("All popular scripts worthy of your attention")
 
 Scripts:Button("Infinite yield",function()
 loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
@@ -270,11 +291,33 @@ end)
 
 UGCLimiteds:Seperator()
 
-UGCLimiteds:Toggle("Open Console After Purchase",function(state)
+UGCLimiteds:Toggle("Enable Auto Signal True On PromptPurchase (Asset)",false,function(state)
+if state then 
+Conn_2 = MarketplaceService.PromptPurchaseRequestedV2:Connect(function(_,Conn_Id_1)
+MarketplaceService:SignalPromptPurchaseFinished(game.Players.LocalPlayer,Conn_Id_1,true)
+end)
+else
+Conn_2:Disconnect()
+end
+end)
+
+UGCLimiteds:Toggle("Enable Auto Signal False On PromptPurchase (Asset)",false,function(state)
+if state then
+Conn_3 = MarketplaceService.PromptPurchaseRequestedV2:Connect(function(_,Conn_Id_2)
+MarketplaceService:SignalPromptPurchaseFinished(game.Players.LocalPlayer,Conn_Id_2,false)
+end)
+else
+Conn_3:Disconnect()
+end
+end)
+
+UGCLimiteds:Seperator()
+
+UGCLimiteds:Toggle("Open Console After Purchase",false,function(state)
 getgenv().OpenConsole = state
 end)
 
-UGCLimiteds:Toggle("Auto Purchase Paid Items (For Below)",function(state)
+UGCLimiteds:Toggle("Auto Purchase Paid Items (For Below)",false,function(state)
 getgenv().BuyPaidItems = state
 end)
 
@@ -288,34 +331,33 @@ discord:Notification("Prompt Detected","If this is a UGC item, this script will 
 local PurchaseProductId = t[2]
 local IdempotencyKey = t[5]
 local PurchaseAuthToken = t[6]
-local info = MarketplaceService:GetProductInfo(PurchaseProductId)
+local info = MarketplaceService:GetProductInfo(PurchaseProductId,Enum.InfoType.Asset)
 local PurchaseCollectibleItemId = info.CollectibleItemId
 local PurchaseCollectibleProductId = info.CollectibleProductId
 local PurchaseInfoType = Enum.InfoType.Asset
 if getgenv().BuyPaidItem then PurchasePrice = info.PriceInRobux else PurchasePrice = 0 end
 local IsRobloxPurchase = true
 local PurchaseRequestId = HttpService:GenerateGUID(false)
-
-print("ProductId — ",PurchaseProductId)
-print("IdempotencyKey — ",IdempotencyKey)
-print("AuthToken — ",PurchaseAuthToken)
-print("CollectibleItemId — ",PurchaseCollectibleItemId)
-print("CollectibleProductId — ",PurchaseCollectibleProductId)
-print("InfoType — ",PurchaseInfoType)
+print("ProductId —",PurchaseProductId)
+print("IdempotencyKey —",IdempotencyKey)
+print("AuthToken —",PurchaseAuthToken)
+print("CollectibleItemId —",PurchaseCollectibleItemId)
+print("CollectibleProductId —",PurchaseCollectibleProductId)
+print("InfoType —",PurchaseInfoType)
 print("Price — ",PurchasePrice)
-print("IsRobloxPurchase — ",IsRobloxPurchase)
-print("RequestId — ",PurchaseRequestId)
+print("IsRobloxPurchase —",IsRobloxPurchase)
+print("RequestId —",PurchaseRequestId)
 warn("———————————————————————————————")
-warn("FIRST PURCHASE  ITEM!")
+warn("FIRST PURCHASE ITEM!")
 if getgenv().OpenConsole then 
 VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
 task.wait(0.01)
 VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
+end 
 local sus,eror = pcall(function()
 MarketplaceService:PerformPurchase(PurchaseInfoType,PurchaseProductId,PurchasePrice,PurchaseRequestId,IsRobloxPurchase,PurchaseCollectibleItemId,PurchaseCollectibleProductId,IdempotencyKey,PurchaseAuthToken)
 end)
-if not sus then error("Snaiper V1 Eror — "..eror) else print("Purchase success!") end
-end
+if not sus then error("Snaiper V1 Error — "..eror) else print("Purchase success!") end
 end)
 else
 Conn:Disconnect()
@@ -335,16 +377,16 @@ if getgenv().BuyPaidItem then Price = info.PriceInRobux else Price = 0 end
 local RequestId = HttpService:GenerateGUID(false)
 local IsRbxPurchase = true
 local collectiblesProductDetails = info.CollectibleDetails
-print("InfoType — ",InfoType)
-print("ProductId — ",ProductId)
-print("Price — ",Price)
-print("RequestId — ",RequestId)
-print("IsRobloxPurchase — ",IsRbxPurchase)
-print("collectiblesProductDetails — ",collectiblesProductDetails)
+print("InfoType —",InfoType)
+print("ProductId —",ProductId)
+print("Price —",Price)
+print("RequestId —",RequestId)
+print("IsRobloxPurchase —",IsRbxPurchase)
+print("collectiblesProductDetails —",collectiblesProductDetails)
 warn("———————————————————————————————")
-warn("FIRST PURCHASE  ITEM!")
+warn("FIRST PURCHASE ITEM!")
 local _sus,_eror = pcall(function()
-if not _sus then error("Snaiper V2 Eror — ".._eror) else print("Purchase success!") end
+if not _sus then error("Snaiper V2 Error — ".._eror) else print("Purchase success!") end
 if getgenv().OpenConsole then 
 VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
 task.wait(0.01)
@@ -490,8 +532,8 @@ end)
 end)
 
 elseif v:IsA("BindableEvent") then
-Count = Count + 1
 if BindableRemoteEventToggle then
+Count = Count + 1
 task.spawn(function()
 pcall(function()
 v:Fire(table.unpack(args))
@@ -500,8 +542,8 @@ end)
 end
 
 elseif v:IsA("BindableFunction") then
-Count = Count + 1
 if BindableFunctionToggle then
+Count = Count + 1
 task.spawn(function()
 pcall(function()
 v:Invoke(table.unpack(args)) 
@@ -537,8 +579,8 @@ end)
 end)
 
 elseif v:IsA("BindableEvent") then
-_Count = _Count + 1
 if BindableRemoteEventToggle then
+_Count = _Count + 1
 task.spawn(function()
 pcall(function()
 v:Fire(unpack(_args))
@@ -547,8 +589,8 @@ end)
 end
 
 elseif v:IsA("BindableFunction") then
-_Count = _Count + 1
 if BindableRemoteFunctionToggle then
+_Count = _Count + 1
 task.spawn(function()
 pcall(function()
 v:Invoke(unpack(_args)) 
@@ -647,12 +689,12 @@ Remotes:Button("Fire All Remotes",function()
 
 local method = getgenv().RemoteFireMethod
 
--- Function "FireRemotes" â€” unpack.table (all)
--- Function "_FireRemotes" â€” unpack (all)
--- Function "__FireRemotes" â€” unpack (one)
--- Function "___FireRemotes" â€” table.unpack (one)
+-- Function "FireRemotes" for unpack.table (all)
+-- Function "_FireRemotes" for unpack (all)
+-- Function "__FireRemotes" for unpack (one)
+-- Function "___FireRemotes" for table.unpack (one)
 -- Use "_FireRemotes" for Bulk Purchase and "FireRemotes" for usual
--- Use "__FireRemotes for Bulk Purchase and "___FireRemotes" for usual"
+-- Use "__FireRemotes" for Bulk Purchase and "___FireRemotes" for usual
 
 if method == "No Arguments/Blank" then 
 FireRemotes()
@@ -739,7 +781,7 @@ end)
 end
 
 if not BindableFunctionToggle then
-Remotes:Toggle("Endable BindableFunction",false,function(state)
+Remotes:Toggle("Enable BindableFunction",false,function(state)
 if state then
 BindableFunctionToggle = true
 else 
@@ -1003,11 +1045,40 @@ else
 discord:Notification("Failed","Remotes Already Counted!","Okay!")
 end 
 end)
+
+Remotes:Seperator()
+
+Remotes:Textbox("Do you want use your fire remotes method?","Enter  your method",false, function(YourMethod)
+getgenv().YourFireRemotesMethod = YourMethod 
+end)
+
+Remotes:Toggle("I want use table in my method",false,function(state)
+getgenv().UseTableInMyFireRemotesMethod = state
+end)
+
+Remotes:Button("Fire All Remotes On My Method",function()
+if not getgenv().UseTableInMyFireRemotesMethod then
+FireRemotes(tostring(getgenv().YourFireRemotesMethod))
+else
+_FireRemotes(tostring(getgenv().YourFireRemotesMethod))
+end
+end)
+
+Remotes:Button("Fire selected remote on my method",function()
+if not getgenv().SelectRemote then discord:Notification("Edror","Select Remote!","Okay!") end
+if not getgenv().UseTableInMyFireRemotesMethod then
+__FireRemotes(getgenv().SelectRemote,tostring(getgenv().YourFireRemotesMethod))
+else
+___FireRemotes(getgenv().SelectRemote,tostring(getgenv().YourFireRemotesMethod))
+end
+end)
+
+Remotes:Seperator()
+
 end
 
 if SettingsWevorn["Games"] then
 local Games = serv:Channel("Games")
-
 
 Games:Toggle("Anti Kick on Teleport",false,function(state)
 local mt = getrawmetatable(game)
@@ -1299,7 +1370,8 @@ if getgenv().Ticket then if not player.Character:FindFirstChild("HumanoidRootPar
 if not player.Character:FindFirstChild("HumanoidRootPart")  then discord:Notification("Error","HumanoidRootPart  is not found","Okay!") return end
 getgenv().HumPosition = player.Character.HumanoidRootPart.Position 
 discord:Notification("Success","Create Waypoint as "..tostring(getgenv().HumPosition),"Okay!")
-players:Button("Teleport to Seved Waypoint",function() if getgenv().HumPosition then game.Players.LocalPlayer.Character:PivotTo(CFrame.new(getgenv().HumPosition)) else discord:Notification("Eror","No Waypoint  Found!","Okay") end end)
+players:Button("Teleport to Saved Waypoint",function() if getgenv().HumPosition then game.Players.LocalPlayer.Character:PivotTo(CFrame.new(getgenv().HumPosition)) else discord:Notification("Eror","No Waypoint  Found!","Okay") end end)
+players:Button("Tween to Saved Waypoint",function() if getgenv().HumPosition then local hum = game.Players.LocalPlayer.Character.HumanoidRootPart while (getgenv().HumPosition-hum.Position).Magnitude > 0.1 do hum.CFrame = hum.CFrame:Lerp(CFrame.new(getgenv().HumPosition),math.min(50 * task.wait() / (getgenv().HumPosition-hum.Position).Magnitude,1)) end else discord:Notification("Eror","No Waypoint Found!","Okay") end end)
 players:Button("Clear Waypoint",function() getgenv().HumPosition = false discord:Notification("Success","Waypoint  is cleared","Okay!") end)
 players:Button("Copy Waypoint Position",function() if not getgenv().HumPosition then discord("Error","No Waypoint found","Okay!") return end setclipboard(tostring(getgenv().HumPosition)) end)
 getgenv().Ticket = true
@@ -1413,16 +1485,16 @@ InputAutomations:Toggle("Infinite ProximityPrompt Range",false,function(state)
 if state then
 Prompt1 = ProximityPromptService.MaxPromptsVisible
 ProximityPromptService.MaxPromptsVisible = math.huge
-for _, v in ipairs(workspace:GetChildren()) do
+for _, v in ipairs(workspace:GetDescendants()) do
 if v:IsA("ProximityPrompt") then
 v.MaxActivationDistance = math.huge
 end
 end
 else
 ProximityPromptService.MaxPromptsVisible = Prompt1
-for _, v in ipairs(workspace:GetChildren()) do
+for _, v in ipairs(workspace:GetDescendants()) do
 if v:IsA("ProximityPrompt") then
-v.MaxActivationDistance = 10
+v.MaxActivationDistance = 12
 end
 end
 end
@@ -1620,11 +1692,13 @@ PurchaseSignals:Label("Released in Wevorn v1.2")
 end
 
 for _, v in ipairs(game:GetDescendants()) do
-if v.Name == "__function" then
+if v.Name == "__Function" then
 discord:Notification("Adonis Anti Cheat Found!","You can check !BuyItem and !BuyAsset","Okay!")
 end
 end
+
 local TimeLoaded = tick() - LoadTime
+
 if SettingsWevorn["Home"] then
 Home:Label("Wevorn is loaded in "..TimeLoaded.."s")
 else
