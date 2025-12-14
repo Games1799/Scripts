@@ -62,8 +62,8 @@ Section:CreateButton("Dex explorer", function()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/dex.lua"))()
 end)
 
-Section:CreateButton("Wyborn", function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/ckw69/Wyborn/main/wyborn",true))()
+Section:CreateButton("Wywern", function()
+loadstring(Game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/Wevorn.lua"))()
 end)
 
 Section:CreateButton("Remote spy", function()
