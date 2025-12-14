@@ -63,7 +63,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/d
 end)
 
 Section:CreateButton("Вуверн", function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/ckw69/Wyborn/main/wyborn",true))()
+loadstring(Game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/Wevorn.lua"))()
 end)
 
 Section:CreateButton("Ремот спай", function()
