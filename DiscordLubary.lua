@@ -10,19 +10,12 @@ local user
 local tag
 local userinfo = {}
 
-local chars = "qV8YTzSeRXLhIMrDFumJwkloBOjcf6pgCH7itEbvAn3Us42a5xWKN19QZydPG0"
-local hidden = {"\u{200B}","\u{200C}","\u{200D}","\u{FEFF}","\u{2060}","\u{180E}","\u{202F}","\u{205F}","\u{00A0}","\u{200A}","\u{2009}","\u{2008}","\u{2007}","\u{2006}"}
-
-local function getName(minLen, maxLen)
-    local len = math.random(minLen, maxLen)
-    local t = {}
-    for i = 1, len do
-        t[#t+1] = chars:sub(math.random(1,#chars), math.random(1,#chars))
-        if math.random() < 0.5 then
-            t[#t+1] = hidden[math.random(1,#hidden)]
-        end
-    end
-    return table.concat(t)
+local function GetRandomString()
+local output = ""
+for i = 2, 25 do
+output = output ..string.char(math.random(1,250))
+end
+return output
 end
 
 pcall(function()
@@ -97,7 +90,7 @@ local function MakeDraggable(topbarobject, object)
 end
 
 local Discord = Instance.new("ScreenGui")
-Discord.Name = getName(10,25)
+Discord.Name = GetRandomString()
 Discord.Parent = gethui and gethui() or game:GetService("CoreGui")
 Discord.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 Discord.DisplayOrder = 9999999999
@@ -128,7 +121,7 @@ function DiscordLib:Window(text)
 	local ServersHoldPadding = Instance.new("UIPadding")
 	local TopFrameHolder = Instance.new("Frame")
 
-	MainFrame.Name = getName(8,20)
+	MainFrame.Name = GetRandomString()
 	MainFrame.Parent = Discord
 	MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 	MainFrame.BackgroundColor3 = Color3.fromRGB(32, 34, 37)
