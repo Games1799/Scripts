@@ -18,6 +18,8 @@ end
 return output
 end
 
+local RealSName = GetRandomString()
+
 pcall(function()
 	userinfo = HttpService:JSONDecode(readfile("discordlibinfo.txt"));
 end)
@@ -1731,7 +1733,7 @@ function DiscordLib:Window(text)
 		local ServerChannelHolderPadding = Instance.new("UIPadding")
 
 
-		ServerFrame.Name = "ServerFrame"
+		ServerFrame.Name = RealSName
 		ServerFrame.Parent = ServersHolder
 		ServerFrame.BackgroundColor3 = Color3.fromRGB(47, 49, 54)
 		ServerFrame.BorderSizePixel = 0
@@ -1944,7 +1946,7 @@ function DiscordLib:Window(text)
 			function()
 				currentservertoggled = Server.Name
 				for i, v in next, ServersHolder:GetChildren() do
-					if v.Name == "ServerFrame" then
+					if v.Name == RealSName then
 						v.Visible = false
 					end
 					ServerFrame.Visible = true
