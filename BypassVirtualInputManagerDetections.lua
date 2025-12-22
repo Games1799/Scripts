@@ -1,25 +1,25 @@
 -- Bypass VirtualInputManager detections v1 by @Games1799
 local mt = getrawmetatable(game)
-setreadonly(mt, false)
+setreadonly(mt,false)
 
 local oldIndex = mt.__index
 local oldNamecall = mt.__namecall
 local oldToString = mt.__tostring
 
-mt.__index = function(self, key)
+mt.__index = function(self,key)
 if self == game and key == "VirtualInputManager" and not checkcaller() then return nil end
 
 local value = oldIndex(self, key)
 
 if type(value) == "function" then
-return function(obj, ...)
+return function(obj,...)
 local args = {...}
 if (key == "WaitForChild" or key == "FindFirstChild" or key == "FindFirstChildRecursive" or key == "FindFirstChildOfClass" or key == "FindFirstChildWhichIsA") and args[1] == "VirtualInputManager" and not checkcaller() then
 return nil
 end
 
 if key == "GetChildren" or key == "GetDescendants" then
-local tbl = value(obj, ...)
+local tbl = value(obj,...)
 local out = {}
 for i = 1, #tbl do
 local v = tbl[i]
@@ -30,7 +30,7 @@ end
 return out
 end
 
-local result = value(obj, ...)
+local result = value(obj,...)
 if typeof(result) == "Instance" and result.Name == "VirtualInputManager" and not checkcaller() then return nil end
 return result
 end
@@ -41,7 +41,7 @@ if typeof(result) == "Instance" and result.Name == "VirtualInputManager" and not
 return result
 end
 
-mt.__namecall = function(self, ...)
+mt.__namecall = function(self,...)
 local method = getnamecallmethod()
 local args = {...}
 
@@ -66,24 +66,24 @@ end
 return oldToString(self)
 end
 
-hookfunction(rawget, function(t, k)
+hookfunction(rawget,function(t,k)
 if t == game and k == "VirtualInputManager" and not checkcaller() then return nil end
-return rawget(t, k)
+return rawget(t,k)
 end)
 
-hookfunction(rawequal, function(a, b)
+hookfunction(rawequal,function(a,b)
 if not checkcaller() and ((typeof(a) == "Instance" and a.Name == "VirtualInputManager") or (typeof(b) == "Instance" and b.Name == "VirtualInputManager")) then return false end
-return rawequal(a, b)
+return rawequal(a,b)
 end)
 
-setreadonly(mt, true)
+setreadonly(mt,true)
 
-hookfunction(setreadonly, function(t, state)
+hookfunction(setreadonly,function(t,state)
 if t == mt and state == false and not checkcaller() then return end
 return setreadonly(t, state)
 end)
 
-hookfunction(getrawmetatable, function(obj)
+hookfunction(getrawmetatable,function(obj)
 if obj == game and not checkcaller() then return nil end
 return getrawmetatable(obj)
 end)
