@@ -2651,6 +2651,10 @@ function DiscordLib:Window(text)
 				DropItemHolderLayout.Parent = DropItemHolder
 				DropItemHolderLayout.SortOrder = Enum.SortOrder.LayoutOrder
 				DropItemHolderLayout.Padding = UDim.new(0, 0)
+
+                DropItemHolderLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	            DropItemHolder.CanvasSize = UDim2.new(0,0,0,DropItemHolderLayout.AbsoluteContentSize.Y)
+                end)
 				
 				DropdownFrameBtn.MouseButton1Click:Connect(function()
 					if DropTog == false then
