@@ -1602,7 +1602,7 @@ PurchaseExploits:Label("Fake Purchaser!\nThis tricks server that you bought a Ga
 PurchaseExploits:Label("Only works in some games...")
 
 pcall(function()
-GamePassLink = HttpService:JSONDecode(game:HttpGet("https://apis.roblox.com/game-passes/v1/universes/"..game.GameId.."/game-passes?passView=Full&pageSize=500"))
+GamePassLink = HttpService:JSONDecode(game:HttpGet("https://apis.roblox.com/game-passes/v1/universes/"..game.GameId.."/game-passes?passView=Full&pageSize=100"))
 end)
 
 if GamePassLink then
