@@ -1,6 +1,6 @@
 -- By @Games1799 or @Roblox_free_ugc_2025 in Telegram
 -- https://t.me/Games1799
--- https://t.me/Roblox_free_ugc_2025
+-- https://t.me/Roblox_free_ugc_2026
 
 local players = game:GetService("Players")
 local player = players.LocalPlayer
@@ -408,11 +408,11 @@ local Window = Library:NewWindow("Создатель скрипта")
 
 local Section = Window:NewSection("Телеграм")
 
-Section:CreateButton("Телеграм канал", function()local copy  = "https://t.me/roblox_free_ugc_2025"
+Section:CreateButton("Телеграм канал", function()local copy  = "https://t.me/roblox_free_ugc_2026"
 setclipboard(tostring(copy))
 end)
 
-Section:CreateButton("Юзер в тг", function()local copy  = "@Games1799"
+Section:CreateButton("Юзер в тг", function()local copy  = "https://t.me/Games1799"
 setclipboard(tostring(copy))
 end)
 
