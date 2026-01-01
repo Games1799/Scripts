@@ -472,9 +472,9 @@ if SettingsWevorn["UGC Limiteds"] then
              print("AuthToken — "..PurchaseAuthToken)
              print("CollectibleItemId — "..PurchaseCollectibleItemId)
              print("CollectibleProductId — "..PurchaseCollectibleProductId)
-             print("InfoType — "..PurchaseInfoType)
+             print("InfoType — "..tostring(PurchaseInfoType))
              print("Price — "..PurchasePrice)
-             print("IsRobloxPurchase — "..IsRobloxPurchase)
+             print("IsRobloxPurchase — "..tostring(IsRobloxPurchase))
              print("RequestId — "..PurchaseRequestId)
              warn("———————————————————————————————")
              warn("FIRST PURCHASE ITEM!")
@@ -516,11 +516,11 @@ if SettingsWevorn["UGC Limiteds"] then
               else 
                   Price = 0 
               end
-              print("InfoType — "..InfoType)
+              print("InfoType — "..tostring(InfoType))
               print("ProductId — "..ProductId)
               print("Price — "..Price)
               print("RequestId — "..RequestId)
-              print("IsRobloxPurchase — "..IsRbxPurchase)
+              print("IsRobloxPurchase — "..tostring(IsRbxPurchase))
               print("collectiblesProductDetails — "..collectiblesProductDetails)
               warn("———————————————————————————————")
               warn("FIRST PURCHASE ITEM!")
