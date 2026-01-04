@@ -1,4 +1,4 @@
--- Beta version v0.8
+-- Beta version v0.9
 local RunService = game:GetService("RunService")
 local StarterGui = game:GetService("StarterGui")
 local conn
@@ -28,6 +28,8 @@ local TestMode = getgenv().TestMode or false
 local TestModeTime = getgenv().TestModeTimer or 0.49
 
 local function formatTime(seconds)
+    if seconds < 0 then seconds = 0 end 
+    seconds = math.floor(seconds)
     local h = math.floor(seconds / 3600)
     local m = math.floor((seconds % 3600) / 60)
     local s = math.floor(seconds % 60)
@@ -36,7 +38,7 @@ end
 
 task.spawn(function()
 while not done do
-local remaining = time - tick()
+local remaining = time - os.time()
 if remaining <= 0 then break end
 StarterGui:SetCore("SendNotification",{
 Title = "Snaiper",
