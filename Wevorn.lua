@@ -72,6 +72,7 @@ local BulkResults = {}
 local HidePlayers = {}
 local BulkNewIds = {}
 local GamePassIds = {}
+local UniverseCache = {}
 local SettingsWevorn = {}
 local DevProductsIds = {}
 local GamePassNames = {}
@@ -148,41 +149,28 @@ pcall(function()
 end)
 
 local discord = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
-local win = discord:Window("Wevorn v1.2")
+local win = discord:Window("Wevorn v1.3")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 
 if SettingsWevorn["Change Log"] then
    local changelog = serv:Channel("Change Log")
-   changelog:Label("Welcome to Wevorn! \nThis script was made by Games1799")
-   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.2!")
+   changelog:Label("Welcome to Wevorn! \nThis script was created by Games1799")
+   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.3!")
    changelog:Seperator()
-   changelog:Label("Added MoveTo on Waypoint")
-   changelog:Label("Added Check UGC Status with Id")
-   changelog:Label("Added Game Status with Id")
-   changelog:Label("Added Copy Wevorn script and settings")
-   changelog:Label("Added Teleport to game/subplace with Id")
-   changelog:Label("Added Purchase Signals Section")
-   changelog:Label("Added Loop Fire Selected Remote")
-   changelog:Label("Added Loop Fire All Remotes on your method")
-   changelog:Label("Added Loop Fire Selected Remote on your method")
-   changelog:Label("Added Auto Signal True On PromptBindlePurchase")
-   changelog:Label("Added Auto Signal False On PromptBundlePurchase")
-   changelog:Label("Added Dex Explorer ++")
-   changelog:Label("Added 2 new Fire Remote Arguments")
-   changelog:Label("Added Bypass VirtualInputManager Detections")
-   changelog:Label("Added Change FPS Limit")
-   changelog:Label("Added Check FPS")
-   changelog:Label("Added Fake Buy Your ugc")
-   changelog:Label("Added Spam Signals")
-   changelog:Label("Added Fake Buy Bulk Ids")
-   changelog:Label("Fixed Error in Home Section")
-   changelog:Label("Fixed Buy Paid Items")
-   changelog:Label("Fixed DropDown Glitch")
-   changelog:Label("Fixed Game Passes In Purchase Exploits")
-   changelog:Label("Fixed Fire Selected Remote")
-   changelog:Label("Bypass Detections")
-   changelog:Label("Script Loading Apeed is Increased")
-   changelog:Label("Improved Script Readability")
+   changelog:Label("Added Fire All GamePasses")
+   changelog:Label("Added Fire All Dev Products")
+   changelog:Label("Added Copy Teleport to This Game")
+   changelog:Label("Added Copy Teleport to This Server")
+   changelog:Label("Added Fire All Remotes On All Methods")
+   changelog:Label("Improved Check Game With Id")
+   changelog:Label("Fixed Teleport to Largest Server")
+   changelog:Label("Fixed Teleport to Smaller Server")
+   changelog:Label("Fixed Auto Grab Items")
+   changelog:Label("Fixed Spoof as player with User ID")
+   changelog:Label("Fixed Copy Waypoint Position")
+   changelog:Label("Fixed Print All Remotes")
+   changelog:Label("Fixed Auto Signal True on PromptPurchase Name")
+   changelog:Label("Fixed Rare Glitch On Auto Purchase V1 and Auto Purchase V2")
 end
 
 if SettingsWevorn["Home"] then
@@ -281,7 +269,7 @@ if SettingsWevorn["UGC Limiteds"] then
 
    UGCLimiteds:Button("Game detected VirtualInputManager? You can try bypass it!",function()
        loadstring(Game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/BypassVirtualInputManagerDetections.lua"))()
-       discord:Notification("Bypass ending!","Check it!","okay")
+       discord:Notification("Bypass ending!","You can check it!","Okay")
    end)
 
    UGCLimiteds:Toggle("Enable Auto Click Purchaser",false,function(state)
@@ -365,7 +353,7 @@ if SettingsWevorn["UGC Limiteds"] then
 
    UGCLimiteds:Seperator()
 
-   UGCLimiteds:Toggle("Enable Auto Signal False True PromptPurchase",false,function(state)
+   UGCLimiteds:Toggle("Enable Auto Signal True On PromptPurchase",false,function(state)
        if state then
           Conn_2 = MarketplaceService.PromptPurchaseRequestedV2:Connect(function(_,Conn_Id_2)
               MarketplaceService:SignalPromptPurchaseFinished(game.Players.LocalPlayer,Conn_Id_2,true)
@@ -407,32 +395,30 @@ if SettingsWevorn["UGC Limiteds"] then
 
     UGCLimiteds:Seperator()
 
-    UGCLimiteds:Label("You can check  UGC status  with Id")
-
-    UGCLimiteds:Textbox("Enter UGC Id","Enter a number",true,function(SID)
+    UGCLimiteds:Textbox("You can check ugc status with Id","Enter a ugc Id",true,function(SID)
         local StatusId = tonumber(SID)
         if StatusId then
            local CheckStatus = MarketplaceService:GetProductInfo(StatusId)
            if CheckStatus.IsLimited or CheckStatus.IsLimitedUnique then
-		 	   IsLimited = "Yes" 
+			  IsLimited = "Yes" 
 		   else 
-			   IsLimited = "No"
+			  IsLimited = "No"
 		   end
            if CheckStatus.IsLimited or CheckStatus.IsLimitedUnique then
-			   StataRemaing = CheckStatus.Remaining
+			  StataRemaing = CheckStatus.Remaining
 		   else
-    		   StataRemaing = "nil"
+			  StataRemaing = "nil"
 		   end
            if CheckStatus.IsForSale then
-    		  Stata = "For Sale"
+		      Stata = "For Sale"
 		   elseif not CheckStatus.IsForSale and CheckStatus.PriceRobux ~= nil and CheckStatus.PriceRobux > 0 and CheckStatus.Sales > 0 then
-   	 	      Stata = "Offsale"
+			  Stata = "Offsale"
 		   elseif not CheckStatus.IsForSale and (CheckStatus.PriceRobux == nil or CheckStatus.PriceRobux == 0) and CheckStatus.Sales == 0 then
- 	 	      Stata = "Not for sale"
+			  Stata = "Not for sale"
 		   end 
            discord:Notification("Success!","Id - "..StatusId.." / Status - "..Stata.."\nIs Limited - "..IsLimited.." / Remaing - "..StataRemaing,"Okay!")
         else
-           discord:Notification("Eror!","Enter a number","Okay")
+            discord:Notification("Eror!","Enter a number","Okay")
         end
     end)
 
@@ -446,385 +432,390 @@ if SettingsWevorn["UGC Limiteds"] then
         getgenv().BuyPaidItems = state
     end)
       
-    UGCLimiteds:Toggle("Auto Purchaser",false,function(state)
+    UGCLimiteds:Seperator()
+    
+    UGCLimiteds:Toggle("Auto Purchaser V1",false,function(state)
         if state then
-          discord:Notification("Waiting","Waiting for any free UGC item to be prompted...","Okay!")
-          local Conn = MarketplaceService.PromptPurchaseRequestedV2:Connect(function(...)
-             local t = {...} -- table 
-             discord:Notification("Prompt Detected","If this is a UGC item, this script will attempt purchase. Please check console.","Okay!")
-             local PurchaseProductId = t[2]
-             local IdempotencyKey = t[5]
-             local PurchaseAuthToken = t[6]
-             local info = MarketplaceService:GetProductInfo(PurchaseProductId,Enum.InfoType.Asset)
-             local PurchaseCollectibleItemId = info.CollectibleItemId
-             local PurchaseCollectibleProductId = info.CollectibleProductId
-             local PurchaseInfoType = Enum.InfoType.Asset -- InfoType
-			 local IsRobloxPurchase = true -- true/false
-			 local PurchaseRequestId = HttpService:GenerateGUID(false) -- GUID
-
-             if getgenv().BuyPaidItems then 
-                 PurchasePrice = info.PriceInRobux -- price
-             else 
-                 PurchasePrice = 0 -- price
-             end
-			 print("ProductId — "..PurchaseProductId)
-             print("IdempotencyKey — "..IdempotencyKey)
-             print("AuthToken — "..PurchaseAuthToken)
-             print("CollectibleItemId — "..PurchaseCollectibleItemId)
-             print("CollectibleProductId — "..PurchaseCollectibleProductId)
-             print("InfoType — "..tostring(PurchaseInfoType))
-             print("Price — "..PurchasePrice)
-             print("IsRobloxPurchase — "..tostring(IsRobloxPurchase))
-             print("RequestId — "..PurchaseRequestId)
-             warn("———————————————————————————————")
-             warn("FIRST PURCHASE ITEM!")
-             if getgenv().OpenConsole then 
-                local VirtualInputManager = game:GetService("VirtualInputManager")
-                VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
-                task.wait(0.01)
-                VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
-             end 
-             local sus,eror = pcall(function()
-                 MarketplaceService:PerformPurchase(PurchaseInfoType,PurchaseProductId,PurchasePrice,PurchaseRequestId,IsRobloxPurchase,PurchaseCollectibleItemId,PurchaseCollectibleProductId,IdempotencyKey,PurchaseAuthToken)
-             end)
-             if not sus then 
-                 error("Snaiper V1 Error — "..eror) 
-             else 
-                 print("Purchase success!") 
-             end
-          end)
-        else
-            Conn:Disconnect()
-        end
-    end)
-
-    UGCLimiteds:Toggle("Auto Purchaser V2 (Only UGC Limiteds)",false,function(state)
-       if state then
-          discord:Notification("Waiting","Waiting for any free UGC item to be prompted...","Okay!")
-          local _Conn = MarketplaceService.PromptPurchaseRequestedV2:Connect(function(...)
+           discord:Notification("Waiting","Waiting for any free UGC item to be prompted...","Okay!")
+           local Conn = MarketplaceService.PromptPurchaseRequestedV2:Connect(function(...)
+              local t = {...}
               discord:Notification("Prompt Detected","If this is a UGC item, this script will attempt purchase. Please check console.","Okay!")
-              local k = {...} -- table 
-              local InfoType = Enum.InfoType.Asset -- InfoType
-              local ProductId  = k[2]
-              local info = MarketplaceService:GetProductInfo(ProductId)
-			  local RequestId = HttpService:GenerateGUID(false) -- GUIDE
-		      local IsRbxPurchase = true -- true/false
-			  local collectiblesProductDetails = info.CollectibleDetails
-                              
+              local PurchaseProductId = t[2]
+              local IdempotencyKey = t[5]
+              local PurchaseAuthToken = t[6]
+              local info = MarketplaceService:GetProductInfo(PurchaseProductId,Enum.InfoType.Asset)
+              local PurchaseCollectibleItemId = info.CollectibleItemId
+              local PurchaseCollectibleProductId = info.CollectibleProductId
+              local PurchaseInfoType = Enum.InfoType.Asset
+              local IsRobloxPurchase = true
+			  local PurchaseRequestId = HttpService:GenerateGUID(false)
+			
               if getgenv().BuyPaidItems then 
-                  Price = info.PriceInRobux 
+                 PurchasePrice = info.PriceInRobux 
               else 
-                  Price = 0 
+                 PurchasePrice = 0 
               end
-              print("InfoType — "..tostring(InfoType))
-              print("ProductId — "..ProductId)
-              print("Price — "..Price)
-              print("RequestId — "..RequestId)
-              print("IsRobloxPurchase — "..tostring(IsRbxPurchase))
-              print("collectiblesProductDetails — "..collectiblesProductDetails)
+            
+			  print("ProductId — "..PurchaseProductId)
+              print("IdempotencyKey — "..IdempotencyKey)
+              print("AuthToken — "..PurchaseAuthToken)
+              print("CollectibleItemId — "..PurchaseCollectibleItemId)
+              print("CollectibleProductId — "..PurchaseCollectibleProductId)
+              print("InfoType — "..tostring(PurchaseInfoType))
+              print("Price — "..PurchasePrice)
+              print("IsRobloxPurchase — "..tostring(IsRobloxPurchase))
+              print("RequestId — "..PurchaseRequestId)
               warn("———————————————————————————————")
               warn("FIRST PURCHASE ITEM!")
-              local _sus,_eror = pcall(function()
-                 if not _sus then 
-                     error("Snaiper V2 Error — ".._eror) 
-                 else 
-                     print("Purchase success!") 
-                 end
-                 if getgenv().OpenConsole then 
-                    local VirtualInputManager = game:GetService("VirtualInputManager")
-                    VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
-                    task.wait(0.01)
-                    VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
-                 end
-                 MarketplaceService:PerformPurchaseV2(InfoType,ProductId,Price,RequestId,IsRbxPurchase,collectiblesProductDetails)
+              if getgenv().OpenConsole then 
+                 local VirtualInputManager = game:GetService("VirtualInputManager")
+                 VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
+                 task.wait(0.01)
+                 VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
+              end 
+              local sus,eror = pcall(function()
+                 MarketplaceService:PerformPurchase(PurchaseInfoType,PurchaseProductId,PurchasePrice,PurchaseRequestId,IsRobloxPurchase,PurchaseCollectibleItemId,PurchaseCollectibleProductId,IdempotencyKey,PurchaseAuthToken)
               end)
-            end)
-        else
-            _Conn:Disconnect()
-        end
-    end)
-
-    UGCLimiteds:Toggle("Auto Purchaser V3 (WEB Only)",false,function(state)
-        if state then
-           discord:Notification("Waiting","Waiting for any free UGC item to be prompted...","Okay!")
-           local __con = MarketplaceService.PromptPurchaseRequestedV2:Connect(function(...)
-              local j = {...} -- table
-              local _ProductId = j[2]
-              local _info = MarketplaceService:GetProductInfo(_ProductId)
-              local _CollectibleItemId = _info.CollectibleItemId
-              local _PurchaseCollectibleProductId = _info.CollectibleProductId
-              local _ExpectedCurrency = 1 -- Robux
-			  local _IdempotencyKey = HttpService:GenerateGUID(false) -- GUID
-			  local _SellerId = _info.Creator.Id
-			  local _SellerType = _info.Creator.CreatorType
-			  local _PurchaserType = "User"
-			  local _PurchaserUserId = player.UserId
-
-              if getgenv().BuyPaidItems then 
-                  _Price = _info.PriceInRobux -- price
+              if not sus then 
+                  error("Snaiper V1 Error — "..eror) 
               else 
-                  _Price = 0 -- price
+                  print("Purchase success!") 
               end
-              local Data = {_ProductId,_CollectibleItemId,_PurchaseCollectibleProductId,_ExpectedCurrency,_Price,_IdempotencyKey,_SellerId,_SellerType,_PurchaserType,_PurchaserUserId} -- table
-              local JsonData = HttpService:JSONEncode(Data) -- JSON table
-              print(JsonData)
-              pcall(function()
-                  PurchaseLink = "https://apis.roblox.com/marketplace-sales/v1/item/"..tostring(_info.CollectibleItemId).."/purchase-item"
-              end)
-              local _Ye,_No
-              if PurchaseLink then
-                 if getgenv().OpenConsole then 
-                    local VirtualInputManager = game:GetService("VirtualInputManager")
-                    VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
-                    task.wait(0.01)
-                    VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
-                 end
-                 _Ye,_No = pcall(function()
-                     game:GetService("HttpRbxApiService"):GetAsyncFullUrl(PurchaseLink,Enum.HttpContentType.ApplicationJson,false,{},JsonData)
-                 end)
-               end
-               if _Ye then
-                   local decoded = HttpService:JSONDecode(response)
-				   print("answer : "..response)
-                   print(decoded)
-               else
-                   warn("Eror Request:", response)
-               end
-           end)
-        else
-            __con:Disconnect()
-        end
-    end)
-
-    UGCLimiteds:Toggle("Auto Purchaser V4 (Only BULK)",false,function(state)
-        if state then
-           discord:Notification("Waiting","Waiting for any free UGC item to be prompted...","Okay!")
-           local ___con = MarketplaceService.PromptBulkPurchaseRequested:Connect(function(...)
-                 local w = {...}
-                 local PurchaseOrderQuest = w[3] or {}
-                 local PurchasOptions = w[6] or {}
-                 print("PurchaseOrderQuest — "..PurchaseOrderQuest)
-                 print("PurchasOptions — "..PurchasOptions)
-                 warn("ITEM TO PURCHASE!")
-                 if getgenv().OpenConsole then 
-                     local VirtualInputManager = game:GetService("VirtualInputManager")
-                     VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
-                     task.wait(0.01)
-                     VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
-                 end
-                 MarketplaceService:PerformBulkPurchase(PurchaseOrderQuest,PurchasOptions)
             end)
-         else
-              ___con:Disconnect()
-         end
-    end)
+          else
+              Conn:Disconnect()
+          end
+      end)
+
+      UGCLimiteds:Toggle("Auto Purchaser V2 (Only UGC Limiteds)",false,function(state)
+              if state then
+                      discord:Notification("Waiting","Waiting for any free UGC item to be prompted...","Okay!")
+                      local _Conn = MarketplaceService.PromptPurchaseRequestedV2:Connect(function(...)
+                              discord:Notification("Prompt Detected","If this is a UGC item, this script will attempt purchase. Please check console.","Okay!")
+                              local k = {...}
+                              local InfoType = Enum.InfoType.Asset
+                              local ProductId  = k[2]
+                              local info = MarketplaceService:GetProductInfo(ProductId)
+                              
+                              if getgenv().BuyPaidItems then 
+                                     Price = info.PriceInRobux 
+                              else 
+                                     Price = 0 
+                              end
+                              
+                              local RequestId = HttpService:GenerateGUID(false)
+                              local IsRbxPurchase = true
+                              local collectiblesProductDetails = info.CollectibleDetails
+                              print("InfoType — "..tostring(InfoType))
+                              print("ProductId — "..ProductId)
+                              print("Price — "..Price)
+                              print("RequestId — "..RequestId)
+                              print("IsRobloxPurchase — "..tostring(IsRbxPurchase))
+                              print("collectiblesProductDetails — "..collectiblesProductDetails)
+                              warn("———————————————————————————————")
+                              warn("FIRST PURCHASE ITEM!")
+                              local _sus,_eror = pcall(function()
+                                      if not _sus then 
+                                             error("Snaiper V2 Error — ".._eror) 
+                                      else 
+                                             print("Purchase success!") 
+                                      end
+                                      if getgenv().OpenConsole then 
+                                            local VirtualInputManager = game:GetService("VirtualInputManager")
+                                            VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
+                                             task.wait(0.01)
+                                             VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
+                                      end
+                                      MarketplaceService:PerformPurchaseV2(InfoType,ProductId,Price,RequestId,IsRbxPurchase,collectiblesProductDetails)
+                              end)
+                      end)
+              else
+                      _Conn:Disconnect()
+              end
+      end)
+
+       UGCLimiteds:Toggle("Auto Purchaser V3 (WEB Only)",false,function(state)
+               if state then
+                       discord:Notification("Waiting","Waiting for any free UGC item to be prompted...","Okay!")
+                       local __con = MarketplaceService.PromptPurchaseRequestedV2:Connect(function(...)
+                              local j = {...}
+                              local _ProductId = j[2]
+                              local _info = MarketplaceService:GetProductInfo(_ProductId)
+                              local _CollectibleItemId = _info.CollectibleItemId
+                              local _PurchaseCollectibleProductId = _info.CollectibleProductId
+                              local _ExpectedCurrency = 1
+
+                              if getgenv().BuyPaidItems then 
+                                      _Price = _info.PriceInRobux 
+                              else 
+                                      _Price = 0 
+                              end
+                              
+                              local _IdempotencyKey = HttpService:GenerateGUID(false)
+                              local _SellerId = _info.Creator.Id
+                              local _SellerType = _info.Creator.CreatorType
+                              local _PurchaserType = "User"
+                              local _PurchaserUserId = player.UserId
+                              local Data = {_ProductId,_CollectibleItemId,_PurchaseCollectibleProductId,_ExpectedCurrency,_Price,_IdempotencyKey,_SellerId,_SellerType,_PurchaserType,_PurchaserUserId}
+                              local JsonData = HttpService:JSONEncode(Data)
+                              print(JsonData)
+                              pcall(function()
+                                      PurchaseLink = "https://apis.roblox.com/marketplace-sales/v1/item/"..tostring(_info.CollectibleItemId).."/purchase-item"
+                              end)
+                              local _Ye,_No
+                              if PurchaseLink then
+                                       if getgenv().OpenConsole then 
+                                               local VirtualInputManager = game:GetService("VirtualInputManager")
+                                               VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
+                                               task.wait(0.01)
+                                               VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
+                                        end
+                                        _Ye,_No = pcall(function()
+                                                game:GetService("HttpRbxApiService"):GetAsyncFullUrl(PurchaseLink,Enum.HttpContentType.ApplicationJson,false,{},JsonData)
+                                        end)
+                                end
+                                if _Ye then
+                                        print("answer : "..response)
+                                        local decoded = HttpService:JSONDecode(response)
+                                        print(decoded)
+                                else
+                                        warn("Eror Request:", response)
+                                end
+                       end)
+               else
+                       __con:Disconnect()
+               end
+       end)
+
+       UGCLimiteds:Toggle("Auto Purchaser V4 (Only BULK)",false,function(state)
+               if state then
+                      discord:Notification("Waiting","Waiting for any free UGC item to be prompted...","Okay!")
+                      local ___con = MarketplaceService.PromptBulkPurchaseRequested:Connect(function(...)
+                      local w = {...}
+                      local PurchaseOrderQuest = w[3] or {}
+                      local PurchasOptions = w[6] or {}
+                      print("PurchaseOrderQuest — "..PurchaseOrderQuest)
+                      print("PurchasOptions — "..PurchasOptions)
+                      warn("ITEM TO PURCHASE!")
+                      if getgenv().OpenConsole then 
+                               local VirtualInputManager = game:GetService("VirtualInputManager")
+                               VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
+                               task.wait(0.01)
+                               VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
+                       end
+                               MarketplaceService:PerformBulkPurchase(PurchaseOrderQuest,PurchasOptions)
+                       end)
+               else
+                       ___con:Disconnect()
+               end
+       end)
 end
 
 if SettingsWevorn["Remotes"] then
-   local Remotes = serv:Channel("Remotes")
-   Remotes:Label("\nFires all remotes in the game as an attempt to prompt the item.\nWarning: This can be risky and can fire a decoy remote!")
+       local Remotes = serv:Channel("Remotes")
+       Remotes:Label("\nFires all remotes in the game as an attempt to prompt the item.\nWarning: This can be risky and can fire a decoy remote!")
 
-   Remotes:Textbox("UGC Limited Item ID","Enter Item ID that you wanna be included in the arguments...",false,function(id)
-      getgenv().UgcId = tonumber(id)
-      if getgenv().UgcId then
-          discord:Notification("Success","The script now remembers that the Item ID you want is " .. tostring(getgenv().UgcId) .. "!","Okay!")
-      else
-          discord:Notification("Error","That's... not an Item ID.", "Okay!")
-      end
-   end)
+       Remotes:Textbox("UGC Limited Item ID","Enter Item ID that you wanna be included in the arguments...",false,function(id)
+               getgenv().UgcId = tonumber(id)
+               if getgenv().UgcId then
+                      discord:Notification("Success","The script now remembers that the Item ID you want is " .. tostring(getgenv().UgcId) .. "!","Okay!")
+               else
+                      discord:Notification("Error","That's... not an Item ID.", "Okay!")
+               end
+       end)
 
-   Remotes:Dropdown("Remote Arguments...",{
-        "No Arguments/Blank",
-        "Bulk Purchase Function 1, (Ugc Item Id)",
-        "Bulk Purchase Function 2, (Ugc Item Id, nil)",
-        "Bulk Purchase Function 3, (UGC Item Id, Fake Ids)",
-        "LocalPlayer",
-        "Your Username",
-        "Your UserId",
-        "UGC Item ID",
-        "UGC Item ID, LocalPlayer",
-        "LocalPlayer, UGC Item ID",
-        "'UGC' as a string",
-        "'PromptPurchase' as a string, UGC Item Id",
-        "'PromptAssetPurchase' as a string, UGC Item Id",
-        "UGC Item ID, 'true' boolean",
-        "UGC Item ID, 'false' boolean",
-        "UGC Item ID, Your UserId",
-        "UGC Item ID, InfoType",
-        "InfoType, UGC Item ID",
-        "'true' boolean",
-        "'false' boolean",
-        "literal lua code to prompt item",
-        "UGC Item ID, 0",
-        "UGC Item Id, negative value",
-        "Positive value",
-        "Negative value",
-        "loadstring prompt item"
-        },function(x)
-        getgenv().RemoteFireMethod = (x)
-   end)
+       Remotes:Dropdown("Remote Arguments...",{
+                 "No Arguments/Blank",
+                 "Bulk Purchase Function 1, (Ugc Item Id)",
+                 "Bulk Purchase Function 2, (Ugc Item Id, nil)",
+                 "Bulk Purchase Function 3, (UGC Item Id, Fake Ids)",
+                 "LocalPlayer",
+                 "Your Username",
+                 "Your UserId",
+                 "UGC Item ID",
+                 "UGC Item ID, LocalPlayer",
+                 "LocalPlayer, UGC Item ID",
+                "'UGC' as a string",
+                "'PromptPurchase' as a string, UGC Item Id",
+                "'PromptAssetPurchase' as a string, UGC Item Id",
+                "UGC Item ID, 'true' boolean",
+                "UGC Item ID, 'false' boolean",
+                "UGC Item ID, Your UserId",
+                "UGC Item ID, InfoType",
+                "InfoType, UGC Item ID",
+                "'true' boolean",
+                "'false' boolean",
+                "literal lua code to prompt item",
+               "UGC Item ID, 0",
+               "UGC Item Id, negative value",
+               "Positive value",
+               "Negative value",
+               "loadstring prompt item"
+                },function(x)
+               getgenv().RemoteFireMethod = (x)
+       end)
 
-   local function FireRemotes(...)
-      local Count  = 0
-      local args = {...}
-      for _, v in ipairs (game:GetDescendants()) do
-          if v:IsA("RemoteEvent") or v:IsA("UnreliableRemoteEvent") then
-             Count = Count + 1
-             task.spawn(function()
+       local function FireRemotes(...)
+       local Count  = 0
+       local args = {...}
+       for _, v in ipairs (game:GetDescendants()) do
+             if v:IsA("RemoteEvent") or v:IsA("UnreliableRemoteEvent") then
+                  Count = Count + 1
+                  task.spawn(function()
+                        pcall(function()
+                                v:FireServer(table.unpack(args))
+                        end)
+                  end)
+
+             elseif v:IsA("RemoteFunction") then
+                  Count = Count + 1
+                  task.spawn(function()
+                          pcall(function()
+                                  v:InvokeServer(table.unpack(args))
+                          end)
+                  end)
+
+             elseif v:IsA("BindableEvent") then
+                  if BindableRemoteEventToggle then
+                       Count = Count + 1
+                       task.spawn(function()
+                             pcall(function()
+                                     v:Fire(table.unpack(args))
+                             end)
+                       end)
+                  end
+
+             elseif v:IsA("BindableFunction") then
+                  if BindableFunctionToggle then
+                       Count = Count + 1
+                       task.spawn(function()
+                            pcall(function()
+                                   v:Invoke(table.unpack(args)) 
+                            end)
+                       end)
+                  end
+            end
+      end       
+            if getgenv().NotificationRemotes then
+                    discord:Notification("Success","Fired "..Count.." Remotes","Okay!")
+             end
+       end
+
+       local function _FireRemotes(...)
+       local _Count  = 0
+       local _args = {...}
+       for _, v in ipairs (game:GetDescendants()) do
+             if v:IsA("RemoteEvent") or v:IsA("UnreliableRemoteEvent") then
+                  _Count = _Count + 1
+                  task.spawn(function()
+                        pcall(function()
+                                v:FireServer(unpack(_args))
+                        end)
+                  end)
+
+             elseif v:IsA("RemoteFunction") then
+                  _Count = _Count + 1
+                  task.spawn(function()
+                          pcall(function()
+                                v:InvokeServer(unpack(_args))
+                        end)
+                  end)
+
+             elseif v:IsA("BindableEvent") then
+                  if BindableRemoteEventToggle then
+                     _Count = _Count + 1
+                         task.spawn(function()
+                               pcall(function()
+                                    v:Fire(unpack(_args))
+                               end)
+                        end)
+                  end
+
+             elseif v:IsA("BindableFunction") then
+                  if BindableRemoteFunctionToggle then
+                  _Count = _Count + 1
+                         task.spawn(function()
+                               pcall(function()
+                                    v:Invoke(unpack(_args)) 
+                               end)
+                         end)
+                  end
+             end
+       end
+            if getgenv().NotificationRemotes then
+                    discord:Notification("Success","Fired ".._Count.." Remotes","Okay!")
+            end
+       end
+
+       local function __FireRemotes(Remote1,...) -- 762
+       local __args = {...}
+       if Remote1:IsA("RemoteEvent") or Remote1:IsA("UnreliableRemoteEvent") then
+           task.spawn(function()
                 pcall(function()
-                   v:FireServer(table.unpack(args))
+                      Remote1:FireServer(unpack(__args))
                 end)
-             end)
+           end)
 
-          elseif v:IsA("RemoteFunction") then
-              Count = Count + 1
-              task.spawn(function()
-                 pcall(function()
-                    v:InvokeServer(table.unpack(args))
-                 end)
-              end)
-
-          elseif v:IsA("BindableEvent") then
-              if BindableRemoteEventToggle then
-                 Count = Count + 1
-                 task.spawn(function()
-                    pcall(function()
-                       v:Fire(table.unpack(args))
-                    end)
-                 end)
-              end
-
-          elseif v:IsA("BindableFunction") then
-              if BindableFunctionToggle then
-                 Count = Count + 1
-                 task.spawn(function()
-                    pcall(function()
-                       v:Invoke(table.unpack(args)) 
-                    end)
-                 end)
-              end
-          end
-       end       
-       if getgenv().NotificationRemotes then
-          discord:Notification("Success","Fired "..Count.." Remotes","Okay!")
-       end
-   end
-
-   local function _FireRemotes(...)
-      local _Count  = 0
-      local _args = {...}
-      for _, v in ipairs (game:GetDescendants()) do
-          if v:IsA("RemoteEvent") or v:IsA("UnreliableRemoteEvent") then
-             _Count = _Count + 1
-             task.spawn(function()
+       elseif Remote1:IsA("RemoteFunction") then
+           task.spawn(function()
                 pcall(function()
-                   v:FireServer(unpack(_args))
+                      Remote1:InvokeServer(unpack(__args))
                 end)
-             end)
+           end)
 
-          elseif v:IsA("RemoteFunction") then
-              _Count = _Count + 1
-              task.spawn(function()
-                 pcall(function()
-                    v:InvokeServer(unpack(_args))
-                 end)
-              end)
+       elseif Remote1:IsA("BindableEvent") then
+           task.spawn(function()
+                pcall(function() -- 780
+                      Remote1:Fire(unpack(__args))
+                end)
+           end)
 
-          elseif v:IsA("BindableEvent") then
-              if BindableRemoteEventToggle then
-                 _Count = _Count + 1
-                 task.spawn(function()
-                    pcall(function()
-                       v:Fire(unpack(_args))
-                    end)
-                 end)
-              end
-
-          elseif v:IsA("BindableFunction") then
-              if BindableRemoteFunctionToggle then
-                 _Count = _Count + 1
-                 task.spawn(function()
-                    pcall(function()
-                       v:Invoke(unpack(_args)) 
-                    end)
-                 end)
-              end
-          end
+       elseif Remote1:IsA("BindableFunction") then -- 786
+           task.spawn(function()
+                pcall(function()
+                      Remote1:Invoke(unpack(__args)) 
+                end)
+           end)
+           end
+            if getgenv().NotificationRemotes then
+                    discord:Notification("Success","Fired This Remote","Okay!")
+            end
        end
-       if getgenv().NotificationRemotes then
-          discord:Notification("Success","Fired ".._Count.." Remotes","Okay!")
-       end
-   end
 
-   local function __FireRemotes(Remote1,...)
-      local __args = {...}
-      if Remote1:IsA("RemoteEvent") or Remote1:IsA("UnreliableRemoteEvent") then
-         task.spawn(function()
-            pcall(function()
-               Remote1:FireServer(unpack(__args))
-            end)
-         end)
-
-      elseif Remote1:IsA("RemoteFunction") then
-          task.spawn(function()
-             pcall(function()
-                Remote1:InvokeServer(unpack(__args))
-             end)
-          end)
-
-      elseif Remote1:IsA("BindableEvent") then
-          task.spawn(function()
-             pcall(function()
-                Remote1:Fire(unpack(__args))
-             end)
-          end)
-
-      elseif Remote1:IsA("BindableFunction") then
-          task.spawn(function()
-             pcall(function()
-                Remote1:Invoke(unpack(__args)) 
-             end)
-          end)
-	  end
-      if getgenv().NotificationRemotes then
-         discord:Notification("Success","Fired This Remote","Okay!")
-      end
-   end
-
-   local function ___FireRemotes(Remote2,...)
+       local function ___FireRemotes(Remote2,...)
        local ___args = {...}
        if Remote2:IsA("RemoteEvent") or Remote2:IsA("UnreliableRemoteEvent") then
-          task.spawn(function()
-             pcall(function()
-                Remote2:FireServer(table.unpack(___args))
-             end)
-          end)
+           task.spawn(function()
+                pcall(function()
+                      Remote2:FireServer(table.unpack(___args))
+                end)
+           end)
 
        elseif Remote2:IsA("RemoteFunction") then
            task.spawn(function()
-              pcall(function()
-                 Remote2:InvokeServer(table.unpack(___args))
-              end)
-           end)
+                pcall(function()
+                      Remote2:InvokeServer(table.unpack(___args))
+                end)
+       end)
 
        elseif Remote2:IsA("BindableEvent") then
            task.spawn(function()
-              pcall(function()
-                 Remote2:Fire(table.unpack(___args))
-              end)
+                pcall(function()
+                      Remote2:Fire(table.unpack(___args))
+                end)
            end)
 
        elseif Remote2:IsA("BindableFunction") then
            task.spawn(function()
-              pcall(function()
-                 Remote2:Invoke(table.unpack(___args)) 
-              end)
+                pcall(function()
+                      Remote2:Invoke(table.unpack(___args)) 
+                end)
            end)
        end
-       if getgenv().NotificationRemotes then
-          discord:Notification("Success","Fired This Remote","Okay!")
+            if getgenv().NotificationRemotes then
+                    discord:Notification("Success","Fired This Remote","Okay!")
+            end
        end
-   end
 
 -- Function "FireRemotes" for unpack.table (all)
 -- Function "_FireRemotes" for unpack (all)
@@ -833,63 +824,99 @@ if SettingsWevorn["Remotes"] then
 -- Use "_FireRemotes" for Bulk Purchase and "FireRemotes" for usual
 -- Use "__FireRemotes" for Bulk Purchase and "___FireRemotes" for usual
 
-   Remotes:Button("Fire All Remotes",function()
-      local method = getgenv().RemoteFireMethod
+       Remotes:Button("Fire All Remotes",function()
+       local method = getgenv().RemoteFireMethod
 
-      if method == "No Arguments/Blank" then 
-          FireRemotes()
-      elseif method == "LocalPlayer" then 
-          FireRemotes(game.Players.LocalPlayer)
-      elseif method == "Your Username" then 
-          FireRemotes(tostring(game.Players.LocalPlayer))
-      elseif method == "Your UserId" then 
-          FireRemotes(game.Players.LocalPlayer.UserId)
-      elseif method == "UGC Item ID" then
-          FireRemotes(getgenv().UgcId)
-      elseif method == "UGC Item ID, LocalPlayer" then
-          FireRemotes(getgenv().UgcId,game.Players.LocalPlayer)
-      elseif method == "LocalPlayer, UGC Item ID" then
-          FireRemotes(game.Players.LocalPlayer,getgenv().UgcId)
-      elseif method == "'UGC' as a string" then 
-          FireRemotes("UGC")
-      elseif method == "'PromptPurchase' as a string, UGC Item Id" then 
-          FireRemotes("PromptPurchase",getgenv().UgcId)
-      elseif method == "'PromptAssetPurchase' as a string, UGC Item Id" then 
-          FireRemotes("PromptAssetPurchase",getgenv().UgcId)
-      elseif method == "UGC Item ID, 'true' boolean" then
-          FireRemotes(getgenv().UgcId,true)
-      elseif method == "UGC Item ID, 'false' boolean" then
-          FireRemotes(getgenv().UgcId,false)
-      elseif method == "UGC Item ID, Your UserId" then
-          FireRemotes(getgenv().UgcId,game.Players.LocalPlayer.UserId)
-      elseif method == "'true' boolean" then 
-          FireRemotes(true)
-      elseif method == "'false' boolean" then 
-          FireRemotes(false)
-      elseif method == "UGC Item ID, InfoType" then
-          FireRemotes(getgenv().UgcId,Enum.InfoType.Asset)
-      elseif method == "InfoType, UGC Item ID" then
-          FireRemotes(Enum.InfoType.Asset,getgenv().UgcId)
-      elseif method == "literal lua code to prompt item" then
-          FireRemotes('game:GetService("MarketplaceService"):PromptPurchase(game.Players.'..LocalName..','..getgenv().UgcId..')')
-      elseif method == "UGC Item ID, 0" then
-          FireRemotes(getgenv().UgcId,0)
-      elseif method == "UGC Item Id, negative value" then
-          FireRemotes(getgenv().UgcId,-9999999999999999)
-      elseif method == "Positive value" then
-          FireRemotes(9999999999999999)
-      elseif method == "Negative value" then
-          FireRemotes(-9999999999999999)
-      elseif method == "loadstring prompt item" then 
-          FireRemotes("loadstring('game:GetService(\"MarketplaceService\"):PromptPurchase(game.Players."..LocalName..","..getgenv().UgcId..")')()")
-      elseif method == "Bulk Purchase Function 1, (Ugc Item Id)" then
-          _FireRemotes({[1] = {[1] = {Id = tostring(getgenv().UgcId),Type = Enum.MarketplaceProductType.AvatarAsset}},[2] = {} })
-      elseif method == "Bulk Purchase Function 2, (Ugc Item Id, nil)" then
-          _FireRemotes({[1] = {[1] = {Id = getgenv().UgcId,Type = Enum.MarketplaceProductType.AvatarAsset}},[2] = {Id = nil,Type = Enum.MarketplaceProductType.AvatarAsset},[3] = {Id = nil,Type = Enum.MarketplaceProductType.AvatarAsset} })
-      elseif method == "Bulk Purchase Function 3, (UGC Item Id, Fake Ids)" then 
-          _FireRemotes({[1] = {[1] = {Id = getgenv().UgcId,Type = Enum.MarketplaceProductType.AvatarAsset}},[2] = {Id = 137525346725198,Type = Enum.MarketplaceProductType.AvatarAsset},[3] = {Id = 77554705161930,Type = Enum.MarketplaceProductType.AvatarAsset} })
-      end
+         if method == "No Arguments/Blank" then 
+             FireRemotes()
+         elseif method == "LocalPlayer" then 
+             FireRemotes(game.Players.LocalPlayer)
+         elseif method == "Your Username" then 
+              FireRemotes(tostring(game.Players.LocalPlayer))
+         elseif method == "Your UserId" then 
+              FireRemotes(game.Players.LocalPlayer.UserId)
+         elseif method == "UGC Item ID" then
+              FireRemotes(getgenv().UgcId)
+         elseif method == "UGC Item ID, LocalPlayer" then
+              FireRemotes(getgenv().UgcId,game.Players.LocalPlayer)
+         elseif method == "LocalPlayer, UGC Item ID" then
+              FireRemotes(game.Players.LocalPlayer,getgenv().UgcId)
+         elseif method == "'UGC' as a string" then 
+              FireRemotes("UGC")
+         elseif method == "'PromptPurchase' as a string, UGC Item Id" then 
+              FireRemotes("PromptPurchase",getgenv().UgcId)
+         elseif method == "'PromptAssetPurchase' as a string, UGC Item Id" then 
+              FireRemotes("PromptAssetPurchase",getgenv().UgcId)
+         elseif method == "UGC Item ID, 'true' boolean" then
+              FireRemotes(getgenv().UgcId,true)
+         elseif method == "UGC Item ID, 'false' boolean" then
+              FireRemotes(getgenv().UgcId,false)
+         elseif method == "UGC Item ID, Your UserId" then
+              FireRemotes(getgenv().UgcId,game.Players.LocalPlayer.UserId)
+         elseif method == "'true' boolean" then 
+              FireRemotes(true)
+         elseif method == "'false' boolean" then 
+              FireRemotes(false)
+         elseif method == "UGC Item ID, InfoType" then
+              FireRemotes(getgenv().UgcId,Enum.InfoType.Asset)
+         elseif method == "InfoType, UGC Item ID" then
+              FireRemotes(Enum.InfoType.Asset,getgenv().UgcId)
+        elseif method == "literal lua code to prompt item" then
+              FireRemotes('game:GetService("MarketplaceService"):PromptPurchase(game.Players.'..LocalName..','..getgenv().UgcId..')')
+        elseif method == "UGC Item ID, 0" then
+              FireRemotes(getgenv().UgcId,0)
+        elseif method == "UGC Item Id, negative value" then
+              FireRemotes(getgenv().UgcId,-9999999999999999)
+        elseif method == "Positive value" then
+              FireRemotes(9999999999999999)
+        elseif method == "Negative value" then
+              FireRemotes(-9999999999999999)
+         elseif method == "loadstring prompt item" then 
+              FireRemotes("loadstring('game:GetService(\"MarketplaceService\"):PromptPurchase(game.Players."..LocalName..","..getgenv().UgcId..")')()")
+         elseif method == "Bulk Purchase Function 1, (Ugc Item Id)" then
+              _FireRemotes({[1] = {[1] = {Id = tostring(getgenv().UgcId),Type = Enum.MarketplaceProductType.AvatarAsset}},[2] = {} })
+         elseif method == "Bulk Purchase Function 2, (Ugc Item Id, nil)" then
+              _FireRemotes({[1] = {[1] = {Id = getgenv().UgcId,Type = Enum.MarketplaceProductType.AvatarAsset}},[2] = {Id = nil,Type = Enum.MarketplaceProductType.AvatarAsset},[3] = {Id = nil,Type = Enum.MarketplaceProductType.AvatarAsset} })
+         elseif method == "Bulk Purchase Function 3, (UGC Item Id, Fake Ids)" then 
+               _FireRemotes({[1] = {[1] = {Id = getgenv().UgcId,Type = Enum.MarketplaceProductType.AvatarAsset}},[2] = {Id = 137525346725198,Type = Enum.MarketplaceProductType.AvatarAsset},[3] = {Id = 77554705161930,Type = Enum.MarketplaceProductType.AvatarAsset} })
+         end
    end)
+
+    Remotes:Button("Fire All Remotes on All Methods",function()
+    getgenv().NotificationRemotes = false
+    task.spawn(function()
+    pcall(function()
+    FireRemotes()
+    FireRemotes(game.Players.LocalPlayer)
+    FireRemotes(tostring(game.Players.LocalPlayer))
+    FireRemotes(game.Players.LocalPlayer.UserId)
+    FireRemotes(getgenv().UgcId)
+    FireRemotes(getgenv().UgcId,game.Players.LocalPlayer)
+    FireRemotes(game.Players.LocalPlayer,getgenv().UgcId)
+    FireRemotes("UGC")
+    FireRemotes("PromptPurchase",getgenv().UgcId)
+    FireRemotes("PromptAssetPurchase",getgenv().UgcId)
+    FireRemotes(getgenv().UgcId,true)
+    FireRemotes(getgenv().UgcId,false)
+    FireRemotes(getgenv().UgcId,game.Players.LocalPlayer.UserId)
+    FireRemotes(true)
+    FireRemotes(false)
+    FireRemotes(getgenv().UgcId,Enum.InfoType.Asset)
+    FireRemotes(Enum.InfoType.Asset,getgenv().UgcId)
+    FireRemotes(getgenv().UgcId,0)
+    FireRemotes(getgenv().UgcId,-9999999999999999)
+    FireRemotes(9999999999999999)
+    FireRemotes(-9999999999999999)
+    _FireRemotes({[1] = {[1] = {Id = tostring(getgenv().UgcId),Type = Enum.MarketplaceProductType.AvatarAsset}},[2] = {} })
+    _FireRemotes({[1] = {[1] = {Id = getgenv().UgcId,Type = Enum.MarketplaceProductType.AvatarAsset}},[2] = {Id = nil,Type = Enum.MarketplaceProductType.AvatarAsset},[3] = {Id = nil,Type = Enum.MarketplaceProductType.AvatarAsset} })
+    _FireRemotes({[1] = {[1] = {Id = getgenv().UgcId,Type = Enum.MarketplaceProductType.AvatarAsset}},[2] = {Id = 137525346725198,Type = Enum.MarketplaceProductType.AvatarAsset},[3] = {Id = 77554705161930,Type = Enum.MarketplaceProductType.AvatarAsset} })
+    FireRemotes("loadstring('game:GetService(\"MarketplaceService\"):PromptPurchase(game.Players."..LocalName..","..getgenv().UgcId..")')()")
+    FireRemotes('game:GetService("MarketplaceService"):PromptPurchase(game.Players.'..LocalName..','..getgenv().UgcId..')') -- 26
+    end)
+    discord:Notification("Success","Fired All Remotes On All Methods","Okay!")
+    getgenv().NotificationRemotes = true
+    end)
+    end)
 
 if not BindableRemoteEventToggle then
 Remotes:Toggle("Enable BindableRemoteEvent",false,function(state)
@@ -1208,7 +1235,7 @@ if v:IsA("RemoteEvent") then
 print(i.." — RemoteEvent "..v:GetFullName())
 elseif v:IsA("RemoteFunction") then
 print(i.." — RemoteFunction "..v:GetFullName())
-elseif v:IsA("UnreliableRemoteEvent ") then
+elseif v:IsA("UnreliableRemoteEvent") then
 print(i.." — UnreliableRemoteEvent "..v:GetFullName())
 elseif v:IsA("BindableEvent") then
 print(i.." — BindableEvent "..v:GetFullName())
@@ -1254,7 +1281,7 @@ end)
 
 Remotes:Seperator()
 
-Remotes:Textbox("Do you want use your fire remotes method?","Enter  your method",false, function(YourMethod)
+Remotes:Textbox("Do you want use your fire remotes method?","Enter your method",false, function(YourMethod)
 getgenv().YourFireRemotesMethod = YourMethod 
 end)
 
@@ -1440,69 +1467,72 @@ Lighting.OutdoorAmbient = Light5
 end
 end)
 
-Games:Button("Teleport  To Smaller Server", function(x)
-local api = "https://games.roblox.com/v1/games/"
-local server = api .. PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"
-
-function list(cs)
+Games:Button("Teleport To Smaller Server",function()
+local server = "https://games.roblox.com/v1/games/"..PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
+local SmallerServer, Next
+repeat 
 local url = server
-if cs then url = url .. "&cursor=" .. cs end
-local Raw = game:HttpGet(url, true)
-return HttpService:JSONDecode(Raw)
-end
-
-local _Server, Next
-repeat
-local Servers = list(Next)
-if Servers.data and #Servers.data > 0 then
-_Server = Servers.data[1]
-end
-Next = Servers.nextPageCursor
-until _Server
-
-if _Server then
-discord:Notification("Teleporting", "Teleporting to...\n" .. PlaceId .. "\nJob ID: " .. _Server.id, "Okay!")
-TeleportService:TeleportToPlaceInstance(PlaceId, _Server.id, game.Players.LocalPlayer)
-else
-discord:Notification("Teleport Eror", "Not Found  Server ", "Okay!")
-end
-end)
-
-Games:Button("Teleport To Largest Server", function(x)
-local api = "https://games.roblox.com/v1/games/"
-local server = api..PlaceId .."/servers/Public?sortOrder=Desc&limit=100"
-
-function list(cs)
-local url = server
-if cs then url = url .."&cursor="..cs end
-local Raw = game:HttpGet(url, true)
-return HttpService:JSONDecode(Raw)
-end
-
-local LargestServer, Next
-repeat
-local Servers = list(Next)
-if Servers.data and #Servers.data > 0 then
-for i, s in pairs(Servers.data) do
-if s.maxPlayers - s.playing > 0 and (not LargestServer or s.playing > LargestServer.playing) then
-LargestServer = s
+if Next then url = url.."&cursor="..Next end
+local Servers = game:HttpGet(url,true)
+local _Servers = HttpService:JSONDecode(Servers)
+if _Servers.data and #_Servers.data > 0 then
+for _, v in ipairs(_Servers.data) do
+if v.playing < v.maxPlayers then 
+if not SmallerServer or v.playing < SmallerServer.playing then
+SmallerServer = v
 end
 end
 end
-Next = Servers.nextPageCursor
+end
+Next = _Servers.nextPageCursor
 until not Next
-
-if LargestServer then
-discord:Notification("Teleporting", "Teleporting to...\n" .. PlaceId .. "\nJob ID: " .. LargestServer.id, "Okay!")
-TeleportService:TeleportToPlaceInstance(PlaceId, LargestServer.id, game.Players.LocalPlayer)
-else 
-discord:Notification("Teleport Eror", "Not Found  Server ", "Okay!")
+if SmallerServer then
+discord:Notification("Teleporting","Teleporting to...\n"..PlaceId.."\nJob ID: "..SmallerServer.id,"Okay!")
+TeleportService:TeleportToPlaceInstance(PlaceId,SmallerServer.id,game.Players.LocalPlayer)
+else
+discord:Notification("Error","Server Not Found","Okay...")
 end
 end)
 
-Games:Button("Force  Close Roblox App",function()
+Games:Button("Teleport To Largest Server",function()
+local server = "https://games.roblox.com/v1/games/"..PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
+local LargestServer, Next 
+repeat 
+local url = server 
+if Next then url = url.."&cursor="..Next end
+local Servers = game:HttpGet(url,true)
+local _Servers = HttpService:JSONDecode(Servers)
+if _Servers.data and #_Servers.data > 0 then 
+for _, v in ipairs(_Servers.data) do
+if v.maxPlayers - v.playing > 0 and (not LargestServer or v.playing > LargestServer.playing) then
+LargestServer = v
+end
+end
+end
+until not Next
+if LargestServer then
+discord:Notification("Teleporting","Teleporting to...\n"..PlaceId.."\nJob ID: "..LargestServer.id,"Okay!")
+TeleportService:TeleportToPlaceInstance(PlaceId,LargestServer.id,game.Players.LocalPlayer)
+else
+discord:Notification("Error","Server Not Found","Okay...")
+end
+end)
+
+Games:Button("Force Close Roblox App",function()
 game:Shutdown()
 end)
+
+Games:Seperator()
+
+Games:Button("Copy Teleport To This Game",function()
+setclipboard('game:GetService("TeleportService"):Teleport('..game.PlaceId..',game.Players.LocalPlayer)')
+end)
+
+Games:Button("Copy Teleport To This Server",function()
+setclipboard('game:GetService("TeleportService"):TeleportToPlaceInstance('..game.PlaceId..',"'..game.JobId..'",game.Players.LocalPlayer)')
+end)
+
+Games:Seperator()
 
 Games:Label("Current Game's Place ID:\n" .. game.PlaceId)
 Games:Label("Current Game's Universe ID:\n" .. game.GameId)
@@ -1521,15 +1551,22 @@ setclipboard(game.JobId)
 end)
 
 Games:Textbox("You can check game status with id","Enter a game id",false,function(eId)
+task.spawn(function()
 GamesId = tonumber(eId)
 if GamesId then
 local httprequest = request or http_request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request)
 if not httprequest then discord:Notification("Error","LOL your potato don't support request","Okay.....") return end
+local UniGame
+if UniverseCache[GamesId] then
+UniGame = UniverseCache[GamesId]
+else 
 local response = httprequest({Url = "https://apis.roblox.com/universes/v1/places/"..GamesId.."/universe",Method = "GET"})
 if not response then discord:Notification("Error","Http Error [1]","Okay") return end
 local data = HttpService:JSONDecode(response.Body)
 if not data then discord:Notification("Error","JSONDecode Error [1]","Okay") return end
-local UniGame = data.universeId
+UniGame = data.universeId
+UniverseCache[GamesId] = UniGame
+end
 if not UniGame then discord:Notification("Error","Universe Id is not found","Okay") return end
 local response2 = httprequest({Url = "https://games.roblox.com/v1/games?universeIds="..UniGame,Method = "GET"})
 if not response2 then discord:Notification("Error","Http Error [2]","Okay") return end
@@ -1548,8 +1585,9 @@ else
 discord:Notification("Error!","Enter a game id!","Okay!")
 end
 end)
+end)
 
-Games:Button("Teleport to game with id",function()
+Games:Button("Teleport to this game",function()
 if not GamesId then discord:Notification("Error","Enter a Place Id","Okay") return end 
 TeleportService:Teleport(GamesId,game.Players.LocalPlayer)
 end)
@@ -1567,7 +1605,7 @@ local name = Players:GetNameFromUserIdAsync(NewId)
 discord:Notification("Success","You are now "..name.." ("..NewId..")","Okay!")
 Players:SetLocalPlayerInfo(NewId,name,name,Enum.MembershipType.Premium,false)
 else 
-discord("Eror!","Enter a number!","Okay!")
+discord:Notification("Eror!","Enter a number!","Okay!")
 end
 end)
 
@@ -1642,7 +1680,7 @@ players:Button("Teleport to Saved Waypoint",function() if getgenv().HumPosition 
 players:Button("Tween to Saved Waypoint",function() if getgenv().HumPosition then local hum = game.Players.LocalPlayer.Character.HumanoidRootPart while (getgenv().HumPosition-hum.Position).Magnitude > 0.1 do hum.CFrame = hum.CFrame:Lerp(CFrame.new(getgenv().HumPosition),math.min(35 * task.wait() / (getgenv().HumPosition-hum.Position).Magnitude,1)) end else discord:Notification("Eror","No Waypoint Found!","Okay") end end)
 players:Button("Move to Saved Waypoint",function() if getgenv().HumPosition then player.Character.Humanoid:MoveTo(getgenv().HumPosition) else discord:Notification("Eror","No Waypoint  Found!","Okay") end end)
 players:Button("Clear Waypoint",function() getgenv().HumPosition = false discord:Notification("Success","Waypoint  is cleared","Okay!") end)
-players:Button("Copy Waypoint Position",function() if not getgenv().HumPosition then discord("Error","No Waypoint found","Okay!") return end setclipboard(tostring(getgenv().HumPosition)) end)
+players:Button("Copy Waypoint Position",function() if not getgenv().HumPosition then discord:Notification("Error","No Waypoint found","Okay!") return end setclipboard(tostring(getgenv().HumPosition)) end)
 getgenv().Ticket = true
 end)
 
@@ -1767,7 +1805,7 @@ if Players.LocalPlayer.Character:FindFirstChild("Humanoid") and child:IsA("Backp
 Players.LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid"):EquipTool(child)
 end
 end)
-elseif not bool then
+elseif not state then
 if getgenv().connected then
 getgenv().connected:Disconnect()
 end
@@ -1926,7 +1964,16 @@ end)
 end
 end)
 
-PurchaseExploits:Toggle("Loop Fire Selected  Game Pass",false,function(state)
+PurchaseExploits:Button("Fire All GamePasseses",function()
+for _, v in ipairs(GamePassIds) do
+pcall(function()
+MarketplaceService:SignalPromptGamePassPurchaseFinished(game.Players.LocalPlayer,v,true)
+end)
+end
+discord:Notification("Success","Fired all Gamepass In this game","okay")
+end)
+
+PurchaseExploits:Toggle("Loop Fire Selected Game Pass",false,function(state)
 getgenv().LoopFireGamePass = state 
 while getgenv().LoopFireGamePass and task.wait() do
 if GamePass then
@@ -1969,7 +2016,16 @@ end)
 end
 end)
 
-PurchaseExploits:Toggle("Loop Fire Selected  Dev Product",false,function(state)
+PurchaseExploits:Button("Fire All Dev Products",function()
+for _, v in ipairs(GamePassIds) do
+pcall(function()
+MarketplaceService:SignalPromptProductPurchaseFinished(game.Players.LocalPlayer.UserId,v,true)
+end)
+end
+discord:Notification("Success","Fired all Dev Products In this game","Okay!")
+end)
+
+PurchaseExploits:Toggle("Loop Fire Selected Dev Product",false,function(state)
 getgenv().LoopFireDevProduct = state
 while getgenv().LoopFireDevProduct and task.wait() do
 if DevProduct then
