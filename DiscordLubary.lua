@@ -2459,7 +2459,6 @@ function DiscordLib:Window(text)
                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                       dragging = true
                       ValueBubble.Visible = true
-					  move(input)
                    end
                 end)
 				
@@ -2478,7 +2477,8 @@ function DiscordLib:Window(text)
 
 				ZipHitbox.TouchMoved:Connect(function(input)
                    if dragging then
-                      move(input)
+					  local touchInput = { Position = input.Position, UserInputType = Enum.UserInputType.Touch }
+                      move(touchInput)
                    end
                 end)
 				
