@@ -723,8 +723,6 @@ function DiscordLib:Window(text)
 			{BackgroundTransparency = 0.2}
 		):Play()
 
-
-
 		local AvatarChange = Instance.new("Frame")
 		local UserChangeCorner = Instance.new("UICorner")
 		local UnderBar = Instance.new("Frame")
@@ -2449,15 +2447,22 @@ function DiscordLib:Window(text)
 					ValueLabel.Text = tostring(value)
 					pcall(callback, value)
 				end
-				Zip.InputBegan:Connect(function(input)
+
+                local ZipHitbox = Instance.new("Frame")
+				ZipHitbox.Size = UDim2.new(0, 30, 0, 30)
+                ZipHitbox.Position = UDim2.new(0, -10, -1, 0)
+                ZipHitbox.BackgroundTransparency = 1
+				ZipHitbox.Parent = SliderFrame
+				ZipHitbox.Name = "ZipHitbox"
+				
+				ZipHitbox.InputBegan:Connect(function(input)
                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                       dragging = true
                       ValueBubble.Visible = true
-					  move(input)
                    end
                 end)
 				
-				Zip.InputEnded:Connect(function(input)
+				ZipHitbox.InputEnded:Connect(function(input)
                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                       dragging = false
                       ValueBubble.Visible = false
