@@ -2449,7 +2449,7 @@ function DiscordLib:Window(text)
 				end
 
                 local ZipHitbox = Instance.new("Frame")
-				ZipHitbox.Size = UDim2.new(0, 44, 0, 44)
+				ZipHitbox.Size = UDim2.new(0, 70, 0, 44)
                 ZipHitbox.Position = UDim2.new(0.5, -22, 0.5, -22)
                 ZipHitbox.BackgroundTransparency = 1
 				ZipHitbox.Parent = Zip
