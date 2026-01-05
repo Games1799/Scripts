@@ -2380,7 +2380,6 @@ function DiscordLib:Window(text)
 				ValueBubble.Size = UDim2.new(0, 36, 0, 21)
 				ValueBubble.Visible = false
 				
-	
 				Zip.MouseEnter:Connect(function()
 					if dragging == false then
 						ValueBubble.Visible = true
@@ -2985,83 +2984,53 @@ function DiscordLib:Window(text)
 				Color.BackgroundColor3 = preset
 				pcall(callback, PresetClr.BackgroundColor3)
 
-				Color.InputBegan:Connect(
-					function(input)
-						if input.UserInputType == Enum.UserInputType.MouseButton1 then
+				Color.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                   if ColorInput then
+                      ColorInput:Disconnect()
+                   end
+                   ColorInput = RunService.RenderStepped:Connect(function()
+                      local ColorX = (math.clamp(Mouse.X - Color.AbsolutePosition.X, 0, Color.AbsoluteSize.X) / Color.AbsoluteSize.X)
+                      local ColorY = (math.clamp(Mouse.Y - Color.AbsolutePosition.Y, 0, Color.AbsoluteSize.Y) / Color.AbsoluteSize.Y)
+                      ColorSelection.Position = UDim2.new(ColorX, 0, ColorY, 0)
+                      ColorS = ColorX
+                      ColorV = 1 - ColorY
+                      UpdateColorPicker(true)
+                   end)
+                 end
+              end)
 
-							if ColorInput then
-								ColorInput:Disconnect()
-							end
+              Color.InputEnded:Connect(function(input)
+                 if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    if ColorInput then
+                       ColorInput:Disconnect()
+                    end
+                 end
+              end)
 
-							ColorInput =
-								RunService.RenderStepped:Connect(
-									function()
-									local ColorX =
-										(math.clamp(Mouse.X - Color.AbsolutePosition.X, 0, Color.AbsoluteSize.X) /
-											Color.AbsoluteSize.X)
-									local ColorY =
-										(math.clamp(Mouse.Y - Color.AbsolutePosition.Y, 0, Color.AbsoluteSize.Y) /
-											Color.AbsoluteSize.Y)
+			  Hue.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                   if HueInput then
+                      HueInput:Disconnect()
+                   end
+                HueInput = RunService.RenderStepped:Connect(function()
+                   local HueY = (math.clamp(Mouse.Y - Hue.AbsolutePosition.Y, 0, Hue.AbsoluteSize.Y) / Hue.AbsoluteSize.Y)
+                   HueSelection.Position = UDim2.new(0.48, 0, HueY, 0)
+                   ColorH = 1 - HueY
+                   UpdateColorPicker(true)
+                end)
+               end
+             end)
 
-									ColorSelection.Position = UDim2.new(ColorX, 0, ColorY, 0)
-									ColorS = ColorX
-									ColorV = 1 - ColorY
-
-									UpdateColorPicker(true)
-								end
-								)
-						end
-					end
-				)
-
-				Color.InputEnded:Connect(
-					function(input)
-						if input.UserInputType == Enum.UserInputType.MouseButton1 then
-							if ColorInput then
-								ColorInput:Disconnect()
-							end
-						end
-					end
-				)
-
-				Hue.InputBegan:Connect(
-					function(input)
-						if input.UserInputType == Enum.UserInputType.MouseButton1 then
-
-
-							if HueInput then
-								HueInput:Disconnect()
-							end
-
-							HueInput =
-								RunService.RenderStepped:Connect(
-									function()
-									local HueY =
-										(math.clamp(Mouse.Y - Hue.AbsolutePosition.Y, 0, Hue.AbsoluteSize.Y) /
-											Hue.AbsoluteSize.Y)
-
-									HueSelection.Position = UDim2.new(0.48, 0, HueY, 0)
-									ColorH = 1 - HueY
-
-									UpdateColorPicker(true)
-								end
-								)
-						end
-					end
-				)
-
-				Hue.InputEnded:Connect(
-					function(input)
-						if input.UserInputType == Enum.UserInputType.MouseButton1 then
-							if HueInput then
-								HueInput:Disconnect()
-							end
-						end
-					end
-				)
-				
-				ChannelHolder.CanvasSize = UDim2.new(0,0,0,ChannelHolderLayout.AbsoluteContentSize.Y)
-			end
+             Hue.InputEnded:Connect(function(input)
+             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                if HueInput then
+                   HueInput:Disconnect()
+                end
+              end
+            end)
+		    ChannelHolder.CanvasSize = UDim2.new(0,0,0,ChannelHolderLayout.AbsoluteContentSize.Y)
+		    end
 			
 			function ChannelContent:Textbox(text, placetext, disapper, callback)
 				local Textbox = Instance.new("Frame")
