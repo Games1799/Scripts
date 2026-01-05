@@ -2455,32 +2455,41 @@ function DiscordLib:Window(text)
 				ZipHitbox.Parent = SliderFrame
 				ZipHitbox.Name = "ZipHitbox"
 				
-				ZipHitbox.InputBegan:Connect(function(input)
-                   if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                      dragging = true
-                      ValueBubble.Visible = true
-                   end
-                end)
-				
-				ZipHitbox.InputEnded:Connect(function(input)
-                   if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                      dragging = false
-                      ValueBubble.Visible = false
-                   end
-                end)
-				
-				UserInputService.InputChanged:Connect(function(input)
-                   if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-                      move(input)
-                   end
-                end)
+				local dragging = false
 
-				ZipHitbox.TouchMoved:Connect(function(input)
-                   if dragging then
-					  local touchInput = { Position = input.Position, UserInputType = Enum.UserInputType.Touch }
-                      move(touchInput)
-                   end
-                end)
+ZipHitbox.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or
+       input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        ValueBubble.Visible = true
+    end
+end)
+
+ZipHitbox.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or
+       input.UserInputType == Enum.UserInputType.Touch then
+        dragging = false
+        ValueBubble.Visible = false
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if dragging then
+        if input.UserInputType == Enum.UserInputType.MouseMovement or
+           input.UserInputType == Enum.UserInputType.Touch then
+
+            local x = input.Position.X
+            local sliderPos = math.clamp((x - SliderFrame.AbsolutePosition.X) / SliderFrame.AbsoluteSize.X, 0, 1)
+
+            CurrentValueFrame.Size = UDim2.new(sliderPos, 0, 0, 8)
+            Zip.Position = UDim2.new(sliderPos, -6, -0.644999981, 0)
+
+            local value = math.floor(sliderPos * (max - min) + min)
+            ValueLabel.Text = tostring(value)
+            pcall(callback, value)
+        end
+    end
+end)
 				
 				function SliderFunc:Change(tochange)
 					CurrentValueFrame.Size = UDim2.new((tochange or 0) / max, 0, 0, 8)
