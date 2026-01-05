@@ -2450,29 +2450,25 @@ function DiscordLib:Window(text)
 					ValueLabel.Text = tostring(value)
 					pcall(callback, value)
 				end
-				Zip.InputBegan:Connect(
-					function(input)
-						if input.UserInputType == Enum.UserInputType.MouseButton1 then
-							dragging = true
-							ValueBubble.Visible = true
-						end
-					end
-				)
-				Zip.InputEnded:Connect(
-					function(input)
-						if input.UserInputType == Enum.UserInputType.MouseButton1 then
-							dragging = false
-							ValueBubble.Visible = false
-						end
-					end
-				)
-				UserInputService.InputChanged:Connect(
-				function(input)
-					if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-						move(input)
-					end
-				end
-				)
+				Zip.InputBegan:Connect(function(input)
+                   if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                      dragging = true
+                      ValueBubble.Visible = true
+                   end
+                end)
+				
+				Zip.InputEnded:Connect(function(input)
+                   if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                      dragging = false
+                      ValueBubble.Visible = false
+                   end
+                end)
+				
+				UserInputService.InputChanged:Connect(function(input)
+                  if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+                     move(input)
+                  end
+                end)
 				
 				function SliderFunc:Change(tochange)
 					CurrentValueFrame.Size = UDim2.new((tochange or 0) / max, 0, 0, 8)
