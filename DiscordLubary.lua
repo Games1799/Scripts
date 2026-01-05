@@ -2452,7 +2452,7 @@ function DiscordLib:Window(text)
 				ZipHitbox.Size = UDim2.new(0, 30, 0, 30)
                 ZipHitbox.Position = UDim2.new(0, -10, -1, 0)
                 ZipHitbox.BackgroundTransparency = 1
-				ZipHitbox.Parent = SliderFrame
+				ZipHitbox.Parent = Zip
 				ZipHitbox.Name = "ZipHitbox"
 				
 				local dragging = false
