@@ -2459,6 +2459,7 @@ function DiscordLib:Window(text)
                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                       dragging = true
                       ValueBubble.Visible = true
+					  move(input)
                    end
                 end)
 				
