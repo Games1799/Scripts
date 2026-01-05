@@ -2471,9 +2471,15 @@ function DiscordLib:Window(text)
                 end)
 				
 				UserInputService.InputChanged:Connect(function(input)
-                  if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-                     move(input)
-                  end
+                   if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+                      move(input)
+                   end
+                end)
+
+				ZipHitbox.TouchMoved:Connect(function(input)
+                   if dragging then
+                      move(input)
+                   end
                 end)
 				
 				function SliderFunc:Change(tochange)
