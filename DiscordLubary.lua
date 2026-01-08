@@ -3144,6 +3144,7 @@ function DiscordLib:Window(text)
 			end
 			
 			function ChannelContent:Label(text)
+				local LabelFunc = {}
 				local Label = Instance.new("TextButton")
 				local LabelTitle = Instance.new("TextLabel")
 
@@ -3171,7 +3172,11 @@ function DiscordLib:Window(text)
 				LabelTitle.TextSize = 14.000
 				LabelTitle.TextXAlignment = Enum.TextXAlignment.Left
 				
+				function LabelFunc:Change(newText)
+                   LabelTitle.Text = newText
+				end
 				ChannelHolder.CanvasSize = UDim2.new(0,0,0,ChannelHolderLayout.AbsoluteContentSize.Y)
+				return LabelFunc
 			end
 			
 			function ChannelContent:Bind(text, presetbind, callback)
