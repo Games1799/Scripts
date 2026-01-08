@@ -3145,7 +3145,7 @@ function DiscordLib:Window(text)
 			
 			function ChannelContent:Label(text)
 				local LabelFunc = {}
-				LabelFunc.LabelTitle = Instance.new("TextLabel")
+				local LabelTitle
 				local Label = Instance.new("TextButton")
 				local LabelTitle = Instance.new("TextLabel")
 
@@ -3161,6 +3161,8 @@ function DiscordLib:Window(text)
 				Label.TextColor3 = Color3.fromRGB(255, 255, 255)
 				Label.TextSize = 14.000
 
+                LabelFunc.LabelTitle = Instance.new("TextLabel")
+                LabelTitle = LabelFunc.LabelTitle
 				LabelTitle.Name = "LabelTitle"
 				LabelTitle.Parent = Label
 				LabelTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
