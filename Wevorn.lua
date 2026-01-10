@@ -149,17 +149,17 @@ pcall(function()
 end)
 
 local discord = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
-local win = discord:Window("Wevorn v1.3.5")
+local win = discord:Window("Wevorn v1.3.6")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 
 if SettingsWevorn["Change Log"] then
    local changelog = serv:Channel("Change Log")
    changelog:Label("Welcome to Wevorn! \nThis script was created by Games1799")
-   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.3.5!")
+   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.3.6!")
    changelog:Seperator()
-   changelog:Label("Added New working auto click purchase")
-   changelog:Label("Added New working auto click close error")
-   changelog:Label("Added New working auto click close prompt")
+   changelog:Label("Added New working auto click purchase (v3)")
+   changelog:Label("Added New working auto click close error (v3)")
+   changelog:Label("Added New working auto click close prompt (v3)")
 end
 
 if SettingsWevorn["Home"] then
@@ -263,7 +263,7 @@ if SettingsWevorn["UGC Limiteds"] then
 
    UGCLimiteds:Seperator()
    
-   UGCLimiteds:Toggle("Enable Auto Click Purchaser",false,function(state)
+   UGCLimiteds:Toggle("Enable Auto Click Purchase (PromptGui v4)",false,function(state)
       local VirtualInputManager = game:GetService("VirtualInputManager")
       local CoreGui = game:GetService("CoreGui")
       getgenv().New_AutoClickerPurchase = state
@@ -287,7 +287,7 @@ if SettingsWevorn["UGC Limiteds"] then
         end
    end)
    
-   UGCLimiteds:Toggle("Enable Auto Click Close Error",false,function(state)
+   UGCLimiteds:Toggle("Enable Auto Click Close Error (PromptGui v4)",false,function(state)
      local VirtualInputManager = game:GetService("VirtualInputManager")
      local CoreGui = game:GetService("CoreGui")
      getgenv().New_AutoClickerCloseErors = state
@@ -311,7 +311,7 @@ if SettingsWevorn["UGC Limiteds"] then
        end
    end)
    
-   UGCLimiteds:Toggle("Enable Auto Close Prompt (No Error)",false,function(state)
+   UGCLimiteds:Toggle("Enable Auto Close Prompt (PromptGui v4)",false,function(state)
      local VirtualInputManager = game:GetService("VirtualInputManager")
      local CoreGui = game:GetService("CoreGui")
      getgenv().New_AutoClickerClose = state
@@ -334,8 +334,83 @@ if SettingsWevorn["UGC Limiteds"] then
    end)
    
    UGCLimiteds:Seperator()
+
+   UGCLimiteds:Toggle("Enable Auto Click Purchase (PromptGui v3)",false,function(state)
+      local VirtualInputManager = game:GetService("VirtualInputManager")
+      local CoreGui = game:GetService("CoreGui")
+      getgenv().V3_AutoClickerPurchase = state
+      while getgenv().V3_AutoClickerPurchase and task.wait() do
+            task.spawn(function()
+                 pcall(function()
+                    if CoreGui.FoundationOverlay then
+                    if CoreGui.FoundationOverlay.ProductPurchaseModal then
+                    if CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer then
+                    if CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer.Sheet then
+                    if CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer.Sheet.Content then
+                    if CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer.Sheet.Content.Actions then
+                    if CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer.Sheet.Content.Actions["1"] then
+                    local SusButtonFullName = game:GetService("CoreGui").FoundationOverlay.ProductPurchaseModal.SheetContainer.Sheet.Content.Actions["1"]
+                    local SusButtonPos = SusButtonFullName.AbsolutePosition + (SusButtonFullName.AbsolutePosition / 3)
+                    VirtualInputManager:SendMouseButtonEvent(SusButtonPos.X,SusButtonPos.Y,0,true,game,0)
+                    task.wait()
+                    VirtualInputManager:SendMouseButtonEvent(SusButtonPos.X,SusButtonPos.Y,0,false,game,0)
+                    end end end end end end end
+                 end)
+             end)
+        end
+   end)
+   
+   UGCLimiteds:Toggle("Enable Auto Click Close Error (PromptGui v3)",false,function(state)
+     local VirtualInputManager = game:GetService("VirtualInputManager")
+     local CoreGui = game:GetService("CoreGui")
+     getgenv().V3_AutoClickerCloseErors = state
+     while getgenv().V3_AutoClickerCloseErors and task.wait() do
+           task.spawn(function()
+                pcall(function()
+                   if CoreGui.FoundationOverlay then
+                   if CoreGui.FoundationOverlay.ProductPurchasePrompt then
+                   if CoreGui.FoundationOverlay.ProductPurchasePrompt.SheetContainer then
+                   if CoreGui.FoundationOverlay.ProductPurchasePrompt.SheetContainer.Sheet then
+                   if CoreGui.FoundationOverlay.ProductPurchasePrompt.SheetContainer.Sheet.Content then
+                   if CoreGui.FoundationOverlay.ProductPurchasePrompt.SheetContainer.Sheet.Content.Actions then
+                   if CoreGui.FoundationOverlay.ProductPurchasePrompt.SheetContainer.Sheet.Content.Actions["1"] then
+                   local CloseErrorButton = game:GetService("CoreGui").FoundationOverlay.ProductPurchasePrompt.SheetContainer.Sheet.Content.Actions["1"]
+                   local CloseErrorButtonPos = CloseErrorButton.AbsolutePosition + (CloseErrorButton.AbsolutePosition / 3)
+                   VirtualInputManager:SendMouseButtonEvent(CloseErrorButtonPos.X,CloseErrorButtonPos.Y,0,true,game,0)
+                   task.wait()
+                   VirtualInputManager:SendMouseButtonEvent(CloseErrorButtonPos.X,CloseErrorButtonPos.Y,0,false,game,0)
+                   end end end end end end end
+               end)
+          end)
+       end
+   end)
+   
+   UGCLimiteds:Toggle("Enable Auto Close Prompt (PromptGui v3)",false,function(state)
+     local VirtualInputManager = game:GetService("VirtualInputManager")
+     local CoreGui = game:GetService("CoreGui")
+     getgenv().V3_AutoClickerClose = state
+     while getgenv().V3_AutoClickerClose and task.wait() do
+           task.spawn(function()
+                pcall(function()
+                   if CoreGui.FoundationOverlay then
+                   if CoreGui.FoundationOverlay.ProductPurchaseModal then 
+                   if CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer then
+                   if CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer.Sheet then 
+                   if CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer.Sheet.CloseAffordance then
+                   local CloseButtonFullName = CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer.Sheet.CloseAffordance
+                   local CloseButtonPos = CloseButtonFullName.AbsolutePosition + (CloseButtonFullName.AbsoluteSize * 1.65) -  Vector2.new(10,-15)
+                   VirtualInputManager:SendMouseButtonEvent(CloseButtonPos.X,CloseButtonPos.Y,0,true,game,0)
+                   task.wait()
+                   VirtualInputManager:SendMouseButtonEvent(CloseButtonPos.X,CloseButtonPos.Y,0,false,game,0)
+                   end end end end end
+                end)
+           end)
+        end
+   end)
+
+   UGCLimiteds:Seperator()
 	
-   UGCLimiteds:Toggle("Enable Auto Click Purchaser (old)",false,function(state)
+   UGCLimiteds:Toggle("Enable Auto Click Purchaser (PromptGui v2)",false,function(state)
       local VirtualInputManager = game:GetService("VirtualInputManager")
       local CoreGui = game:GetService("CoreGui")
       getgenv().AutoClickerPurchase = state
@@ -361,7 +436,7 @@ if SettingsWevorn["UGC Limiteds"] then
         end
    end)
 
-   UGCLimiteds:Toggle("Enable Auto Click Close Error (old)",false,function(state)
+   UGCLimiteds:Toggle("Enable Auto Click Close Error (PromptGui v2)",false,function(state)
      local VirtualInputManager = game:GetService("VirtualInputManager")
      local CoreGui = game:GetService("CoreGui")
      getgenv().AutoClickerCloseErors = state
@@ -387,7 +462,7 @@ if SettingsWevorn["UGC Limiteds"] then
        end
    end)
 
-   UGCLimiteds:Toggle("Enable Auto Close Prompt (No Error) (old)",false,function(state)
+   UGCLimiteds:Toggle("Enable Auto Close Prompt (PromptGui v2)",false,function(state)
      local VirtualInputManager = game:GetService("VirtualInputManager")
      local CoreGui = game:GetService("CoreGui")
      getgenv().AutoClickerClose = state
