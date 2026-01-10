@@ -350,7 +350,7 @@ if SettingsWevorn["UGC Limiteds"] then
                     if CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer.Sheet.Content.Actions then
                     if CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer.Sheet.Content.Actions["1"] then
                     local SusButtonFullName = game:GetService("CoreGui").FoundationOverlay.ProductPurchaseModal.SheetContainer.Sheet.Content.Actions["1"]
-                    local SusButtonPos = SusButtonFullName.AbsolutePosition + (SusButtonFullName.AbsolutePosition / 3)
+                    local SusButtonPos = SusButtonFullName.AbsolutePosition
                     VirtualInputManager:SendMouseButtonEvent(SusButtonPos.X,SusButtonPos.Y,0,true,game,0)
                     task.wait()
                     VirtualInputManager:SendMouseButtonEvent(SusButtonPos.X,SusButtonPos.Y,0,false,game,0)
