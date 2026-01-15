@@ -172,6 +172,7 @@ function DiscordLib:Window(text)
 	CloseBtn.TextSize = 14.000
 	CloseBtn.BorderSizePixel = 0
 	CloseBtn.AutoButtonColor = false
+	CloseBtn.ZIndex = 100
 
 	CloseIcon.Name = "CloseIcon"
 	CloseIcon.Parent = CloseBtn
@@ -181,6 +182,7 @@ function DiscordLib:Window(text)
 	CloseIcon.Size = UDim2.new(0, 17, 0, 17)
 	CloseIcon.Image = "http://www.roblox.com/asset/?id=6035047409"
 	CloseIcon.ImageColor3 = Color3.fromRGB(220, 221, 222)
+	CloseIcon.ZIndex = 101
 
 	MinimizeBtn.Name = "MinimizeButton"
 	MinimizeBtn.Parent = TopFrame
@@ -194,6 +196,7 @@ function DiscordLib:Window(text)
 	MinimizeBtn.TextSize = 14.000
 	MinimizeBtn.BorderSizePixel = 0
 	MinimizeBtn.AutoButtonColor = false
+	MinimizeBtn.ZIndex = 100
 
 	MinimizeIcon.Name = "MinimizeLabel"
 	MinimizeIcon.Parent = MinimizeBtn
@@ -203,6 +206,7 @@ function DiscordLib:Window(text)
 	MinimizeIcon.Size = UDim2.new(0, 17, 0, 17)
 	MinimizeIcon.Image = "http://www.roblox.com/asset/?id=6035067836"
 	MinimizeIcon.ImageColor3 = Color3.fromRGB(220, 221, 222)
+	MinimizeIcon.ZIndex = 101
 
 	ServersHolder.Name = "ServersHolder"
 	ServersHolder.Parent = TopFrameHolder
