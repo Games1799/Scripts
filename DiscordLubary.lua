@@ -94,7 +94,7 @@ end
 local Discord = Instance.new("ScreenGui")
 Discord.Name = GetRandomString()
 Discord.Parent = gethui and gethui() or game:GetService("CoreGui")
-Discord.ZIndexBehavior = Enum.ZIndexBehavior.Global
+Discord.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 Discord.DisplayOrder = 9999999999
 
 function DiscordLib:Window(text)
