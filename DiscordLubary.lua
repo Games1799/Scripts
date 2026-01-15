@@ -1552,6 +1552,8 @@ function DiscordLib:Window(text)
 		NotificationHolderMain.Text = ""
 		NotificationHolderMain.TextColor3 = Color3.fromRGB(0, 0, 0)
 		NotificationHolderMain.TextSize = 14.000
+		NotificationHolderMain.Active = false
+        NotificationHolderMain.Selectable = false
 		TweenService:Create(
 			NotificationHolderMain,
 			TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
