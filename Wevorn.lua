@@ -61,6 +61,7 @@ local BindableFunctionToggle = false
 local AntiTeleport = false
 
 local old_namecall = nil
+local RootPlaceId = nil
 local ProductInfo = nil
 
 local Cache = {}
@@ -83,7 +84,8 @@ local TeleportService = game:GetService("TeleportService")
 local AssetService = game:GetService("AssetService")
 local HttpService = game:GetService("HttpService")
 local workspace  = game:GetService("Workspace")
-local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players") 
 
 getgenv().LoopFireAllRemotesOnYourMethod = false
 getgenv().UseTableInMyFireRemotesMethod = false
@@ -103,6 +105,7 @@ getgenv().BuyPaidItems = false
 getgenv().OpenConsole = false 
 getgenv().SpamSignal = false
 getgenv().SignalTrue = false
+getgenv().AntiKick = false
 getgenv().UseTools = false
 getgenv().Ticket = false 
 
@@ -127,11 +130,12 @@ local defaultSettings = {
     ["Remotes"] = true,
     ["Games"] = true,
     ["Players"] = true,
+    ["Player"] = true,
     ["Network"] = true,
     ["Input Automations"] = true,
     ["Purchase Exploits"] = true,
     ["Purchase Signals"] = true,
-    ["Player"] = true
+    ["???"] = true
 }
 
 for i, v in pairs(defaultSettings) do
@@ -149,17 +153,69 @@ pcall(function()
 end)
 
 local discord = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
-local win = discord:Window("Wevorn v1.3.6")
+local win = discord:Window("Wevorn v1.4")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
+local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
+local SettingsSection = serv2:Channel("???")
+SettingsSection:Label("Soon...")
 
 if SettingsWevorn["Change Log"] then
    local changelog = serv:Channel("Change Log")
    changelog:Label("Welcome to Wevorn! \nThis script was created by Games1799")
-   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.3.6!")
+   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.4!")
    changelog:Seperator()
-   changelog:Label("Added New working auto click purchase (v3)")
-   changelog:Label("Added New working auto click close error (v3)")
-   changelog:Label("Added New working auto click close prompt (v3)")
+   changelog:Label("Added Increase voice chat range")
+   changelog:Label("Added Copy Number RemoteEvents")
+   changelog:Label("Added Copy Number RemoteFunctions")
+   changelog:Label("Added Copy Number BindableEvents")
+   changelog:Label("Added Copy Number BindableFunctions")
+   changelog:Label("Added Copy Number Remotes")
+   changelog:Label("Added Info RootPlaceId")
+   changelog:Label("Added Get RootPlaceId")
+   changelog:Label("Added Copy RootPlaceId")
+   changelog:Label("Added Player Section")
+   changelog:Label("Added Change Speed")
+   changelog:Label("Added Change Jump Power")
+   changelog:Label("Added Change Gravity")
+   changelog:Label("Added Change TpWalk")
+   changelog:Label("Added Change TpJump")
+   changelog:Label("Added Anti Kick")
+   changelog:Label("Added Check Player With UserId")
+   changelog:Label("Added Check Badge With BadgeId")
+   changelog:Label("Added Copy Game Description")
+   changelog:Label("Added Copy Game Time Create")
+   changelog:Label("Added Copy Game Last Time Update")
+   changelog:Label("Added Copy Game Creator Name")
+   changelog:Label("Added Copy Game Creator Id")
+   changelog:Label("Added Copy Game Content Rating")
+   changelog:Label("Added Copy Game Creator Creator Type")
+   changelog:Label("Added Copy Minimum Membership Level")
+   changelog:Label("Added Copy Icon Id")
+   changelog:Label("Added Copy Icon URL")
+   changelog:Label("Added Copy Game Genre")
+   changelog:Label("Added Get IP Data")
+   changelog:Label("Added Copy IP")
+   changelog:Label("Copy IP Coordinates")
+   changelog:Label("Copy Copy Google Maps Link IP Coordinates")
+   changelog:Label("Added Copy Name with Game Passes")
+   changelog:Label("Added Copy Name with Game Dev Products")
+   changelog:Label("Added Copy Destination with Game Passes")
+   changelog:Label("Added Copy Destination with Dev Products")
+   changelog:Label("Added Copy Time Create with Game Passes")
+   changelog:Label("Added Copy Time Create with Dev Products")
+   changelog:Label("Added Copy Time Update with Game Passes")
+   changelog:Label("Added Copy Time Update with Dev Products")
+   changelog:Label("Added Copy Price with Game Passes")
+   changelog:Label("Added Copy Price with Dev Products")
+   changelog:Label("Added Copy Id with Game Passes")
+   changelog:Label("Added Copy Id with Dev Products")
+   changelog:Label("Added F3X")
+   changelog:Label("Added Audio Logger")
+   changelog:Label("Added Teleport Tool")
+   changelog:Label("Added 2 new remote arguments")
+   changelog:Label("Fixed Adonis Anti Cheat Check")
+   changelog:Label("Added method :Change('string') on Labels in Discord Library")
+   changelog:Label("Fixed Slider and Color Picker On Mobile In Library")
 end
 
 if SettingsWevorn["Home"] then
@@ -180,20 +236,46 @@ if SettingsWevorn["Home"] then
    ["Remotes"] = true,
    ["Games"] = true,
    ["Players"] = true,
+   ["Player"] = true,
    ["Network"] = true,
    ["Input Automations"] = true,
    ["Purchase Exploits"] = true,
-   ["Purchase Signals"] = true,
-   ["Player"] = true
+   ["Purchase Signals"] = true
+   ["???"] = true
  }
  loadstring(Game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/Wevorn.lua"))()]])
     end)
+    
+    Home:Toggle("Anti Kick (Client)", false, function(state)
+    getgenv().AntiKick = state
+    if state then
+        local oldKc
+        oldKc = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
+            if getgenv().AntiKick and getnamecallmethod() == "Kick" then
+                return
+            end
+            return oldKc(self, ...)
+        end))
+    end
+    end)
+    
     Home:Seperator()
 end
 
 if SettingsWevorn["Scripts"] then
    local Scripts = serv:Channel("Scripts")
    Scripts:Label("All popular scripts worthy of your attention")
+   
+   local GetRandomString
+   pcall(function()
+       GetRandomString = function()
+          local s = ""
+          for i = 2, 25 do
+              s = s .. string.char(math.random(1,250))
+          end
+          return s
+      end
+   end)
 
    Scripts:Button("Infinite yield",function()
        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
@@ -213,6 +295,31 @@ if SettingsWevorn["Scripts"] then
 
    Scripts:Button("Dev Products Purchaser", function()
        loadstring(game:HttpGet("https://raw.githubusercontent.com/ckw69/Wyborn/refs/heads/main/Dev%20Product%20Purchase"))()
+   end)
+   
+    Scripts:Button("F3X", function()
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/refs/heads/main/f3x.lua"))()
+   end)
+   
+   Scripts:Button("Audio Logger", function()
+       loadstring(game:HttpGet(('https://raw.githubusercontent.com/infyiff/backup/main/audiologger.lua'),true))()
+   end)
+   
+   Scripts:Button("Teleport Tool", function()
+       local TpTool = Instance.new("Tool")
+       pcall(function() TpTool.Name = GetRandomString() end)
+       TpTool.RequiresHandle = false
+       TpTool.TextureId = "rbxassetid://6723742952"
+       TpTool.Parent = game.Players.LocalPlayer:FindFirstChildOfClass("Backpack")
+
+       local mouse = game.Players.LocalPlayer:GetMouse()
+       TpTool.Activated:Connect(function()
+              local root = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+              if not root then return end
+              if not mouse.Target then return end
+              root.CFrame = CFrame.new(mouse.Hit.Position + Vector3.new(0,3,0))
+              pcall(function() TpTool.Name = GetRandomString() end)
+       end)
    end)
 
    Scripts:Button("Hydroxide", function()
@@ -287,6 +394,7 @@ if SettingsWevorn["UGC Limiteds"] then
         end
    end)
    
+   
    UGCLimiteds:Toggle("Enable Auto Click Close Error (PromptGui v4)",false,function(state)
      local VirtualInputManager = game:GetService("VirtualInputManager")
      local CoreGui = game:GetService("CoreGui")
@@ -334,7 +442,7 @@ if SettingsWevorn["UGC Limiteds"] then
    end)
    
    UGCLimiteds:Seperator()
-
+   
    UGCLimiteds:Toggle("Enable Auto Click Purchase (PromptGui v3)",false,function(state)
       local VirtualInputManager = game:GetService("VirtualInputManager")
       local CoreGui = game:GetService("CoreGui")
@@ -406,10 +514,10 @@ if SettingsWevorn["UGC Limiteds"] then
                 end)
            end)
         end
-   end)
-
+   end)   
+   
    UGCLimiteds:Seperator()
-	
+
    UGCLimiteds:Toggle("Enable Auto Click Purchaser (PromptGui v2)",false,function(state)
       local VirtualInputManager = game:GetService("VirtualInputManager")
       local CoreGui = game:GetService("CoreGui")
@@ -507,7 +615,7 @@ if SettingsWevorn["UGC Limiteds"] then
               MarketplaceService:SignalPromptPurchaseFinished(game.Players.LocalPlayer,Conn_Id_2,false)
           end)
        else
-           Conn_3:Disconnect()
+            Conn_3:Disconnect()
        end
    end)
 
@@ -538,17 +646,17 @@ if SettingsWevorn["UGC Limiteds"] then
         if StatusId then
            local CheckStatus = MarketplaceService:GetProductInfo(StatusId)
            if CheckStatus.IsLimited or CheckStatus.IsLimitedUnique then
-			  IsLimited = "Yes" 
+			   IsLimited = "Yes" 
 		   else 
-			  IsLimited = "No"
+			   IsLimited = "No"
 		   end
            if CheckStatus.IsLimited or CheckStatus.IsLimitedUnique then
-			  StataRemaing = CheckStatus.Remaining
+			   StataRemaing = CheckStatus.Remaining
 		   else
-			  StataRemaing = "nil"
+			   StataRemaing = "nil"
 		   end
            if CheckStatus.IsForSale then
-		      Stata = "For Sale"
+			  Stata = "For Sale"
 		   elseif not CheckStatus.IsForSale and CheckStatus.PriceRobux ~= nil and CheckStatus.PriceRobux > 0 and CheckStatus.Sales > 0 then
 			  Stata = "Offsale"
 		   elseif not CheckStatus.IsForSale and (CheckStatus.PriceRobux == nil or CheckStatus.PriceRobux == 0) and CheckStatus.Sales == 0 then
@@ -573,56 +681,56 @@ if SettingsWevorn["UGC Limiteds"] then
     UGCLimiteds:Seperator()
     
     UGCLimiteds:Toggle("Auto Purchaser V1",false,function(state)
-        if state then
-           discord:Notification("Waiting","Waiting for any free UGC item to be prompted...","Okay!")
-           local Conn = MarketplaceService.PromptPurchaseRequestedV2:Connect(function(...)
-              local t = {...}
-              discord:Notification("Prompt Detected","If this is a UGC item, this script will attempt purchase. Please check console.","Okay!")
-              local PurchaseProductId = t[2]
-              local IdempotencyKey = t[5]
-              local PurchaseAuthToken = t[6]
-              local info = MarketplaceService:GetProductInfo(PurchaseProductId,Enum.InfoType.Asset)
-              local PurchaseCollectibleItemId = info.CollectibleItemId
-              local PurchaseCollectibleProductId = info.CollectibleProductId
-              local PurchaseInfoType = Enum.InfoType.Asset
-              local IsRobloxPurchase = true
-			  local PurchaseRequestId = HttpService:GenerateGUID(false)
-			
-              if getgenv().BuyPaidItems then 
-                 PurchasePrice = info.PriceInRobux 
-              else 
-                 PurchasePrice = 0 
+              if state then
+                      discord:Notification("Waiting","Waiting for any free UGC item to be prompted...","Okay!")
+                      local Conn = MarketplaceService.PromptPurchaseRequestedV2:Connect(function(...)
+                             local t = {...}
+                             discord:Notification("Prompt Detected","If this is a UGC item, this script will attempt purchase. Please check console.","Okay!")
+                             local PurchaseProductId = t[2]
+                             local IdempotencyKey = t[5]
+                             local PurchaseAuthToken = t[6]
+                             local info = MarketplaceService:GetProductInfo(PurchaseProductId,Enum.InfoType.Asset)
+                             local PurchaseCollectibleItemId = info.CollectibleItemId
+                             local PurchaseCollectibleProductId = info.CollectibleProductId
+                             local PurchaseInfoType = Enum.InfoType.Asset
+
+                             if getgenv().BuyPaidItems then 
+                                    PurchasePrice = info.PriceInRobux 
+                             else 
+                                    PurchasePrice = 0 
+                             end
+                             
+                             local IsRobloxPurchase = true
+                             local PurchaseRequestId = HttpService:GenerateGUID(false)
+                             print("ProductId — "..PurchaseProductId)
+                             print("IdempotencyKey — "..IdempotencyKey)
+                             print("AuthToken — "..PurchaseAuthToken)
+                             print("CollectibleItemId — "..PurchaseCollectibleItemId)
+                             print("CollectibleProductId — "..PurchaseCollectibleProductId)
+                             print("InfoType — "..tostring(PurchaseInfoType))
+                             print("Price — "..PurchasePrice)
+                             print("IsRobloxPurchase — "..tostring(IsRobloxPurchase))
+                             print("RequestId — "..PurchaseRequestId)
+                             warn("———————————————————————————————")
+                             warn("FIRST PURCHASE ITEM!")
+                             if getgenv().OpenConsole then 
+                                   local VirtualInputManager = game:GetService("VirtualInputManager")
+                                    VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
+                                    task.wait(0.01)
+                                    VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
+                             end 
+                             local sus,eror = pcall(function()
+                                      MarketplaceService:PerformPurchase(PurchaseInfoType,PurchaseProductId,PurchasePrice,PurchaseRequestId,IsRobloxPurchase,PurchaseCollectibleItemId,PurchaseCollectibleProductId,IdempotencyKey,PurchaseAuthToken)
+                              end)
+                              if not sus then 
+                                      error("Snaiper V1 Error — "..eror) 
+                              else 
+                                      print("Purchase success!") 
+                              end
+                      end)
+              else
+                     Conn:Disconnect()
               end
-            
-			  print("ProductId — "..PurchaseProductId)
-              print("IdempotencyKey — "..IdempotencyKey)
-              print("AuthToken — "..PurchaseAuthToken)
-              print("CollectibleItemId — "..PurchaseCollectibleItemId)
-              print("CollectibleProductId — "..PurchaseCollectibleProductId)
-              print("InfoType — "..tostring(PurchaseInfoType))
-              print("Price — "..PurchasePrice)
-              print("IsRobloxPurchase — "..tostring(IsRobloxPurchase))
-              print("RequestId — "..PurchaseRequestId)
-              warn("———————————————————————————————")
-              warn("FIRST PURCHASE ITEM!")
-              if getgenv().OpenConsole then 
-                 local VirtualInputManager = game:GetService("VirtualInputManager")
-                 VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
-                 task.wait(0.01)
-                 VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
-              end 
-              local sus,eror = pcall(function()
-                 MarketplaceService:PerformPurchase(PurchaseInfoType,PurchaseProductId,PurchasePrice,PurchaseRequestId,IsRobloxPurchase,PurchaseCollectibleItemId,PurchaseCollectibleProductId,IdempotencyKey,PurchaseAuthToken)
-              end)
-              if not sus then 
-                  error("Snaiper V1 Error — "..eror) 
-              else 
-                  print("Purchase success!") 
-              end
-            end)
-          else
-              Conn:Disconnect()
-          end
       end)
 
       UGCLimiteds:Toggle("Auto Purchaser V2 (Only UGC Limiteds)",false,function(state)
@@ -783,6 +891,8 @@ if SettingsWevorn["Remotes"] then
                 "InfoType, UGC Item ID",
                 "'true' boolean",
                 "'false' boolean",
+                "UGC Item Id, MarketplaceProductType",
+                "MarketplaceProductType, UGC Item Id",
                 "literal lua code to prompt item",
                "UGC Item ID, 0",
                "UGC Item Id, negative value",
@@ -885,7 +995,7 @@ if SettingsWevorn["Remotes"] then
             end
        end
 
-       local function __FireRemotes(Remote1,...) -- 762
+       local function __FireRemotes(Remote1,...)
        local __args = {...}
        if Remote1:IsA("RemoteEvent") or Remote1:IsA("UnreliableRemoteEvent") then
            task.spawn(function()
@@ -903,12 +1013,12 @@ if SettingsWevorn["Remotes"] then
 
        elseif Remote1:IsA("BindableEvent") then
            task.spawn(function()
-                pcall(function() -- 780
+                pcall(function()
                       Remote1:Fire(unpack(__args))
                 end)
            end)
 
-       elseif Remote1:IsA("BindableFunction") then -- 786
+       elseif Remote1:IsA("BindableFunction") then
            task.spawn(function()
                 pcall(function()
                       Remote1:Invoke(unpack(__args)) 
@@ -995,6 +1105,10 @@ if SettingsWevorn["Remotes"] then
               FireRemotes(true)
          elseif method == "'false' boolean" then 
               FireRemotes(false)
+         elseif method == "UGC Item Id, MarketplaceProductType" then 
+              FireRemotes(getgenv().UgcId,Enum.MarketplaceProductType.AvatarAsset)
+         elseif method == "MarketplaceProductType, UGC Item Id" then 
+              FireRemotes(Enum.MarketplaceProductType.AvatarAsset,getgenv().UgcId)
          elseif method == "UGC Item ID, InfoType" then
               FireRemotes(getgenv().UgcId,Enum.InfoType.Asset)
          elseif method == "InfoType, UGC Item ID" then
@@ -1039,6 +1153,8 @@ if SettingsWevorn["Remotes"] then
     FireRemotes(getgenv().UgcId,game.Players.LocalPlayer.UserId)
     FireRemotes(true)
     FireRemotes(false)
+    FireRemotes(getgenv().UgcId,Enum.MarketplaceProductType.AvatarAsset)
+    FireRemotes(Enum.MarketplaceProductType.AvatarAsset,getgenv().UgcId)
     FireRemotes(getgenv().UgcId,Enum.InfoType.Asset)
     FireRemotes(Enum.InfoType.Asset,getgenv().UgcId)
     FireRemotes(getgenv().UgcId,0)
@@ -1084,82 +1200,60 @@ getgenv().Loop = true
 while getgenv().Loop do 
 if method == "No Arguments/Blank" then 
 FireRemotes()
-
 elseif method == "LocalPlayer" then 
 FireRemotes(game.Players.LocalPlayer)
-
 elseif method == "Your Username" then 
 FireRemotes(tostring(game.Players.LocalPlayer))
-
 elseif method == "Your UserId" then 
 FireRemotes(game.Players.LocalPlayer.UserId)
-
 elseif method == "UGC Item ID" then
 FireRemotes(getgenv().UgcId)
-
 elseif method == "UGC Item ID, LocalPlayer" then
 FireRemotes(getgenv().UgcId,game.Players.LocalPlayer)
-
 elseif method == "LocalPlayer, UGC Item ID" then
 FireRemotes(game.Players.LocalPlayer,getgenv().UgcId)
-
 elseif method == "'UGC' as a string" then 
 FireRemotes("UGC")
-
 elseif method == "'PromptPurchase' as a string, UGC Item Id" then 
 FireRemotes("PromptPurchase",getgenv().UgcId)
-
 elseif method == "'PromptAssetPurchase' as a string, UGC Item Id" then 
 FireRemotes("PromptAssetPurchase",getgenv().UgcId)
-
 elseif method == "UGC Item ID, 'true' boolean" then
 FireRemotes(getgenv().UgcId,true)
-
 elseif method == "UGC Item ID, 'false' boolean" then
 FireRemotes(getgenv().UgcId,false)
-
 elseif method == "UGC Item ID, 'false' boolean" then
 FireRemotes(getgenv().UgcId,false)
-
 elseif method == "UGC Item ID, Your UserId" then
 FireRemotes(getgenv().UgcId,game.Players.LocalPlayer.UserId)
-
 elseif method == "'true' boolean" then 
 FireRemotes(true)
-
 elseif method == "'false' boolean" then 
 FireRemotes(false)
-
+elseif method == "UGC Item Id, MarketplaceProductType" then 
+FireRemotes(getgenv().UgcId,Enum.MarketplaceProductType.AvatarAsset)
+elseif method == "MarketplaceProductType, UGC Item Id" then 
+FireRemotes(Enum.MarketplaceProductType.AvatarAsset,getgenv().UgcId)
 elseif method == "UGC Item ID, InfoType" then
 FireRemotes(getgenv().UgcId,Enum.InfoType.Asset)
-
 elseif method == "InfoType, UGC Item ID" then
 FireRemotes(Enum.InfoType.Asset,getgenv().UgcId)
-
 elseif method == "literal lua code to prompt item" then
 FireRemotes('game:GetService("MarketplaceService"):PromptPurchase(game.Players.'..LocalName..','..getgenv().UgcId..')')
-
 elseif method == "UGC Item ID, 0" then
 FireRemotes(getgenv().UgcId,0)
-
 elseif method == "UGC Item Id, negative value" then
 FireRemotes(getgenv().UgcId,-9999999999999999)
-
 elseif method == "Positive value" then
 FireRemotes(9999999999999999)
-
 elseif method == "Negative value" then
 FireRemotes(-9999999999999999)
-
 elseif method == "loadstring prompt item" then 
 FireRemotes("loadstring('game:GetService(\"MarketplaceService\"):PromptPurchase(game.Players."..LocalName..","..getgenv().UgcId..")')()")
-
 elseif method == "Bulk Purchase Function 1, (Ugc Item Id)" then
 _FireRemotes({[1] = {[1] = {Id = tostring(getgenv().UgcId),Type = Enum.MarketplaceProductType.AvatarAsset}},[2] = {} })
-
 elseif method == "Bulk Purchase Function 2, (Ugc Item Id, nil)" then
 _FireRemotes({[1] = {[1] = {Id = getgenv().UgcId,Type = Enum.MarketplaceProductType.AvatarAsset}},[2] = {Id = nil,Type = Enum.MarketplaceProductType.AvatarAsset},[3] = {Id = nil,Type = Enum.MarketplaceProductType.AvatarAsset} })
-
 elseif method == "Bulk Purchase Function 3, (UGC Item Id, Fake Ids)" then 
 _FireRemotes({[1] = {[1] = {Id = getgenv().UgcId,Type = Enum.MarketplaceProductType.AvatarAsset}},[2] = {Id = 137525346725198,Type = Enum.MarketplaceProductType.AvatarAsset},[3] = {Id = 77554705161930,Type = Enum.MarketplaceProductType.AvatarAsset} })
 end
@@ -1253,6 +1347,10 @@ elseif method == "'true' boolean" then
 ___FireRemotes(getgenv().SelectRemote,true)
 elseif method == "'false' boolean" then 
 ___FireRemotes(getgenv().SelectRemote,false)
+elseif method == "UGC Item Id, MarketplaceProductType" then 
+___FireRemotes(getgenv().SelectRemote,getgenv().UgcId,Enum.MarketplaceProductType.AvatarAsset)
+elseif method == "MarketplaceProductType, UGC Item Id" then 
+___FireRemotes(getgenv().SelectRemote,Enum.MarketplaceProductType.AvatarAsset,getgenv().UgcId)
 elseif method == "literal lua code to prompt item" then
 ___FireRemotes(getgenv().SelectRemote,'game:GetService("MarketplaceService"):PromptPurchase(game.Players.'..LocalName..','..getgenv().UgcId..')')
 elseif method == "UGC Item ID, 0" then
@@ -1286,79 +1384,58 @@ if not method then discord:Notification("Failed","Select Remote Arguments","Okay
 
 if method == "No Arguments/Blank" then 
 ___FireRemotes(getgenv().SelectRemote,"")
-
 elseif method == "LocalPlayer" then 
 ___FireRemotes(getgenv().SelectRemote,game.Players.LocalPlayer)
-
 elseif method == "Your Username" then 
 ___FireRemotes(getgenv().SelectRemote,tostring(game.Players.LocalPlayer))
-
 elseif method == "Your UserId" then 
 ___FireRemotes(getgenv().SelectRemote,game.Players.LocalPlayer.UserId)
-
 elseif method == "UGC Item ID" then
 ___FireRemotes(getgenv().SelectRemote,getgenv().UgcId)
-
 elseif method == "UGC Item ID, LocalPlayer" then
 ___FireRemotes(getgenv().SelectRemote,getgenv().UgcId,game.Players.LocalPlayer)
-
 elseif method == "LocalPlayer, UGC Item ID" then
 ___FireRemotes(getgenv().SelectRemote,game.Players.LocalPlayer,getgenv().UgcId)
-
 elseif method == "'UGC' as a string" then 
 ___FireRemotes(getgenv().SelectRemote,"UGC")
-
 elseif method == "'PromptPurchase' as a string, UGC Item Id" then 
 ___FireRemotes(getgenv().SelectRemote,"PromptPurchase",getgenv().UgcId)
-
 elseif method == "'PromptAssetPurchase' as a string, UGC Item Id" then 
 ___FireRemotes(getgenv().SelectRemote,"PromptAssetPurchase",getgenv().UgcId)
-
 elseif method == "UGC Item ID, 'true' boolean" then
 ___FireRemotes(getgenv().SelectRemote,getgenv().UgcId,true)
-
 elseif method == "UGC Item ID, 'false' boolean" then
 ___FireRemotes(getgenv().SelectRemote,getgenv().UgcId,false)
-
 elseif method == "UGC Item ID, Your UserId" then
 ___FireRemotes(getgenv().SelectRemote,getgenv().UgcId,game.Players.LocalPlayer.UserId)
-
 elseif method == "'true' boolean" then 
 ___FireRemotes(getgenv().SelectRemote,true)
-
 elseif method == "'false' boolean" then 
 ___FireRemotes(getgenv().SelectRemote,false)
-
+elseif method == "UGC Item Id, MarketplaceProductType" then 
+___FireRemotes(getgenv().SelectRemote,getgenv().UgcId,Enum.MarketplaceProductType.AvatarAsset)
+elseif method == "MarketplaceProductType, UGC Item Id" then 
+___FireRemotes(getgenv().SelectRemote,Enum.MarketplaceProductType.AvatarAsset,getgenv().UgcId)
 elseif method == "UGC Item ID, InfoType" then
 ___FireRemotes(getgenv().SelectRemote,getgenv().UgcId,Enum.InfoType.Asset)
-
 elseif method == "InfoType, UGC Item ID" then
 ___FireRemotes(getgenv().SelectRemote,Enum.InfoType.Asset,getgenv().UgcId)
-
 elseif method == "literal lua code to prompt item" then
 ___FireRemotes(getgenv().SelectRemote,'game:GetService("MarketplaceService"):PromptPurchase(game.Players.'..LocalName..','..getgenv().UgcId..')')
-
 elseif method == "UGC Item ID, 0" then
 ___FireRemotes(getgenv().SelectRemote,getgenv().UgcId,0)
-
 elseif method == "UGC Item Id, negative value" then
 ___FireRemotes(getgenv().SelectRemote,getgenv().UgcId,-9999999999999999)
-
 elseif method == "Positive value" then
 ___FireRemotes(getgenv().SelectRemote,9999999999999999)
-
 elseif method == "Negative value" then
 ___FireRemotes(getgenv().SelectRemote,-9999999999999999)
-
 elseif method == "loadstring prompt item" then 
 ___FireRemotes(getgenv().SelectRemote,"loadstring('game:GetService(\"MarketplaceService\"):PromptPurchase(game.Players."..LocalName..","..getgenv().UgcId..")')()")
-
 elseif method == "Bulk Purchase Function 1, (Ugc Item Id)" then
 __FireRemotes(getgenv().SelectRemote,{[1] = {[1] = {Id = tostring(getgenv().UgcId),Type = Enum.MarketplaceProductType.AvatarAsset}},[2] = {} })
-
 elseif method == "Bulk Purchase Function 2, (Ugc Item Id, nil)" then
 __FireRemotes(getgenv().SelectRemote,{[1] = {[1] = {Id = getgenv().UgcId,Type = Enum.MarketplaceProductType.AvatarAsset}},[2] = {Id = nil,Type = Enum.MarketplaceProductType.AvatarAsset},[3] = {Id = nil,Type = Enum.MarketplaceProductType.AvatarAsset} })
-
 elseif method == "Bulk Purchase Function 3, (UGC Item Id, Fake Ids)" then 
 __FireRemotes(getgenv().SelectRemote,{[1] = {[1] = {Id = getgenv().UgcId,Type = Enum.MarketplaceProductType.AvatarAsset}},[2] = {Id = 137525346725198,Type = Enum.MarketplaceProductType.AvatarAsset},[3] = {Id = 77554705161930,Type = Enum.MarketplaceProductType.AvatarAsset} })
 else 
@@ -1411,6 +1488,12 @@ Remotes:Label("There are "..Number3.." UnreliableRemoteEvents in this game")
 Remotes:Label("There are "..Number4.." BindableEvents in this game")
 Remotes:Label("There are "..Number5.." BindableFunctions in this game")
 Remotes:Label("There are "..Number6.." Remotes in this game")
+Remotes:Button("Copy Number RemoteEvents",function() setclipboard(Number1) end)
+Remotes:Button("Copy Number RemoteFunctions",function() setclipboard(Number2) end)
+Remotes:Button("Copy Number UnreliableRemoteEvents",function() setclipboard(Number3) end)
+Remotes:Button("Copy Number BindableEvents",function() setclipboard(Number4) end)
+Remotes:Button("Copy Number BindableFunctions",function() setclipboard(Number5) end)
+Remotes:Button("Copy Number Remotes",function() setclipboard(Number6) end)
 discord:Notification("Success","Remotes Counted!","Okay!")
 else
 discord:Notification("Failed","Remotes Already Counted!","Okay!")
@@ -1508,7 +1591,18 @@ Games:Dropdown("What to do with Subplace",{
           "Copy Script and Teleport",
           "Copy Game Link",
           "Copy Subplace Id",
-          "Copy Place Name"
+          "Copy Game Description",
+          "Copy Time Create",
+          "Copy Last Time Update",
+          "Copy Creator Name",
+          "Copy Content Rating",
+          "Copy Creator Id",
+          "Copy Creator CreatorType",
+          "Copy Place Name",
+          "Copy Icon URL",
+          "Copy Icon Id",
+          "Copy Minimum Membership Level",
+          "Copy Game Genre"
           },function(x)
           getgenv().GamesMethod = x
 end)
@@ -1559,8 +1653,31 @@ elseif getgenv().GamesMethod == "Copy Subplace Id" then
 setclipboard(_PlaceId)
 elseif getgenv().GamesMethod == "Copy Game Link"  then
 setclipboard("http://roblox.com/games/"..tostring(_PlaceId))
+elseif getgenv().GamesMethod == "Copy Game Description" then 
+local d_info = MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset)
+setclipboard(tostring(d_info.Description) or "nil")
+elseif getgenv().GamesMethod == "Copy Time Create" then
+setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).Created:gsub("T"," "):gsub("Z",""):gsub("%.%d+","").." UTC")
+elseif getgenv().GamesMethod == "Copy Last Time Update" then
+setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).Updated:gsub("T"," "):gsub("Z",""):gsub("%.%d+","").." UTC")
+elseif getgenv().GamesMethod == "Copy Creator Name" then
+setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).Creator.Name)
+elseif getgenv().GamesMethod == "Copy Creator Id" then
+setclipboard((MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).Creator or {}).Id or "N/A")
+elseif getgenv().GamesMethod == "Copy Creator CreatorType" then
+setclipboard((MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).Creator or {}).CreatorType or "N/A")
+elseif getgenv().GamesMethod == "Copy Content Rating" then
+setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).ContentRating or "N/A")
 elseif getgenv().GamesMethod == "Copy Place Name" then
 setclipboard(tostring(Select))
+elseif getgenv().GamesMethod == "Copy Icon Id" then
+setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).IconImageAssetId)
+elseif getgenv().GamesMethod == "Copy Icon URL" then
+setclipboard("https://www.roblox.com/asset/?id="..MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).IconImageAssetId)
+elseif getgenv().GamesMethod == "Copy Minimum Membership Level" then
+setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).MinimumMembershipLevel)
+elseif getgenv().GamesMethod == "Copy Game Genre" then
+setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).Genre or "N/A")
 end
 end
 end)
@@ -1675,6 +1792,28 @@ Games:Seperator()
 Games:Label("Current Game's Place ID:\n" .. game.PlaceId)
 Games:Label("Current Game's Universe ID:\n" .. game.GameId)
 Games:Label("Current Game's Job ID: \n" .. game.JobId)
+local RootPlaceIdLabel = Games:Label("Current Game's RootPlace ID: \nYou haven't received it yet this Id")
+
+Games:Seperator()
+
+Games:Button("Get RootPlace Id",function()
+if not RootPlaceId then
+local request = request or http_request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request)
+if not request then discord:Notification("Error","Your executor don't supported request function","okay") return end
+local response = request({Url = "https://games.roblox.com/v1/games?universeIds="..game.GameId,Method = "GET"})
+if not response then discord:Notification("Error","Http Error","Okay") return end
+local data = HttpService:JSONDecode(response.Body)
+if not data then discord:Notification("Error","JSONDecode Error","Okay") return end
+RootPlaceId = data and data.data and data.data[1] and data.data[1].rootPlaceId
+if not RootPlaceId then discord:Notification("Error","RootPlaceId is not found","okay") return end
+if RootPlaceId then RootPlaceIdLabel:Change("Current Game's RootPlace ID: \n"..RootPlaceId) end
+discord:Notification("Success","RootPlaceId Success claimed!","Okay")
+else
+discord:Notification("Error","RootPlaceId always claimed","Okay")
+end
+end)
+
+Games:Seperator()
 
 Games:Button("Copy Place Id",function()
 setclipboard(game.PlaceId)
@@ -1686,6 +1825,14 @@ end)
 
 Games:Button("Copy Job Id",function()
 setclipboard(game.JobId)
+end)
+
+Games:Button("Copy RootPlace Id",function()
+if RootPlaceId then
+setclipboard(RootPlace)
+else
+discord:Notification("Error","You haven't received it yet this Id","Okay")
+end
 end)
 
 Games:Textbox("You can check game status with id","Enter a game id",false,function(eId)
@@ -1756,7 +1903,7 @@ end)
 players:Seperator()
 
 spawn(function()
-while task.wait(0.1) do
+while task.wait(0.3) do
 for _, v in pairs(game.Players:GetPlayers()) do
 if v ~= player and v.Character then
 if getgenv().AutoHidePlayers then
@@ -1807,6 +1954,47 @@ else
 Conn_1:Disconnect()
 end
 end)
+players:Seperator()
+
+players:Textbox("You can check player with UserId","Enter a UserId",false,function(P_ID)
+local PlayersId = tonumber(P_ID)
+if PlayersId then
+local httprequest = request or http_request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request)
+if not httprequest then discord:Notification("Error","Your Executor doesn't support request function","Okay") return end
+local response1,response2,response3
+task.spawn(function()
+pcall(function()
+response1 = httprequest({Url = "https://users.roblox.com/v1/users/"..PlayersId,Method = "GET"})
+response2 = httprequest({Url = "https://friends.roblox.com/v1/users/"..PlayersId.."/followers/count",Method = "GET"})
+response3 = httprequest({Url = "https://presence.roblox.com/v1/presence/users",Method = "POST",Headers = {["Content-Type"] = "application/json"},Body = HttpService:JSONEncode({userIds = {PlayersId}})})
+end)
+end)
+local U_D = HttpService:JSONDecode(response1.Body)
+local F_D = HttpService:JSONDecode(response2.Body)
+local P_D = HttpService:JSONDecode(response3.Body)
+local OnlineStatus= {[0] = "Offline",[1] = "Online",[2] = "In Game",[3] = "Studio"}
+discord:Notification("Success","Name: "..U_D.name.."\nFallowers: "..F_D.count.."\nOnline Status: "..OnlineStatus[P_D.userPresences[1].userPresenceType],"Okay")
+else
+discord:Notification("Error","Enter a number!","Okay")
+end
+end)
+
+players:Seperator()
+
+players:Textbox("You can check badge with badge id","Enter a badge id",false,function(B_Id)
+local BadgeId = tonumber(B_Id) 
+if BadgeId then
+local httprequest = request or http_request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request)
+if not httprequest then discord:Notification("Error","Your Executor doesn't support request function","Okay") return end
+local response = httprequest({Url = "https://badges.roblox.com/v1/badges/"..BadgeId,Method = "GET",Headers = {["Content-Type"] = "application/json"}})
+if not response then discord:Notification("Error","Http Request Error","Okay") return end
+local data = HttpService:JSONDecode(response.Body)
+if not data then discord:Notification("Error","JSONDecode error","Okay") return end
+discord:Notification("Success","Name: "..data.name.."\nCreated: "..data.created:gsub("T"," "):gsub("%.%d+",""):gsub("%+%d+:%d+","").." UTC".."\nUpdated: "..data.updated:gsub("T"," "):gsub("%.%d+",""):gsub("%+%d+:%d+","").." UTC".."\nAwarded: "..data.statistics.awardedCount,"Okay")
+else
+discord:Notification("Error","Enter a number!","Okay")
+end
+end)
 
 players:Seperator()
 players:Button("Create Waypoint at Current Position",function()
@@ -1820,6 +2008,83 @@ players:Button("Move to Saved Waypoint",function() if getgenv().HumPosition then
 players:Button("Clear Waypoint",function() getgenv().HumPosition = false discord:Notification("Success","Waypoint  is cleared","Okay!") end)
 players:Button("Copy Waypoint Position",function() if not getgenv().HumPosition then discord:Notification("Error","No Waypoint found","Okay!") return end setclipboard(tostring(getgenv().HumPosition)) end)
 getgenv().Ticket = true
+end)
+
+end
+
+if SettingsWevorn["Player"] then
+local PlayerSection = serv:Channel("Player")
+PlayerSection:Label("Same as in the Players section, but only for you")
+PlayerSection:Seperator()
+PlayerSection:Label("You can change the basic attributes of the character.")
+
+local function GetHum()
+local character = player.Character
+if not character then return nil end 
+return character:FindFirstChildOfClass("Humanoid")
+end
+
+local SpeedSlider = PlayerSection:Slider("Player Speed",0,300,(GetHum() and GetHum().WalkSpeed) or 0,function(PlayerSpeed)
+game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = PlayerSpeed
+end)
+
+local JumpSlider = PlayerSection:Slider("Player Jump Power",0,300,(GetHum() and (GetHum().UseJumpPower and GetHum().JumpPower or GetHum().JumpHeight)) or 0,function(PlayerJumpPower)
+if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid").UseJumpPower then
+game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid").JumpPower = PlayerJumpPower
+else
+game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid").JumpHeight = PlayerJumpPower
+end
+end)
+
+local GravitySlider = PlayerSection:Slider("Player Gravity",0,300,workspace.Gravity or 0,function(PlayerGravity)
+workspace.Gravity = PlayerGravity
+end)
+
+PlayerSection:Button("Fast Settings",function()
+SpeedSlider:Change(95)
+JumpSlider:Change(GetHum().UseJumpPower and 60 or 40)
+GravitySlider:Change(45)
+end)
+
+PlayerSection:Button("Basic Settings",function()
+SpeedSlider:Change(16)
+JumpSlider:Change(GetHum().UseJumpPower and 50 or 7.2)
+GravitySlider:Change(196.2)
+end)
+
+PlayerSection:Seperator()
+
+local tpwalking
+local tpjumping
+
+PlayerSection:Slider("Player Teleport Walk",0,50,0,function(speed)
+if tpwalking then tpwalking:Disconnect() end
+if speed == 0 then return end
+local humanoid = GetHum()
+if not humanoid then return end
+tpwalking = RunService.Heartbeat:Connect(function(delta)
+if humanoid.Parent and humanoid.MoveDirection.Magnitude > 0 then
+humanoid.Parent:TranslateBy(humanoid.MoveDirection * speed * delta * 10)
+end
+end)
+end)
+
+PlayerSection:Slider("Player Teleport Jump",0,50,0,function(boost)
+if tpjumping then tpjumping:Disconnect() end
+if boost == 0 then return end
+local humanoid = GetHum()
+if not humanoid then return end
+tpjumping = RunService.Heartbeat:Connect(function(delta)
+if humanoid.Parent then
+local root = humanoid.Parent:FindFirstChild("HumanoidRootPart")
+if root then
+local state = humanoid:GetState()
+if state == Enum.HumanoidStateType.Jumping or state == Enum.HumanoidStateType.Freefall then
+root.CFrame=root.CFrame + Vector3.new(0,boost * delta * 10,0)
+end
+end
+end
+end)
 end)
 
 end
@@ -1841,7 +2106,15 @@ end)
 Network:Textbox("FPS Limit","Type a big number to have no limit...",true,function(FPS)
 local limit3 = tonumber(FPS)
 if limit3 then
+pcall(function()
+if type(setfpscap) == "function" then
+setfpscap(limit3)
+elseif type(set_fps_cap) == "function" then
+set_fps_cap(limit3)
+elseif not type(setfpscap) == "function" and not type(set_fps_cap) == "function" then
 setfflag("TaskSchedulerTargetFps",limit3)
+end 
+end)
 discord:Notification("Success!","FPS Limit has been set to "..tostring(limit3), "Okay!")
 else
 discord:Notification("Hold up!","FPS Limit must be a number.","Okay!")
@@ -1855,11 +2128,14 @@ local RenderAverage = FrameRateManager and FrameRateManager:FindFirstChild("Rend
 discord:Notification("Your FPS","Your FPS is "..1000 / RenderAverage:GetValue(),"Okay!")
 end)
 
--- Network:Button("Iinfinite Voice Chat Range",function()
--- setfflag("VoiceChatRollOffMaxDistance", "999999999999999")
--- setfflag("VoiceChatRollOffMinDistance", "999999999999999")
--- setfflag("DebugVoiceChatVariableRollOff", "False")
--- end)
+Network:Button("Increase voice chat range",function()
+pcall(function()
+setfflag("VoiceChatRollOffMaxDistance", "999999999999999")
+setfflag("VoiceChatRollOffMinDistance", "999999999999999")
+setfflag("DebugVoiceChatVariableRollOff", "False")
+end)
+discord:Notification("Success!","Success Increase voice chat range","Okay!")
+end)
 
 Network:Seperator()
 Network:Label("Simulates lag/delay from client -> server.")
@@ -1904,11 +2180,61 @@ discord:Notification("Eror","Select Connection Level","Okay!")
 end
 end)
 
-Network:Seperator()
-
 Network:Button("Show Average Client -> Server Ping",function()
 discord:Notification("Average Ping",math.round(Players.LocalPlayer:GetNetworkPing() * 1000).."ms","Okay!")
 end)
+
+Network:Seperator()
+
+local ipLabel = Network:Label("Your IP:\nYou need to get Ip data")
+local PosLabel = Network:Label("Your IP Coordinates:\nYou need to get Ip data")
+
+local MyIp = nil
+local MyCoordinates = nil
+
+Network:Button("Get IP Data",function()
+local httprequest = request or http_request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request)
+if not httprequest then discord:Notification("Error","Your executor don't support request","Okay...") return end
+local response = httprequest({Url = "http://ip-api.com/json/?fields=query,lat,lon",Method = "GET"})
+if not response then discord:Notification("Error","Http request error","Okay...") return end
+local IpData = HttpService:JSONDecode(response.Body) 
+if not IpData then discord:Notification("Error","JSONDecode Error","Okay...") return end
+MyIp = IpData.query
+MyCoordinates = tostring(IpData.lat)..", "..tostring(IpData.lon)
+MyProxy = IpData.proxy
+pcall(function()
+ipLabel:Change("Your IP:\n"..MyIp)
+PosLabel:Change("Your IP Coordinates:\n"..tostring(MyCoordinates))
+end)
+discord:Notification("Success","Success claimed ip data","Okay!")
+end)
+
+Network:Seperator()
+
+Network:Button("Copy IP",function()
+if MyIp then 
+setclipboard(MyIp)
+else
+discord:Notification("Error","You need to get Ip data","Okay")
+end
+end)
+
+Network:Button("Copy IP Coordinates",function()
+if MyCoordinates then 
+setclipboard(MyCoordinates)
+else
+discord:Notification("Error","You need to get Ip data","Okay")
+end
+end)
+
+Network:Button("Copy Google Maps Link IP Coordinates",function()
+if MyCoordinates then 
+setclipboard("https://www.google.com/maps?q="..MyCoordinates)
+else
+discord:Notification("Error","You need to get Ip data","Okay")
+end
+end)
+
 end
 
 if SettingsWevorn["Input Automations"] then
@@ -2070,6 +2396,19 @@ local PurchaseExploits = serv:Channel("Purchase Exploits")
 PurchaseExploits:Label("Fake Purchaser!\nThis tricks server that you bought a Game Pass!")
 PurchaseExploits:Label("Only works in some games...")
 
+PurchaseExploits:Toggle("All UserOwnsGamePassAsync functions return true (Client)",false,function(state)
+local mt = getrawmetatable(game)
+setreadonly(mt,false)
+local Original = mt.__namecall
+mt.__namecall = newcclosure(function(self,...)
+if state and getnamecallmethod() == "UserOwnsGamePassAsync" then
+return true
+end
+return Original(self,...)
+end)
+setreadonly(mt,true)
+end)
+
 pcall(function()
 GamePassLink = HttpService:JSONDecode(game:HttpGet("https://apis.roblox.com/game-passes/v1/universes/"..game.GameId.."/game-passes?passView=Full&pageSize=100"))
 end)
@@ -2083,6 +2422,18 @@ end
 end)
 end
 
+PurchaseExploits:Dropdown("What do you want to do with Game Passes?...",{
+        "Fire Signal GamePass",
+        "Copy Name",
+        "Copy Destination", 
+        "Copy Time Create",
+        "Copy Time Update",
+        "Copy Price",
+        "Copy Id"
+         },function(PassMethod)
+         getgenv().GamePassesMethod = PassMethod
+end)
+
 PurchaseExploits:Dropdown("Below is a list of all Game Passes  in this game!",GamePassNames,function(SelectedGamePass)
 for i, v in ipairs(GamePassNames) do
 if v == SelectedGamePass then
@@ -2093,12 +2444,26 @@ end)
 
 PurchaseExploits:Label("If nothing shows above, no GamePass found.")
 
-PurchaseExploits:Button("Fire Selected Gamepass",function()
-if GamePass then
-pcall(function()
+getgenv().GamePassesMethod = "Fire Signal Product"
+
+PurchaseExploits:Button("Use Signal with this game passes or use your method",function()
+if getgenv().GamePassesMethod == "Fire Signal GamePass" and GamePass then
 MarketplaceService:SignalPromptGamePassPurchaseFinished(game.Players.LocalPlayer,tostring(GamePass),true)
-discord:Notification("Success","Fired SignalPromptGamePassPurchaseFinished signal to server with Id: "..tostring(GamePass),"Okay!")
-end)
+discord:Notification("Success","Fired SignalPromptProductPurchaseFinished signal to server with ProductId: "..tostring(GamePass),"Okay!")
+elseif getgenv().GamePassesMethod == "Copy Name" and GamePass then
+setclipboard(MarketplaceService:GetProductInfo(GamePass, Enum.InfoType.GamePass).Name)
+elseif getgenv().GamePassesMethod == "Copy Destination" and GamePass then
+setclipboard(MarketplaceService:GetProductInfo(GamePass, Enum.InfoType.GamePass).Description)
+elseif getgenv().GamePassesMethod == "Copy Time Create" and GamePass then
+setclipboard(MarketplaceService:GetProductInfo(GamePass, Enum.InfoType.GamePass).Created:gsub("T"," "):gsub("%.%d+",""):gsub("Z","").." UTC")
+elseif getgenv().GamePassesMethod == "Copy Time Update" and GamePass then
+setclipboard(MarketplaceService:GetProductInfo(GamePass, Enum.InfoType.GamePass).Updated:gsub("T"," "):gsub("%.%d+",""):gsub("Z","").." UTC")
+elseif getgenv().GamePassesMethod == "Copy Price" and GamePass then
+setclipboard(MarketplaceService:GetProductInfo(GamePass, Enum.InfoType.GamePass).PriceInRobux or "N/A")
+elseif getgenv().GamePassesMethod == "Copy Id" and GamePass then
+setclipboard(GamePass)
+elseif not GamePass then
+discord:Notification("Error","Select GamePass","Okay")
 end
 end)
 
@@ -2135,6 +2500,20 @@ end
 end)
 end
 
+getgenv().ProductMethod = "Fire Signal Product"
+
+PurchaseExploits:Dropdown("What do you want to do with product?...",{
+        "Fire Signal Product",
+        "Copy Name",
+        "Copy Destination", 
+        "Copy Time Create",
+        "Copy Time Update",
+        "Copy Price",
+        "Copy Id"
+         },function(DevProductMethod)
+         getgenv().ProductMethod = DevProductMethod
+end)
+
 PurchaseExploits:Dropdown("Below is a list of all Dev Products in this game!",DevProductsNames,function(SelectedDevProduct)
 for i, v in ipairs(DevProductsNames) do
 if v == SelectedDevProduct then
@@ -2143,22 +2522,37 @@ end
 end
 end)
 
-PurchaseExploits:Label("If nothing shows above, no Dev Products  found.")
+PurchaseExploits:Label("If nothing shows above, no Dev Products found.")
 
-PurchaseExploits:Button("Fire Selected Dev Product",function()
-if DevProduct then
-pcall(function()
+PurchaseExploits:Button("Use Signal with this product or use your method",function()
+if getgenv().ProductMethod == "Fire Signal Product" and DevProduct then
 MarketplaceService:SignalPromptProductPurchaseFinished(game.Players.LocalPlayer.UserId,tostring(DevProduct),true)
 discord:Notification("Success","Fired SignalPromptProductPurchaseFinished signal to server with ProductId: "..tostring(DevProduct),"Okay!")
-end)
+elseif getgenv().ProductMethod == "Copy Name" and DevProduct then
+setclipboard(MarketplaceService:GetProductInfo(DevProduct, Enum.InfoType.Product).Name)
+elseif getgenv().ProductMethod == "Copy Destination" and DevProduct then
+setclipboard(MarketplaceService:GetProductInfo(DevProduct,Enum.InfoType.Product).Description)
+elseif getgenv().ProductMethod == "Copy Time Create" and DevProduct then
+setclipboard(MarketplaceService:GetProductInfo(DevProduct, Enum.InfoType.Product).Created:gsub("T"," "):gsub("%.%d+",""):gsub("Z","").." UTC")
+elseif getgenv().ProductMethod == "Copy Time Update" and DevProduct then
+setclipboard(MarketplaceService:GetProductInfo(DevProduct, Enum.InfoType.Product).Updated:gsub("T"," "):gsub("%.%d+",""):gsub("Z","").." UTC")
+elseif getgenv().ProductMethod == "Copy Price" and DevProduct then
+setclipboard(MarketplaceService:GetProductInfo(DevProduct,Enum.InfoType.Product).PriceInRobux or "N/A")
+elseif getgenv().ProductMethod == "Copy Id" and DevProduct then
+setclipboard(DevProduct)
+elseif not DevProduct then
+discord:Notification("Error","Select Dev Product","Okay")
 end
 end)
 
 PurchaseExploits:Button("Fire All Dev Products",function()
 for _, v in ipairs(GamePassIds) do
+task.spawn(function()
 pcall(function()
 MarketplaceService:SignalPromptProductPurchaseFinished(game.Players.LocalPlayer.UserId,v,true)
 end)
+end)
+task.wait(0.05)
 end
 discord:Notification("Success","Fired all Dev Products In this game","Okay!")
 end)
@@ -2167,7 +2561,9 @@ PurchaseExploits:Toggle("Loop Fire Selected Dev Product",false,function(state)
 getgenv().LoopFireDevProduct = state
 while getgenv().LoopFireDevProduct and task.wait() do
 if DevProduct then
+task.spawn(function()
 MarketplaceService:SignalPromptProductPurchaseFinished(game.Players.LocalPlayer.UserId,tostring(DevProduct),true)
+end)
 end
 end
 end)
@@ -2311,16 +2707,20 @@ discord:Notification("Success!","Success used SignalPromptBulkPurchaseFinished",
 end)
 end
 
-if SettingsWevorn["Player"] then
-local PlayerSection = serv:Channel("Player")
-PlayerSection:Label("Player Section Released In Wevorn v1.4")
+if SettingsWevorn["???"] then
+local SecretSection = serv:Channel("???")
+SecretSection:Label("Soon...")
 end
 
+task.spawn(function()
+pcall(function()
 for _, v in ipairs(game:GetDescendants()) do
-if v.Name == "__Function" then
+if v.Name == "__FUNCTION" then
 discord:Notification("Adonis Anti Cheat Found!","You can check !BuyItem and !BuyAsset","Okay!")
 end
 end
+end)
+end)
 
 local TimeLoaded = tick() - LoadTime
 
