@@ -93,7 +93,7 @@ end
 
 local Discord = Instance.new("ScreenGui")
 Discord.Name = GetRandomString()
-Discord.Parent = (gethui and gethui())  or (syn and syn.protect_gui and game:GetService("CoreGui"))  or (protect_gui and game:GetService("CoreGui"))  or (protectgui and game:GetService("CoreGui"))  or (pcall(function() return game:GetService("CoreGui") end) and game:GetService("CoreGui"))  or game.Players.LocalPlayer:WaitForChild("PlayerGui")
+Discord.Parent = (gethui and gethui()) or (syn and syn.protect_gui and game:GetService("CoreGui")) or (protect_gui and game:GetService("CoreGui")) or (protectgui and game:GetService("CoreGui")) or (typeof(game:GetService("CoreGui")) == "Instance" and game:GetService("CoreGui")) or game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
 Discord.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 Discord.DisplayOrder = 9999999999
 
