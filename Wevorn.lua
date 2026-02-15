@@ -247,7 +247,7 @@ if SettingsWevorn["Home"] then
     end)
 
 	Home:Button("Copy Telegram Channel Link",function()
-       setclipboard("http://t.me/Wevorn")
+       setclipboard("https://t.me/Wevorn")
     end)
     
     Home:Toggle("Anti Kick (Client)", false, function(state)
