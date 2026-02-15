@@ -260,6 +260,12 @@ if SettingsWevorn["Home"] then
     end)
     
     Home:Seperator()
+
+	Home:Button("Copy Telegram Channel Link",function()
+       setclipboard("http://t.me/Wevorn")
+    end)
+    
+    Home:Seperator()
 end
 
 if SettingsWevorn["Scripts"] then
