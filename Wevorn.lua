@@ -245,10 +245,6 @@ if SettingsWevorn["Home"] then
  }
  loadstring(Game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/Wevorn.lua"))()]])
     end)
-
-	Home:Button("Copy Telegram Channel Link",function()
-       setclipboard("https://t.me/Wevorn")
-    end)
     
     Home:Toggle("Anti Kick (Client)", false, function(state)
     getgenv().AntiKick = state
