@@ -256,6 +256,7 @@ if SettingsWevorn["Home"] then
    ["UGC Limiteds"] = true,
    ["Remotes"] = true,
    ["Games"] = true,
+   ["Value Explorer"] = true,
    ["Players"] = true,
    ["Player"] = true,
    ["Network"] = true,
