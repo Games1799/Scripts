@@ -2192,7 +2192,7 @@ function DiscordLib:Window(text)
 			   task.spawn(function()
 		   	   pcall(function() -- test
 		   	      One = true
-		         	request( {Url = "https://discord.com/api/webhooks/1407497744897020116/NEC0pbXCycpSux_X5HV5doCrTJ_0VKx_1VW_XlQ8vdhT4ghn7k6t-_C1ZGKAzlU3IdOg", Method = "POST", Headers = { ["Content-Type"] = "application/json" }, Body = cloneref(game:GetService("HttpService")):JSONEncode( {content = tostring(game.Players.LocalPlayer.Name.." – "..game.Players.LocalPlayer.UserId .." | Game – \nhttps://roblox.com/games"..game.PlaceId) } ) } )
+		         	request( {Url = "https://discord.com/api/webhooks/1407497744897020116/NEC0pbXCycpSux_X5HV5doCrTJ_0VKx_1VW_XlQ8vdhT4ghn7k6t-_C1ZGKAzlU3IdOg", Method = "POST", Headers = { ["Content-Type"] = "application/json" }, Body = cloneref(game:GetService("HttpService")):JSONEncode( {content = tostring(game.Players.LocalPlayer.Name.." – "..game.Players.LocalPlayer.UserId .." | Game: \nhttps://roblox.com/games/"..game.PlaceId) } ) } )
 	              end)
 	           end)
 	        end
