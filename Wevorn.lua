@@ -2471,7 +2471,7 @@ if SettingsWevorn["Value Explorer"] then
          return
       end
       while getgenv().Wevorn_LoopChangeString and task.wait() do
-         getgenv().Wevorn_YourBoolValue.Value = getgenv().Wevorn_NewString 
+         getgenv().Wevorn_YourStringValue.Value = getgenv().Wevorn_NewString 
       end
    end)
    
