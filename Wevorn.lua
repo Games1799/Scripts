@@ -2351,7 +2351,7 @@ if SettingsWevorn["Value Explorer"] then
          return
       end
       getgenv().Wevorn_YourBoolValue.Value = true
-      discord:Notification("Success", "Success Change BoolValue to true")
+      discord:Notification("Success", "Success Change BoolValue to true", "Okay")
    end)
 
    VESection:Button("Change Value in BoolValue to false", function()
@@ -2360,7 +2360,7 @@ if SettingsWevorn["Value Explorer"] then
          return
       end
       getgenv().Wevorn_YourBoolValue.Value = false
-      discord:Notification("Success", "Success Change BoolValue to false")
+      discord:Notification("Success", "Success Change BoolValue to false", "Okay")
    end)
 
    VESection:Button("Change Value in All BoolValues to true", function()
