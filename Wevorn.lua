@@ -206,7 +206,7 @@ pcall(function() -- For Fire All Remotes
     end
 end)
 
-local discord = loadstring(readfile("Lubary.lua"))() -- loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
+local discord = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
 local win = discord:Window("Wevorn v1.6")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
