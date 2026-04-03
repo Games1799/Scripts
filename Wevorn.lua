@@ -206,7 +206,7 @@ pcall(function() -- For Fire All Remotes
     end
 end)
 
-local discord = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
+local discord = loadstring(readfile("Lubary.lua"))() -- loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
 local win = discord:Window("Wevorn v1.6")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
@@ -2301,7 +2301,7 @@ if SettingsWevorn["Value Explorer"] then
       discord:Notification("Success", "Success Change Values In all IntValue objects", "Okay")
    end)
 
-   VESection:Toggle("Loop Change This Int Value", function(state)
+   VESection:Toggle("Loop Change This Int Value", false, function(state)
       getgenv().Wevorn_LoopChangeInt = state
       if not getgenv().Wevorn_ValueInt then 
          discord:Notification("Error", "Enter a new value for IntValue", "Okay")
@@ -2316,7 +2316,7 @@ if SettingsWevorn["Value Explorer"] then
       end
    end)
 
-   VESection:Toggle("Loop Change All Int Values", function(state)
+   VESection:Toggle("Loop Change All Int Values", false, function(state)
       getgenv().Wevorn_LoopChangeAllInt = state
       if not getgenv().Wevorn_ValueInt then 
          discord:Notification("Error", "Enter a new value for IntValue", "Okay")
@@ -2377,7 +2377,7 @@ if SettingsWevorn["Value Explorer"] then
       discord:Notification("Success", "Success change All BoolValues to false", "Okay")
    end)
 
-   VESection:Toggle("Loop Change This BoolValue To True", function(state)
+   VESection:Toggle("Loop Change This BoolValue To True", false, function(state)
       getgenv().Wevorn_LoopChangeBoolTrue = state
       if not getgenv().Wevorn_YourBoolValue then 
          discord:Notification("Error", "Select BoolValue", "Okay")
@@ -2388,7 +2388,7 @@ if SettingsWevorn["Value Explorer"] then
       end
    end)
 
-   VESection:Toggle("Loop Change This BoolValue To False", function(state)
+   VESection:Toggle("Loop Change This BoolValue To False", false, function(state)
       getgenv().Wevorn_LoopChangeBoolFalse = state
       if not getgenv().Wevorn_YourBoolValue then 
          discord:Notification("Error", "Select BoolValue", "Okay")
@@ -2399,7 +2399,7 @@ if SettingsWevorn["Value Explorer"] then
       end
    end)
 
-   VESection:Toggle("Loop Change All BoolValues To True", function(state)
+   VESection:Toggle("Loop Change All BoolValues To True", false, function(state)
       getgenv().Wevorn_LoopChangeAllBoolTrue = state
       while getgenv().Wevorn_LoopChangeAllBoolTrue and task.wait() do
          for _, v in pairs(BoolValues) do
@@ -2408,7 +2408,7 @@ if SettingsWevorn["Value Explorer"] then
       end
    end)
 
-   VESection:Toggle("Loop Change All BoolValues To False", function(state)
+   VESection:Toggle("Loop Change All BoolValues To False", false, function(state)
       getgenv().Wevorn_LoopChangeAllBoolFalse = state
       while getgenv().Wevorn_LoopChangeAllBoolFalse and task.wait() do
          for _, v in pairs(BoolValues) do
@@ -2460,7 +2460,7 @@ if SettingsWevorn["Value Explorer"] then
       discord:Notification("Success", "Success change Value In All StringValues", "Okay")
    end)
    
-   VESection:Toggle("Loop Change Value In This StringValue Object", function(state)
+   VESection:Toggle("Loop Change Value In This StringValue Object", false, function(state)
       getgenv().Wevorn_LoopChangeString = state
       if not getgenv().Wevorn_YourStringValue then 
          discord:Notification("Error", "Select StringValue", "Okay")
@@ -2475,7 +2475,7 @@ if SettingsWevorn["Value Explorer"] then
       end
    end)
    
-   VESection:Toggle("Loop Change Value In All StringValue Objects", function(state)
+   VESection:Toggle("Loop Change Value In All StringValue Objects", false, function(state)
       getgenv().Wevorn_LoopChangeAllString = state
       if not getgenv().Wevorn_NewString then 
          discord:Notification("Error", "Select a new Value In StringValues", "Okay")
@@ -2536,7 +2536,7 @@ if SettingsWevorn["Value Explorer"] then
       discord:Notification("Success", "Success change Value In All NumberValues", "Okay")
    end)
    
-   VESection:Toggle("Loop Change Value In This NumberValue Object", function(state)
+   VESection:Toggle("Loop Change Value In This NumberValue Object", false, function(state)
       getgenv().Wevorn_LoopChangeNumber = state
       if not getgenv().Wevorn_NewNValue then 
          discord:Notification("Error", "Select NumberValue", "Okay")
@@ -2551,7 +2551,7 @@ if SettingsWevorn["Value Explorer"] then
       end
    end)
    
-   VESection:Toggle("Loop Change Value In All NumberValue Objects", function(state)
+   VESection:Toggle("Loop Change Value In All NumberValue Objects", false, function(state)
       getgenv().Wevorn_LoopChangeAllNumber = state
       if not getgenv().Wevorn_NewNValue then 
          discord:Notification("Error", "Select a new Value In NumberValues", "Okay")
