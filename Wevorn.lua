@@ -212,6 +212,7 @@ local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
 local SettingsSection = serv2:Channel("???")
 SettingsSection:Label("Soon...")
+discord:Notification("Fix Wevorn", "The error when launching Wevorn has been fixed.", "Okay")
 
 if SettingsWevorn["Change Log"] then
    local changelog = serv:Channel("Change Log")
