@@ -4139,6 +4139,29 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~=
    GameListSection:Label("More Games Added Soon...")
    
    GameListSection:Seperator()
+
+   GameListSection:Textbox("Do you want to offer a game? Write it here (only FREE UGC Games)", "Enter Game Name Here...", false, function(IdkGame)
+      getgenv().Wevorn_Feedback = tostring(IdkGame)
+   end)
+   
+   GameListSection:Button("Send Game offer", function()
+      if not getgenv().Wevorn_Feedback then 
+         discord:Notification("Error", "Enter Game Name", "Okay")
+         return
+      end
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/Feedback.lua"))()
+      if getgenv().Wevorn_NotFoundRequestError then 
+         discord:Notification("Error", "Your executor doesn't support request function", "Okay")
+         return
+      end
+      if getgenv().Wevorn_ToggleSpam then 
+         discord:Notification("Error", "You alway send game offer", "Okay")
+         return
+      end
+      if not getgenv().Wevorn_NotFoundRequestError and not getgenv().Wevorn_ToggleSpam then
+         discord:Notification("Success", "You success send game offer", "Okay")
+      end
+   end)
 end
 
 pcall(function()
