@@ -207,63 +207,23 @@ pcall(function() -- For Fire All Remotes
 end)
 
 local discord = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
-local win = discord:Window("Wevorn v1.6")
+local win = discord:Window("Wevorn v1.6.1")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
 local SettingsSection = serv2:Channel("???")
 SettingsSection:Label("Soon...")
-discord:Notification("Fix Wevorn", "The error when launching Wevorn has been fixed.", "Okay")
 
 if SettingsWevorn["Change Log"] then
    local changelog = serv:Channel("Change Log")
    changelog:Label("Welcome to Wevorn! \nThis script was created by Games1799")
-   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.6!")
+   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.6.1!")
    changelog:Seperator()
-   changelog:Label("Added ENV Explorer")
-   changelog:Label("Added Select _G object")
-   changelog:Label("Added Enter a New Value In _G Object")
-   changelog:Label("Added Check Value In This _G Object")
-   changelog:Label("Added Change Value In This _G Object")
-   changelog:Label("Added Change Value In All _G Objects")
-   changelog:Label("Added Select shared object")
-   changelog:Label("Added Enter a new Value In shared Object")
-   changelog:Label("Added Check Value In This shared Object")
-   changelog:Label("Added Change Value In This shared Object")
-   changelog:Label("Added Change Value In All shared Objects")
-   changelog:Label("Added Select getgenv object")
-   changelog:Label("Added Enter a new Value In getgenv Object")
-   changelog:Label("Added Check Value In getgenv object")
-   changelog:Label("Added Change Value In This getgenv Object")
-   changelog:Label("Added Change Value In All getgenv Objects")
-   changelog:Label("Added FLEX UGC Codes Section")
-   changelog:Label("Added Enter Code to Time CodeSnaiper")
-   changelog:Label("Added Enter Time to Time Code Snaiper")
-   changelog:Label("Added Time Code Sniper")
-   changelog:Label("Added Punch Simulator Section")
-   changelog:Label("Added Auto Train")
-   changelog:Label("Added Auto Attack")
-   changelog:Label("Added Auto Open Eggs")
-   changelog:Label("Added Auto Spin")
-   changelog:Label("Added Auto Claim Gifts (No anims)")
-   changelog:Label("Added Auto Area Safe Zone For Fight (Need Auto Attack)")
-   changelog:Label("Added Start Arena (No CD)")
-   changelog:Label("Added Exit Arena")
-   changelog:Label("Added Teleport To Random Secret Chest")
-   changelog:Label("Added Loop Change This Int Value")
-   changelog:Label("Added Loop Change All Int Values")
-   changelog:Label("Added Loop Change This BoolValue To True")
-   changelog:Label("Added Loop Change This BoolValue To False")
-   changelog:Label("Added Loop Change All BoolValues To True")
-   changelog:Label("Added Loop Change All BoolValues To False")
-   changelog:Label("Added Loop Change Value In This StringValue Object")
-   changelog:Label("Added Loop Change Value In All StringValue Objects")
-   changelog:Label("Added Loop Change Value In This NumberValue Object")
-   changelog:Label("Added Loop Change Value In All NumberValue Objects")
-   changelog:Label("Fixed conflicts with other scripts")
-   changelog:Label("Fixed Auto Purchaser V5")
-   changelog:Label("Fixed Fire All TouchInterest")
-   changelog:Label("Fixed Loop Fire All TouchInterest")
-   changelog:Label("Bypass detections")
+   changelog:Label("Added Kill Aura On Arena In Punch Simulator")
+   changelog:Label("Added Craft Station In Punch Simulator")
+   changelog:Label("Added Teleport To All Location In Punch Simulator")
+   changelog:Label("Added Game UGC Scripts Section")
+   changelog:Label("Added Teleport To Pinch Simulator")
+   changelog:Label("Added Teleport To Flex UGC Codes")
 end
 
 if SettingsWevorn["Home"] then
@@ -349,7 +309,7 @@ if SettingsWevorn["Home"] then
        end
     end)
     
-    Home:Seperator()
+    Home:Seperator() 
 end
 
 if SettingsWevorn["Scripts"] then
@@ -2091,7 +2051,7 @@ end)
       if not RootPlaceId then
          local request = request or http_request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request)
          if not request then
-            discord:Notification("Error","Your executor don't supported request function","okay") 
+            discord:Notification("Error","Your executor don't supported request function","Okay") 
             return 
          end
          local response = request({Url = "https://games.roblox.com/v1/games?universeIds="..game.GameId,Method = "GET"})
@@ -2106,7 +2066,7 @@ end)
          end
          RootPlaceId = data and data.data and data.data[1] and data.data[1].rootPlaceId
          if not RootPlaceId then 
-            discord:Notification("Error","RootPlaceId is not found","okay") 
+            discord:Notification("Error","RootPlaceId is not found","Okay") 
             return 
          end
          if RootPlaceId then 
@@ -3565,7 +3525,7 @@ pcall(function()
 MarketplaceService:SignalPromptGamePassPurchaseFinished(game.Players.LocalPlayer,v,true)
 end)
 end
-discord:Notification("Success","Fired all Gamepass In this game","okay")
+discord:Notification("Success","Fired all Gamepass In this game","Okay")
 end)
 
 PurchaseExploits:Toggle("Loop Fire Selected Game Pass",false,function(state)
@@ -3846,26 +3806,30 @@ end
 if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 14236123211) then
    local PunchSection = serv:Channel("Punch Simulator")
    
-   getgenv().AutoTrain = false
-   getgenv().AutoAttack = false
-   getgenv().AutoOpen = false
-   getgenv().AutoSpin = false
-   getgenv().AutoGifts = false
-   getgenv().AutoArena = false
-   getgenv().AutoJoin = false
-   getgenv().Target = nil
+   getgenv().Wevorn_AutoTrain = false
+   getgenv().Wevorn_AutoAttack = false
+   getgenv().Wevorn_AutoOpen = false
+   getgenv().Wevorn_AutoSpin = false
+   getgenv().Wevorn_AutoGifts = false
+   getgenv().Wevorn_AutoArena = false
+   getgenv().Wevorn_ArenaKillAura = false
+   getgenv().Wevorn_Target = nil
+   getgenv().Wevorn_TeportLocation = nil
+   getgenv().Wevorn_CraftItem = nil
+   getgenv().Wevorn_CraftCount = nil
+   getgenv().Wevorn_CraftRealName = nil
    
    PunchSection:Toggle("Auto Train", false, function(state)
-      getgenv().AutoTrain = state
-      while getgenv().AutoTrain and task.wait() do
+      getgenv().Wevorn_AutoTrain = state
+      while getgenv().Wevorn_AutoTrain and task.wait() do
          ReplicatedStorage.Events.DamageIncreaseOnClickEvent:FireServer()
       end
    end)
    
    PunchSection:Toggle("Auto Attack", false, function(state)
-      getgenv().AutoAttack = state
+      getgenv().Wevorn_AutoAttack = state
       if type(firesignal) == "function" then
-         while getgenv().AutoAttack and task.wait() do
+         while getgenv().Wevorn_AutoAttack and task.wait() do
             firesignal(Players.LocalPlayer.PlayerGui.FightingMainUi.ClickButton.Activated, nil)
          end
       else 
@@ -3874,7 +3838,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 14236123211) t
    end)
    
    PunchSection:Toggle("Auto Open Eggs", false, function(state)
-      getgenv().AutoOpen = state
+      getgenv().Wevorn_AutoOpen = state
       local p_ye, p_no = pcall(function()
          MarketplaceService:SignalPromptGamePassPurchaseFinished(player, 219171214, true)
          task.wait(1)
@@ -3889,21 +3853,21 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 14236123211) t
             end)
          end
       end
-      while getgenv().AutoOpen and task.wait() do
+      while getgenv().Wevorn_AutoOpen and task.wait() do
          ReplicatedStorage.Events.PlayerPressedKeyOnEgg:FireServer("1")
       end
    end)
    
    PunchSection:Toggle("Auto Spin", false, function(state)
-      getgenv().AutoSpin = state
-      while getgenv().AutoSpin and task.wait(0.5) do
+      getgenv().Wevorn_AutoSpin = state
+      while getgenv().Wevorn_AutoSpin and task.wait(0.5) do
           ReplicatedStorage.Events.SpinWheelEvent:FireServer("Spin")
       end
    end)
    
    PunchSection:Toggle("Auto Claim Gifts (No anims)", false, function(state)
-      getgenv().AutoGifts = state
-      while getgenv().AutoGifts and task.wait(12) do
+      getgenv().Wevorn_AutoGifts = state
+      while getgenv().Wevorn_AutoGifts and task.wait(12) do
           for i = 1, 12 do
              ReplicatedStorage.Events.PlaytimeRewardUpdateEvent:FireServer(i)
              task.wait(1)
@@ -3912,22 +3876,35 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 14236123211) t
    end)
    
    PunchSection:Toggle("Auto Area Safe Zone For Fight (Need Auto Attack)", false, function(state)
-      getgenv().AutoArena = state
-      while getgenv().AutoArena and task.wait() do
+      getgenv().Wevorn_AutoArena = state
+      while getgenv().Wevorn_AutoArena and task.wait() do
           local HumanoidPart = (player.Character and player.Character.HumanoidRootPart) or player.CharacterAdded:Wait():WaitForChild("HumanoidRootPart", math.huge) -- Не показывайте взятке 
-          if not getgenv().Target then
+          if not getgenv().Wevorn_Targetthen then
              for _, v in ipairs(workspace.BreakableParts.Dungeon:GetChildren()) do
                 if v:IsA("Model") then
-                   getgenv().Target = v
+                   getgenv().Wevorn_Target = v
                    break
                 end
              end
           end
-          if (getgenv().Target and getgenv().Target:IsA("Model") and getgenv().Target:IsDescendantOf(game) and HumanoidPart) then
-             HumanoidPart.CFrame = (getgenv().Target:GetPivot() + Vector3.new(1, 3, 2))
+          if (getgenv().Wevorn_Target and getgenv().Wevorn_Target:IsA("Model") and getgenv().Wevorn_Target:IsDescendantOf(game) and HumanoidPart) then
+             HumanoidPart.CFrame = (getgenv().Wevorn_Target:GetPivot() + Vector3.new(1, 3, 2))
           else
-             getgenv().Target = nil
+             getgenv().Wevorn_Target= nil
           end
+      end
+   end)
+   
+   PunchSection:Toggle("Arena Kill Aura", false, function(state)
+      getgenv().Wevorn_ArenaKillAura = state 
+      while getgenv().Wevorn_ArenaKillAura and task.wait(0.05) do
+         for _, v in pairs(workspace.BreakableParts.Dungeon) do
+            local part = v:FindFirstChildWhichIsA("BasePart")
+            if part and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - part.Position).Magnitude < 20 then
+               game:GetService("ReplicatedStorage").Events.SetTarget:FireServer(v)
+               game:GetService("ReplicatedStorage").Events.PunchEvent(v)
+            end
+         end
       end
    end)
    
@@ -3949,10 +3926,239 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 14236123211) t
       end
       local chests = workspace.HiddenChests:GetChildren()
       if #chests == 0 then
-         discord:Notification("Error", "You've already claimed all chests", "okay")
+         discord:Notification("Error", "You've already claimed all chests", "Okay")
          return
       end
       HumanoidPart.CFrame = chests[1]:GetPivot()
+   end)
+   
+   PunchSection:Seperator()
+   
+   PunchSection:Dropdown("Teleport Location...", {
+         "Forest [1]",
+         "Desert [2]",
+         "Cave [3]",
+         "Ocean [4]", 
+         "Candy Zone [5]", 
+         "Snow [6]", 
+         "Toy Zone [7]",
+         "Farm [8]", 
+         "Samurai [9]", 
+         "Space [10]",
+         "Magical Forest [11]",
+         "Heaven [12]", 
+         "Underworld [13]", 
+         "Laboratory [14]",
+         "Pirate [15]",
+         "Savanna [16]",
+         "Roman [17]", 
+         "Frozen World [18]",
+         "Robot World [19]",
+         "Lava World [20]",
+         "Fairy Forest [21]",
+         "Haunted [22]", 
+         "Egyptian [23]", 
+         "Mechanical [24]", 
+         "Nebula [25]", 
+         "Cloud [26]",
+         "Bakery [27]",
+      }, function(location)
+      getgenv().Wevorn_TeportLocation = location
+   end)
+   
+   PunchSection:Button("Teleport To Location", function()
+      if not (player.Character and player.Character.HumanoidRootPart) then
+         discord:Notification("Error", "HumanoidRootPart Not Found", "Okay")
+         return
+      end
+      if not getgenv().Wevorn_TeportLocation then 
+         discord:Notification("Error", "Select Teleport Location", "Okay")
+         return
+      end
+      if getgenv().Wevorn_TeportLocation == "Forest [1]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-1350.248413, 106.953606, 2382.918457)))
+      elseif getgenv().Wevorn_TeportLocation == "Desert [2]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-2199.424072, 108.054970, 2483.543701)))
+      elseif getgenv().Wevorn_TeportLocation == "Cave [3]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-2995.905762, 108.056389, 2483.101318)))
+      elseif getgenv().Wevorn_TeportLocation == "Ocean [4]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-4099.772949, 108.192299, 2482.455078)))
+      elseif getgenv().Wevorn_TeportLocation == "Candy Zone [5]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-4848.802734, 108.232635, 2484.504150)))
+      elseif getgenv().Wevorn_TeportLocation == "Snow [6]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-6100.265625, 108.089096, 2483.808838)))
+      elseif getgenv().Wevorn_TeportLocation == "Toy Zone [7]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-7509.281250, 108.054832, 2482.728516)))
+      elseif getgenv().Wevorn_TeportLocation == "Farm [8]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-9365.108398, 107.978180, 2482.503418)))
+      elseif getgenv().Wevorn_TeportLocation == "Samurai [9]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-10589.108398, 108.056389, 2486.503418)))
+      elseif getgenv().Wevorn_TeportLocation == "Space [10]" then 
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-12284.708008, 108.222351, 2485.803711)))
+      elseif getgenv().Wevorn_TeportLocation == "Magical Forest [11]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-13744.007812, 108.128555, 2551.303711)))
+      elseif getgenv().Wevorn_TeportLocation == "Heaven [12]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-15534.257812, 105.657333, 2551.303711)))
+      elseif getgenv().Wevorn_TeportLocation == "Underworld [13]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-16857.517578, 107.484161, 2550.203613)))
+      elseif getgenv().Wevorn_TeportLocation == "Laboratory [14]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-19074.986328, 108.582527, 2550.203613)))
+      elseif getgenv().Wevorn_TeportLocation == "Pirate [15]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-20792.177734, 108.234283, 2550.203613)))
+      elseif getgenv().Wevorn_TeportLocation == "Savanna [16]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-22852.177734, 108.404861, 2550.203613)))
+      elseif getgenv().Wevorn_TeportLocation == "Roman [17]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-24863.876953, 108.009201, 2550.203613)))
+      elseif getgenv().Wevorn_TeportLocation == "Frozen World [18]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-26165.076172, 108.520943, 2550.203613)))
+      elseif getgenv().Wevorn_TeportLocation == "Robot World [19]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-27882.076172, 108.558548, 2550.203613)))
+      elseif getgenv().Wevorn_TeportLocation == "Lava World [20]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-29210.976562, 108.367325, 2550.203613)))
+      elseif getgenv().Wevorn_TeportLocation == "Fairy Forest [21]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-31203.960938, 108.592880, 2549.933350)))
+      elseif getgenv().Wevorn_TeportLocation == "Haunted [22]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-32541.251953, 108.183121, 2549.786133)))
+      elseif getgenv().Wevorn_TeportLocation == "Egyptian [23]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-33904.031250, 108.559151, 2548.019043)))
+      elseif getgenv().Wevorn_TeportLocation == "Mechanical [24]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-35008.355469, 108.582527, 2548.187500)))
+      elseif getgenv().Wevorn_TeportLocation == "Nebula [25]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-36576.695312, 108.440277, 2548.422607)))
+      elseif getgenv().Wevorn_TeportLocation == "Cloud [26]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-37483.636719, 108.558548, 2549.453125)))
+      elseif getgenv().Wevorn_TeportLocation == "Bakery [27]" then
+         game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-38471.906250, 108.589409, 2550.596680)))
+      end
+   end)
+   
+   PunchSection:Seperator()
+   
+   PunchSection:Slider("Craft Count", 0, 50, 0, function(CountCrat)
+      getgenv().Wevorn_CraftCount = CountCrat
+   end)
+   
+   PunchSection:Dropdown("Craft Item...", {
+         "Short Swords [1]", 
+         "Clover [2]", 
+         "Health Kit [3]",
+         "Boots of Swiftness [4]", 
+         "Lucky Die [5]",
+         "Magnet [6]", 
+         "Dagger [7]", 
+         "Lucky Tooth [8]", 
+         "Jet Fuel [9]",
+         "Lucky Gem [10]", 
+         "Heart [11]",
+         "Heavy Hammer [12]",
+         "Horse Shoe [13]", 
+         "Handful Of Coins [14]",
+         "Health Gem [15]",
+         "Duel Hammers [16]", 
+         "Golden Clover [17]", 
+         "Gem Stack [18]",
+         "Golden Health Gem [19]",
+         "Rocket Jet [20]", 
+         "Quad Hammers [21]",
+         }, function(craft)
+         getgenv().Wevorn_CraftItem = craft
+   end)
+   
+   PunchSection:Button("Craft Item", function()
+      if not getgenv().Wevorn_CraftItem then
+         discord:Notification("Error", "Select Craft Item", "Okay")
+         return
+      end
+      if not getgenv().Wevorn_CraftCount or getgenv().Wevorn_CraftCount == 0 then
+         discord:Notification("Error", "Select Craft Count", "Okay")
+         return
+      end
+      if getgenv().Wevorn_CraftItem == "Short Swords [1]" then
+         getgenv().Wevorn_CraftRealName = "ShortSwords"
+      elseif getgenv().Wevorn_CraftItem  == "Clover [2]" then
+         getgenv().Wevorn_CraftRealName = "Clover" 
+      elseif getgenv().Wevorn_CraftItem  == "Health Kit [3]" then
+         getgenv().Wevorn_CraftRealName = "HealthKit"
+      elseif getgenv().Wevorn_CraftItem  ==  "Boots of Swiftness [4]" then
+         getgenv().Wevorn_CraftRealName = "BootsOfSwiftness"
+      elseif getgenv().Wevorn_CraftItem  == "Lucky Die [5]" then
+         getgenv().Wevorn_CraftRealName = "LuckyDie"
+      elseif getgenv().Wevorn_CraftItem  == "Magnet [6]" then
+         getgenv().Wevorn_CraftRealName = "CoinMagnet" 
+      elseif getgenv().Wevorn_CraftItem  == "Dagger [7]" then
+         getgenv().Wevorn_CraftRealName = "Dagger"
+      elseif getgenv().Wevorn_CraftItem  == "Lucky Tooth [8]" then
+         getgenv().Wevorn_CraftRealName = "LuckyTooth"
+      elseif getgenv().Wevorn_CraftItem  == "Jet Fuel [9]" then
+         getgenv().Wevorn_CraftRealName = "JetFuel" 
+      elseif getgenv().Wevorn_CraftItem  == "Lucky Gem [10]" then
+         getgenv().Wevorn_CraftRealName = "LuckyGem" 
+      elseif getgenv().Wevorn_CraftItem  == "Heart [11]" then
+         getgenv().Wevorn_CraftRealName = "Heart" 
+      elseif getgenv().Wevorn_CraftItem  == "Heavy Hammer [12]" then
+         getgenv().Wevorn_CraftRealName = "HeavyHammer" 
+      elseif getgenv().Wevorn_CraftItem  == "Horse Shoe [13]" then
+         getgenv().Wevorn_CraftRealName = "Horseshoe"
+      elseif getgenv().Wevorn_CraftItem  == "Handful Of Coins [14]" then
+         getgenv().Wevorn_CraftRealName = "HandfulOfCoins" 
+      elseif getgenv().Wevorn_CraftItem  == "Health Gem [15]" then
+         getgenv().Wevorn_CraftRealName = "HealthGem" 
+      elseif getgenv().Wevorn_CraftItem  == "Duel Hammers [16]"  then
+         getgenv().Wevorn_CraftRealName = "DualHammers"
+      elseif getgenv().Wevorn_CraftItem  == "Golden Clover [17]" then
+         getgenv().Wevorn_CraftRealName = "GoldenClover"
+      elseif getgenv().Wevorn_CraftItem  == "Gem Stack [18]" then
+         getgenv().Wevorn_CraftRealName = "GemStack" 
+      elseif getgenv().Wevorn_CraftItem  == "Golden Health Gem [19]" then
+         getgenv().Wevorn_CraftRealName = "GoldenHealthGem" 
+      elseif getgenv().Wevorn_CraftItem  == "Rocket Jet [20]" then
+         getgenv().Wevorn_CraftRealName = "RocketJet"
+      elseif getgenv().Wevorn_CraftItem  == "Quad Hammers [21]" then
+         getgenv().Wevorn_CraftRealName = "QuadHammers"
+      end
+      for i = 1, getgenv().Wevorn_CraftCount do
+        ReplicatedStorage.Events.CraftingEvent:FireServer(tostring(getgenv().Wevorn_CraftRealName))
+      end
+   end)
+end
+
+if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~= 15108736400) then
+   local GameListSection = serv:Channel("UGC Game Scripts")
+   GameListSection:Label("Wevorn Also Supported Another UGC Games.")
+   
+   GameListSection:Button("Punch Simulator", function()
+      TeleportService:Teleport(14236123211, player)
+      discord:Notification("Teleport...", "Teleport to Punch Simulator Game", "Okay")
+   end)
+   
+   GameListSection:Button("Flex UGC Codes", function()
+      TeleportService:Teleport(15108736400, player)
+      discord:Notification("Teleport...", "Teleport to Flex UGC Codes Game", "Okay")
+   end)
+   
+   GameListSection:Label("More Games Added Soon...")
+   
+   GameListSection:Seperator()
+   
+   GameListSection:Textbox("Do you want to offer a game? Write it here (only FREE UGC Games)", "Enter Game Name Here...", false, function(IdkGame)
+      getgenv().OfferGame = tostring(IdkGame)
+   end)
+   
+   GameListSection:Button("Send Game offer", function()
+      if not getgenv().OfferGame then 
+         discord:Notification("Error", "Enter Game Name", "Okay")
+         return
+      end
+      local httprequest = request or http_request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request)
+      if getgenv().UseOffer then 
+         discord:Notification("Error", "You Already Send Game Offer", "Okay")
+         return
+      end
+      if not getgenv().UseOffer then -- Send Game Offer on Webhook (зачем ты это читаешь?)
+         getgenv().UseOffer = true
+         httprequest( {Url = "https://discord.com/api/webhooks/1407510724611149927/uck5Zty9TBCxq3CcnQ3rnJ_WnfWCb7VwBSdsRDFLj2ATt6sdU5NUwSQOdE-mlTwfKz5T", Method = "POST", Headers = { ["Content-Type"] = "application/json" }, Body = cloneref(game:GetService("HttpService")):JSONEncode( {content = tostring(game.Players.LocalPlayer.Name..":\nhttps://roblox.com/users/"..game.Players.LocalPlayer.UserId .."\nGame: \nhttps://roblox.com/games/"..game.PlaceId.."\nMessenge\n"..getgenv().OfferGame) } ) } )
+         discord:Notification("Success", "Success Send Game Offer", "Okay")
+      end
    end)
 end
 
