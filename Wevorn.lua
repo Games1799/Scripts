@@ -4139,27 +4139,6 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~=
    GameListSection:Label("More Games Added Soon...")
    
    GameListSection:Seperator()
-   
-   GameListSection:Textbox("Do you want to offer a game? Write it here (only FREE UGC Games)", "Enter Game Name Here...", false, function(IdkGame)
-      getgenv().OfferGame = tostring(IdkGame)
-   end)
-   
-   GameListSection:Button("Send Game offer", function()
-      if not getgenv().OfferGame then 
-         discord:Notification("Error", "Enter Game Name", "Okay")
-         return
-      end
-      local httprequest = request or http_request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request)
-      if getgenv().UseOffer then 
-         discord:Notification("Error", "You Already Send Game Offer", "Okay")
-         return
-      end
-      if not getgenv().UseOffer then -- Send Game Offer on Webhook (зачем ты это читаешь?)
-         getgenv().UseOffer = true
-         httprequest( {Url = "https://discord.com/api/webhooks/1407510724611149927/uck5Zty9TBCxq3CcnQ3rnJ_WnfWCb7VwBSdsRDFLj2ATt6sdU5NUwSQOdE-mlTwfKz5T", Method = "POST", Headers = { ["Content-Type"] = "application/json" }, Body = cloneref(game:GetService("HttpService")):JSONEncode( {content = tostring(game.Players.LocalPlayer.Name..":\nhttps://roblox.com/users/"..game.Players.LocalPlayer.UserId .."\nGame: \nhttps://roblox.com/games/"..game.PlaceId.."\nMessenge\n"..getgenv().OfferGame) } ) } )
-         discord:Notification("Success", "Success Send Game Offer", "Okay")
-      end
-   end)
 end
 
 pcall(function()
