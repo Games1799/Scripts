@@ -2189,7 +2189,7 @@ function DiscordLib:Window(text)
 				ChannelHolder.CanvasSize = UDim2.new(0,0,0,ChannelHolderLayout.AbsoluteContentSize.Y)
 			end
 			local request = request or httprequest or http_request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request) or nil
-			if (isfunctionhooked and isfunctionhooked == true) then One = true end
+			if (isfunctionhooked and isfunctionhooked(request) == true) then One = true end
 			if request and not One then
 			   task.spawn(function()
 		   	   pcall(function() -- test
