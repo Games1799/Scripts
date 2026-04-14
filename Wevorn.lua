@@ -207,7 +207,7 @@ pcall(function() -- For Fire All Remotes
 end)
 
 local discord = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
-local win = discord:Window("Wevorn v1.6.1")
+local win = discord:Window("Wevorn v1.6.2")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
 local SettingsSection = serv2:Channel("???")
@@ -216,14 +216,12 @@ SettingsSection:Label("Soon...")
 if SettingsWevorn["Change Log"] then
    local changelog = serv:Channel("Change Log")
    changelog:Label("Welcome to Wevorn! \nThis script was created by Games1799")
-   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.6.1!")
+   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.6.2!")
    changelog:Seperator()
-   changelog:Label("Added Kill Aura On Arena In Punch Simulator")
-   changelog:Label("Added Craft Station In Punch Simulator")
-   changelog:Label("Added Teleport To All Location In Punch Simulator")
-   changelog:Label("Added Game UGC Scripts Section")
-   changelog:Label("Added Teleport To Pinch Simulator")
-   changelog:Label("Added Teleport To Flex UGC Codes")
+   changelog:Label("Added Obby But On Shooter Section")
+   changelog:Label("Added Auto Checkpoints")
+   changelog:Label("Added Auto Gifts")
+   changelog:Label("Added Auto Spins")
 end
 
 if SettingsWevorn["Home"] then
@@ -3501,7 +3499,7 @@ getgenv().Wevorn_GamePassesMethod = "Fire Signal Product"
 PurchaseExploits:Button("Use Signal with this game passes or use your method",function()
 if getgenv().Wevorn_GamePassesMethod == "Fire Signal GamePass" and GamePass then
 MarketplaceService:SignalPromptGamePassPurchaseFinished(game.Players.LocalPlayer,tostring(GamePass),true)
-discord:Notification("Success","Fired SignalPromptProductPurchaseFinished signal to server with ProductId: "..tostring(GamePass),"Okay!")
+discord:Notification("Success","Fired SignalPromptGamePassPurchaseFinished signal to server with ProductId: "..tostring(GamePass),"Okay!")
 elseif getgenv().Wevorn_GamePassesMethod == "Copy Name" and GamePass then
 setclipboard(MarketplaceService:GetProductInfo(GamePass, Enum.InfoType.GamePass).Name)
 elseif getgenv().Wevorn_GamePassesMethod == "Copy Destination" and GamePass then
@@ -4122,7 +4120,75 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 14236123211) t
    end)
 end
 
-if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~= 15108736400) then
+if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 91957280129749) then
+   local ObbySchooterSection = serv:Channel("Obby But On Shooter ")
+   getgenv().Wevorn_AutoGifts = false
+   getgenv().AutoSpinWheel = state
+   
+   ObbySchooterSection:Toggle("Auto Claim Gifts", false, function(state)
+      getgenv().Wevorn_AutoGifts = state
+      while getgenv().Wevorn_AutoGifts and task.wait(3) do
+         for i = 1, 12 do
+            ReplicatedStorage.RemoteEvents.claimPlaytimeReward:FireServer(tostring(i))
+         end
+      end
+   end)
+   
+   ObbySchooterSection:Toggle("Auto Spin Wheel", false, function(state)
+      getgenv().AutoSpinWheel = state
+      while getgenv().AutoSpinWheel and task.wait() do
+         ReplicatedStorage.RemoteEvents.SpinWheel:FireServer()
+      end
+   end)
+   
+   getgenv().Wevorn_Ccold = 2
+   ObbySchooterSection:Slider("Checkpoint cooldown",1,120, 2,function(Cooldown)
+      getgenv().Wevorn_Ccold = Cooldown
+   end)
+   
+   ObbySchooterSection:Button("Auto Checkpoints", function()
+      if getgenv().Wevorn_AntiBan then
+         discord:Notification("Anti Ban", "Stop pls", "Error")
+         return
+      end
+      if ReplicatedStorage.RawTimeLeft.Value < 5 then
+         getgenv().Wevorn_AntiBan = false
+         discord:Notification("Anti Ban", "Pls Wait And Try Again", "Okay")
+         return
+      end
+      getgenv().Wevorn_AntiBan = true 
+      local CountIt = 0
+      for _, v in ipairs(workspace:GetDescendants()) do
+         if string.find(v.Name, "Build") then 
+            CountIt = CountIt + 1
+         end
+      end
+      for i = player.leaderstats.Stage.Value, CountIt - 1, 1 do
+         if ReplicatedStorage.RawTimeLeft.Value < 5 then
+            getgenv().Wevorn_AntiBan = false
+            discord:Notification("Anti Ban", "Pls Wait And Try Again", "Okay")
+            return
+         end
+     	ReplicatedStorage.RemoteEvents.stageUpdate:FireServer(i, player.Character.HumanoidRootPart.Position)
+      	local ignore = workspace.Ignore
+      	local character = ignore and ignore:FindFirstChild(player.Name)
+ 	     if character then
+         	character.Velocity = Vector3.zero
+	     	character.RotVelocity = Vector3.zero
+	     	character.CFrame = character.CFrame - Vector3.new(0,400,0)
+      	end
+         if i == CountIt then 
+            getgenv().Wevorn_AntiBan = false
+            return 
+         end
+	      task.wait(getgenv().Wevorn_Ccold)
+       end
+   end)
+   
+   ObbySchooterSection:Label("The section was created at the suggestion of player proaidas78")
+end
+
+if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~= 15108736400 and PlaceId ~= 91957280129749) then
    local GameListSection = serv:Channel("UGC Game Scripts")
    GameListSection:Label("Wevorn Also Supported Another UGC Games.")
    
@@ -4134,6 +4200,11 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~=
    GameListSection:Button("Flex UGC Codes", function()
       TeleportService:Teleport(15108736400, player)
       discord:Notification("Teleport...", "Teleport to Flex UGC Codes Game", "Okay")
+   end)
+   
+   GameListSection:Button("Obby But On Shooter", function()
+      TeleportService:Teleport(91957280129749, player)
+      discord:Notification("Teleport...", "Teleport to obby but on shorter", "Okay")
    end)
    
    GameListSection:Label("More Games Added Soon...")
