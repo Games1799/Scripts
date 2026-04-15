@@ -207,7 +207,7 @@ pcall(function() -- For Fire All Remotes
 end)
 
 local discord = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
-local win = discord:Window("Wevorn v1.6.2")
+local win = discord:Window("Wevorn v1.6.3")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
 local SettingsSection = serv2:Channel("???")
@@ -216,12 +216,12 @@ SettingsSection:Label("Soon...")
 if SettingsWevorn["Change Log"] then
    local changelog = serv:Channel("Change Log")
    changelog:Label("Welcome to Wevorn! \nThis script was created by Games1799")
-   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.6.2!")
+   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.6.3!")
    changelog:Seperator()
-   changelog:Label("Added Obby But On Shooter Section")
-   changelog:Label("Added Auto Checkpoints")
-   changelog:Label("Added Auto Gifts")
-   changelog:Label("Added Auto Spins")
+   changelog:Label("Added Jade For Free UGC Section")
+   changelog:Label("Added Auto Minigames")
+   changelog:Label("Added Auto Spin")
+   changelog:Label("Added Auto Daily Gifts")
 end
 
 if SettingsWevorn["Home"] then
@@ -4188,7 +4188,65 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 91957280129749
    ObbySchooterSection:Label("The section was created at the suggestion of player proaidas78")
 end
 
-if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~= 15108736400 and PlaceId ~= 91957280129749) then
+if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 131774425311876) then
+   local PlayForUGCSection = serv:Channel("Jade For UGC")
+   
+   getgenv().Wevorn_AutoSpin = false
+   getgenv().Wevorn_AutoDailyGifts = false 
+   getgenv().Wevorn_AutoCircleMiniGame = false
+   getgenv().Wevorn_AutoBubblesMiniGame = false
+   
+   PlayForUGCSection:Toggle("Auto Spin", false, function(state)
+      getgenv().Wevorn_AutoSpin = state
+      while getgenv().AutoSpin and task.wait(1) do
+         ReplicatedStorage.Remotes.SpinEvent:FireServer()
+      end
+   end)
+   
+   PlayForUGCSection:Toggle("Auto Daily Gifts", false, function(state)
+      getgenv().Wevorn_AutoDailyGifts = state
+      while getgenv().Wevorn_AutoDailyGifts and task.wait(1) do
+         ReplicatedStorage.Remotes.ClaimDailyReward:FireServer()
+      end
+   end)
+   
+   PlayForUGCSection:Separator()
+   
+   PlayForUGCSection:Label("Warning: Need FiresSgnal Function!")
+   
+   PlayForUGCSection:Toggle("Auto Curle Mini Game", false, function(state)
+      getgenv().Wevorn_AutoCircleMiniGame = state
+      while getgenv().Wevorn_AutoCircleMiniGame and task.wait() do
+         local Container = player.PlayerGui.Minigames.circleContainer.circleFrame
+         local red, green = Container.redDot, Container.greenZone 
+         local r = red.AbsolutePosition
+         local rs = red.AbsoluteSize
+         local g = green.AbsolutePosition
+         local gs = green.AbsoluteSize
+         local rx, ry = r.X + rs.X/2, r.Y + rs.Y/2
+         if rx > g.X and rx < g.X + gs.X and ry > g.Y and ry < g.Y + gs.Y then
+            firesignal(Container.Parent.tapButton.MouseButton1Click)
+         end
+      end
+   end)
+   
+   PlayForUGCSection:Toggle("Auto Bubbles Mini Game", false, function(state)
+      getgenv().Wevorn_AutoBubblesMiniGame = state
+      while getgenv().Wevorn_AutoBubblesMiniGame and task.wait() do
+         local BubbleConntainer = game:GetService("Players").LocalPlayer.PlayerGui.Minigames.bubbleContainer
+         for _, v in ipairs(BubbleConntainer:GetChildren()) do
+            local Bubble = v:FindFirstChildOfClass("TextButton")
+            if Bubble then
+               firesignal(Bubble.MouseButton1Click)
+            end
+         end
+      end
+   end)
+   
+   PlayForUGCSection:Label("The section was created at the suggestion of player ale28373526335")
+end
+
+if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~= 15108736400 and PlaceId ~= 91957280129749 and PlaceId ~= 131774425311876) then
    local GameListSection = serv:Channel("UGC Game Scripts")
    GameListSection:Label("Wevorn Also Supported Another UGC Games.")
    
@@ -4205,6 +4263,11 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~=
    GameListSection:Button("Obby But On Shooter", function()
       TeleportService:Teleport(91957280129749, player)
       discord:Notification("Teleport...", "Teleport to obby but on shorter", "Okay")
+   end)
+   
+   GameListSection:Button("Jade for ugc [Free Ugc]", function()
+      TeleportService:Teleport(131774425311876, player)
+      discord:Notification("Teleport...", "Teleport to Jade for ugc [Free Ugc]", "Okay")
    end)
    
    GameListSection:Label("More Games Added Soon...")
