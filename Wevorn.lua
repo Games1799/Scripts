@@ -4189,7 +4189,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 91957280129749
 end
 
 if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 131774425311876) then
-   local PlayForUGCSection = serv:Channel("Jade For UGC")
+   local PlayForUGCSection = serv:Channel("Juega Por UGC")
    
    getgenv().Wevorn_AutoSpin = false
    getgenv().Wevorn_AutoDailyGifts = false 
@@ -4265,7 +4265,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~=
       discord:Notification("Teleport...", "Teleport to obby but on shorter", "Okay")
    end)
    
-   GameListSection:Button("Jade for ugc [Free Ugc]", function()
+   GameListSection:Button("Juega por UGC [Free Ugc]", function()
       TeleportService:Teleport(131774425311876, player)
       discord:Notification("Teleport...", "Teleport to Jade for ugc [Free Ugc]", "Okay")
    end)
