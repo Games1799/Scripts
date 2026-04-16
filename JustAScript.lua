@@ -284,7 +284,7 @@ WeLoveCat2:CreateButton("Adonis Checker", function()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/JustAScripts/Favorable/main/AdonisChecker.Lua",true))()
 end)
 
-WeLoveCat2:CreateButton("Adonis Bypassed", function()  loadstring(game:HttpGet("https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua", true))() --[[ AdonisCries Is Famous Adonis Bypasser and The Only working The Catch is it's Ofbuscate But Ton Player used it and nothing Happen or any Bad ]]-- 
+WeLoveCat2:CreateButton("Adonis Bypassed", function()  loadstring(game:HttpGet("https://github.com/Games1799/Scripts/blob/main/JustAScriptAdonisBypass.lua", true))() --[[ AdonisCries Is Famous Adonis Bypasser and The Only working The Catch is it's Ofbuscate But Ton Player used it and nothing Happen or any Bad ]]-- 
   if V10 then
     Sound(6150774030, 0.1)
     task.wait(.1)
