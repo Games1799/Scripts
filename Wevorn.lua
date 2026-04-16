@@ -88,11 +88,15 @@ end
 local MarketplaceService  = cloneref(game:GetService("MarketplaceService"))
 local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
 local TeleportService = cloneref(game:GetService("TeleportService"))
+local ReplicatedFirst = cloneref(game:GetService("ReplicatedFirst"))
+local SoundService = cloneref(game:GetService("SoundService"))
 local AssetService = cloneref(game:GetService("AssetService"))
 local HttpService = cloneref(game:GetService("HttpService"))
 local RunService = cloneref(game:GetService("RunService"))
 local workspace  = cloneref(game:GetService("Workspace"))
+local Lighting = cloneref(game:GetService("Lighting"))
 local Players = cloneref(game:GetService("Players"))
+local Teams = cloneref(game:GetService("Teams"))
 
 local setclipboard = setclipboard or toclipboard or setrbxclipboard or set_clipboard or to_clipboard or set_rbx_clipboard or (Clipboard and Clipboard.set) or writeclipboard or write_clipboard or nil
 local clearteleportqueue = clearteleportqueue or clear_teleport_queue or (syn and syn.clear.teleport.queue) or (fluxus and fluxus.clear_teleport_queue) or nil
@@ -100,9 +104,44 @@ local getconnections = getconnections or get_signal_cons or get_connections or g
 local queueonteleport = queueonteleport or queue_on_teleport or (syn and syn.queue_on_teleport) or (fluxus and fluxus.queue_on_teleport) or nil
 local getnamecallmethod = getnamecallmethod or get_namecall_method or nil
 local fireproximityprompt = fireproximityprompt or fire_proximy_prompt or nil
+local hookmetamethod = hookmetamethod or hook_meta_method or nil
 local firesignal = firesignal or fire_signal or signalfire or signal_fire or nil
 local firetouchinterest = firetouchinterest or fire_touch_interest or nil
 local fireclickdetector = fireclickdetector or fire_click_detector or nil
+
+local waxwritefile = waxwritefile or wax_write_file or waxwrite_file or nil
+local waxreadfile = waxreadfile or wax_read_file or waxread_file or nil
+local writefile = writefile or write_file or createfile or create_file or nil
+local appendfile = appendfile or append_file or nil
+local readfile = readfile or read_file or nil
+local isfile = isfile or is_file or nil
+
+if not writefile and waxwritefile then
+   writefile = function(file, data)
+      local __5, __6 = pcall(waxwritefile, file, data)
+      if __5 then
+         return __6
+      end
+   end
+end
+
+if not readfile and waxreadfile then
+   readfile = function(file)
+      local __1, __2 = pcall(waxreadfile, file)
+      if __1 then
+         return __2
+      end
+   end
+end
+
+if not isfile and readfile then
+   isfile = function(file)
+      local __3, __4 = pcall(readfile, file)
+      if __3 then
+         return __3 and __4 ~= nil
+      end
+   end
+end
 
 if firesignal and not fireproximityprompt then
    fireproximityprompt = function(prompt)
@@ -118,7 +157,7 @@ end
 
 if firesignal and not firetouchinterest then
    firetouchinterest = function(part1, part2, toggle)
-      if toggle == 0 then
+      if toggle == 1 then
          firesignal(part1.Touched, part2)
       else
          firesignal(part1.TouchEnded, part2)
@@ -183,6 +222,7 @@ local defaultSettings = {
     ["Games"] = true,
     ["Value Explorer"] = true,
     ["ENV Explorer"] = true,
+    ["Module Explorer"] = true,
     ["Players"] = true,
     ["Player"] = true,
     ["Network"] = true,
@@ -207,7 +247,7 @@ pcall(function() -- For Fire All Remotes
 end)
 
 local discord = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
-local win = discord:Window("Wevorn v1.6.3")
+local win = discord:Window("Wevorn v1.7")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
 local SettingsSection = serv2:Channel("???")
@@ -216,12 +256,14 @@ SettingsSection:Label("Soon...")
 if SettingsWevorn["Change Log"] then
    local changelog = serv:Channel("Change Log")
    changelog:Label("Welcome to Wevorn! \nThis script was created by Games1799")
-   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.6.3!")
+   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.7!")
    changelog:Seperator()
-   changelog:Label("Added Jade For Free UGC Section")
-   changelog:Label("Added Auto Minigames")
-   changelog:Label("Added Auto Spin")
-   changelog:Label("Added Auto Daily Gifts")
+   changelog:Label("Added Module Explorer")
+   changelog:Label("Added Auto Search UGC Code In Flex UGC Codes")
+   changelog:Label("Added ESP Players")
+   changelog:Label("Added ESP NPS")
+   changelog:Label("Added ESP Players and NPS")
+   changelog:Label("Bug Fixes")
 end
 
 if SettingsWevorn["Home"] then
@@ -243,6 +285,7 @@ if SettingsWevorn["Home"] then
    ["Games"] = true,
    ["Value Explorer"] = true,
    ["ENV Explorer"] = true,
+   ["Module Explorer"] = true,
    ["Players"] = true,
    ["Player"] = true,
    ["Network"] = true,
@@ -264,6 +307,7 @@ if SettingsWevorn["Home"] then
    ["Games"] = true,
    ["Value Explorer"] = true,
    ["ENV Explorer"] = true,
+   ["Module Explorer"] = true,,
    ["Players"] = true,
    ["Player"] = true,
    ["Network"] = true,
@@ -2694,264 +2738,538 @@ end)
 else
 ENSection:Label("Your executor doesn't support getgenv function")
 end
+end
 
+local ModuleNames = {}
+local Modules = {}
+local ModuleKeys = {}
+local Module = nil
+local IdkList = {}
+local Visited = {}
+getgenv().ModuleName = false
+getgenv().SelectedIdk = nil
+
+if SettingsWevorn["Module Explorer"] then
+   local ModuleSection = serv:Channel("Module Explorer")
+   
+   local TableServices = { workspace, player:FindFirstChildWhichIsA("PlayerGui"), player:FindFirstChildWhichIsA("PlayerScripts"), ReplicatedStorage, ReplicatedFirst, Lighting, Teams, SoundService }
+   
+   for _, service in ipairs(TableServices) do
+      if service then
+         for _, v in ipairs(service:GetDescendants()) do
+            if v:IsA("ModuleScript") then
+               table.insert(ModuleNames, v.Name)
+               table.insert(Modules, v)
+            end
+         end
+      end
+   end
+   ModuleSection:Dropdown("Select ModuleScript For Table Parsing...", ModuleNames, function(ModuleN)
+      getgenv().ModuleName = ModuleN
+   end)
+      
+   ModuleSection:Button("Start Module Parse", function()
+      if not getgenv().ModuleName then 
+         discord:Notification("Error", "Select ModuleScript", "Okay")
+         return
+      end
+      for _, v in ipairs(Modules) do
+         if v.Name == getgenv().ModuleName then
+            Module = v
+            break
+         end
+      end
+      if not Module then 
+         discord:Notification("Error", "ModuleScript Is Not Found", "Okay")
+         return
+      end
+      local ModuleSuccess, ModuleTables = pcall(require, Module)
+      if not ModuleSuccess then 
+         discord:Notification("Error", "Your ModuleScript Syntax Error", "Okay")
+         return
+      end
+      if type(ModuleTables) ~= "table" then
+         discord:Notification("Error", "ModuleScript Does Not Return Table", "Okay")
+         return
+      end
+      
+      ModuleKeys = {}
+      IdkList = {}
+      TableParse = function(Tabled, path)
+        if type(Tabled) ~= "table" then return end
+        if Visited[Tabled] then return end
+        Visited[Tabled] = true
+        for i, v in pairs(Tabled) do
+           local newp = path and (path.."."..tostring(i)) or tostring(i)
+           if type(v) == "table" then
+              TableParse(v, newp)
+           else
+               table.insert(ModuleKeys, {path = newp,ref = Tabled, key = i,value = v})
+            end
+         end
+      end
+      for i, v in pairs(ModuleTables) do
+         if type(v) == "function" then
+            local success, result = pcall(v)
+            if success and type(result) == "table" then
+               TableParse(result, i)
+            end
+         elseif type(v) == "table" then
+            TableParse(v, i)
+         end
+      end
+      for _, v in ipairs(ModuleKeys) do
+         table.insert(IdkList, v.path)
+      end
+      local SelectedIdk
+      local NewValue
+      ModuleSection:Dropdown("Table Element...", IdkList, function(idkwhat)
+         SelectedIdk = idkwhat
+      end)
+      ModuleSection:Textbox("Enter a new Value In Table Element", "Enter a new Value", false, function(iddk)
+         NewValue = iddk
+      end)
+      ModuleSection:Button("Check Value", function()
+         if not SelectedIdk then
+            discord:Notification("Error", "Select a Table Element", "Okay")
+            return
+         end
+         for _, v in ipairs(ModuleKeys) do
+            if v.path == SelectedIdk then
+               discord:Notification("Success", "ModuleScript Value Is '"..tostring(v.ref[v.key]).."'", "Okay")
+            end
+         end
+      end)
+      ModuleSection:Button("Change Value", function()
+         if not SelectedIdk then
+            discord:Notification("Error", "Select a Table Element", "Okay")
+            return
+         end
+         for _, v in ipairs(ModuleKeys) do
+            if v.path == SelectedIdk then
+               local current = v.ref[v.key]
+               if type(current) == "number" then
+                  v.ref[v.key] = tonumber(NewValue) or current
+               elseif type(current) == "boolean" then
+                  v.ref[v.key] = NewValue == "true"
+               else
+                  v.ref[v.key] = NewValue
+               end
+               discord:Notification("Success", "Success Change Value In Module Table", "Okay")
+               break
+            end
+         end
+      end)
+      ModuleSection:Seperator()
+      discord:Notification("Success", "Success Parsing ModuleScript", "Okay")
+   end)
+   ModuleSection:Seperator()
 end
 
 if SettingsWevorn["Players"] then
-local players = serv:Channel("Players")
+   local players = serv:Channel("Players")
 
-players:Label("\nUses SetLocalPlayerInfo() to change your info!")
+   players:Label("\nUses SetLocalPlayerInfo() to change your info!")
 
-players:Textbox("Spoof as player with User ID (Client)","Enter your new User ID...",false,function(pid)
-local NewId = tonumber(pid)
-if NewId then 
-local name = Players:GetNameFromUserIdAsync(NewId)
-discord:Notification("Success","You are now "..name.." ("..NewId..")","Okay!")
-Players:SetLocalPlayerInfo(NewId,name,name,Enum.MembershipType.Premium,false)
-else 
-discord:Notification("Error","Enter a number!","Okay!")
-end
-end)
+   players:Textbox("Spoof as player with User ID (Client)","Enter your new User ID...",false,function(pid)
+      local NewId = tonumber(pid)
+      if NewId then 
+         local name = Players:GetNameFromUserIdAsync(NewId)
+         discord:Notification("Success","You are now "..name.." ("..NewId..")","Okay!")
+         Players:SetLocalPlayerInfo(NewId,name,name,Enum.MembershipType.Premium,false)
+      else 
+         discord:Notification("Error","Enter a number!","Okay!")
+      end
+   end)
 
-players:Button("Spoof yourself as the Game Owner",function()
-local name = Players:GetNameFromUserIdAsync(tonumber(game.CreatorId))
-discord:Notification("Success","You are now "..name.." ("..tostring(game.CreatorId)..")","Okay!")
-Players:SetLocalPlayerInfo(game.CreatorId,name,name,Enum.MembershipType.Premium,false)
-end)
+   players:Button("Spoof yourself as the Game Owner",function()
+      local name = Players:GetNameFromUserIdAsync(tonumber(game.CreatorId))
+      discord:Notification("Success","You are now "..name.." ("..tostring(game.CreatorId)..")","Okay!")
+      Players:SetLocalPlayerInfo(game.CreatorId,name,name,Enum.MembershipType.Premium,false)
+   end)
 
-players:Seperator()
+   players:Seperator()
 
-spawn(function()
-while task.wait(0.5) do
-for _, v in pairs(game.Players:GetPlayers()) do
-if v ~= player and v.Character then
-if getgenv().Wevorn_AutoHidePlayers then
-if not HidePlayers[v] then
-HidePlayers[v] = v.Character.Parent
-end
-v.Character.Parent = nil
-else
-if HidePlayers[v] and v.Character.Parent == nil then
-v.Character.Parent = HidePlayers[v]
-end
-end
-end
-end
-end
-end)
+   spawn(function()
+      while task.wait(0.5) do
+         for _, v in pairs(game.Players:GetPlayers()) do
+            if v ~= player and v.Character then
+               if getgenv().Wevorn_AutoHidePlayers then
+                  if not HidePlayers[v] then
+                     HidePlayers[v] = v.Character.Parent
+                  end
+                  v.Character.Parent = nil
+               else
+                  if HidePlayers[v] and v.Character.Parent == nil then
+                     v.Character.Parent = HidePlayers[v]
+                  end
+               end
+            end
+         end
+      end
+   end)
 
-players:Toggle("Auto Hide Other Players", false, function(state)
-getgenv().Wevorn_AutoHidePlayers = state
-end)
+   players:Toggle("Auto Hide Other Players", false, function(state)
+      getgenv().Wevorn_AutoHidePlayers = state
+   end)
 
-local GuiToggle = {}
-players:Toggle("Show Hidden GUIs of LocalPlayer",false,function(state)
-if state then
-GuiToggle = {}
-for _, v in ipairs(player.PlayerGui:GetDescendants()) do
-if (v:IsA("Frame") or v:IsA("TextButton") or v:IsA("ImageButton") or v:IsA("ScrollingFrame")) and not v.Visible then
-v.Visible = true
-table.insert(GuiToggle,v)
-end
-end
-else 
-for _, v in pairs(GuiToggle) do
-v.Visible = false
-end
-GuiToggle = {}
-end
-end)
+   local GuiToggle = {}
+   players:Toggle("Show Hidden GUIs of LocalPlayer",false,function(state)
+      if state then
+         GuiToggle = {}
+         for _, v in ipairs(player.PlayerGui:GetDescendants()) do
+            if (v:IsA("Frame") or v:IsA("TextButton") or v:IsA("ImageButton") or v:IsA("ScrollingFrame")) and not v.Visible then
+               v.Visible = true
+               table.insert(GuiToggle,v)
+            end
+         end
+      else 
+         for _, v in pairs(GuiToggle) do
+            v.Visible = false
+         end
+         GuiToggle = {}
+      end
+   end)
 
-players:Toggle("Anti AFK",false,function(state)
-if state then
-local VirtualUser  = cloneref(game:GetService("VirtualUser"))
-Conn_1 = Players.LocalPlayer.Idled:Connect(function() 
-VirtualUser:CaptureController()
-VirtualUser:ClickButton2(Vector2.new())
-end)
-else
-Conn_1:Disconnect()
-end
-end)
-players:Seperator()
+   players:Toggle("Anti AFK",false,function(state)
+      if state then
+         local VirtualUser  = cloneref(game:GetService("VirtualUser"))
+         Conn_1 = Players.LocalPlayer.Idled:Connect(function() 
+            VirtualUser:CaptureController()
+            VirtualUser:ClickButton2(Vector2.new())
+         end)
+      else
+         Conn_1:Disconnect()
+      end
+   end)
+   players:Seperator()
 
-players:Textbox("You can check player with UserId","Enter a UserId",false,function(P_ID)
-local PlayersId = tonumber(P_ID)
-if PlayersId then
-local httprequest = request or http_request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request)
-if not httprequest then discord:Notification("Error","Your Executor doesn't support request function","Okay") return end
-local response1,response2,response3
-task.spawn(function()
-pcall(function()
-response1 = httprequest({Url = "https://users.roblox.com/v1/users/"..PlayersId,Method = "GET"})
-response2 = httprequest({Url = "https://friends.roblox.com/v1/users/"..PlayersId.."/followers/count",Method = "GET"})
-response3 = httprequest({Url = "https://presence.roblox.com/v1/presence/users",Method = "POST",Headers = {["Content-Type"] = "application/json"},Body = HttpService:JSONEncode({userIds = {PlayersId}})})
-end)
-end)
-local U_D = HttpService:JSONDecode(response1.Body)
-local F_D = HttpService:JSONDecode(response2.Body)
-local P_D = HttpService:JSONDecode(response3.Body)
-local OnlineStatus= {[0] = "Offline",[1] = "Online",[2] = "In Game",[3] = "Studio"}
-discord:Notification("Success","Name: "..U_D.name.."\nFallowers: "..F_D.count.."\nOnline Status: "..OnlineStatus[P_D.userPresences[1].userPresenceType],"Okay")
-else
-discord:Notification("Error","Enter a number!","Okay")
-end
-end)
+   players:Textbox("You can check player with UserId","Enter a UserId",false,function(P_ID)
+      local PlayersId = tonumber(P_ID)
+      if PlayersId then
+         local httprequest = request or http_request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request)
+         if not httprequest then 
+            discord:Notification("Error","Your Executor doesn't support request function","Okay")
+            return 
+         end
+         local response1,response2,response3
+         task.spawn(function()
+            pcall(function()
+               response1 = httprequest({Url = "https://users.roblox.com/v1/users/"..PlayersId,Method = "GET"})
+               response2 = httprequest({Url = "https://friends.roblox.com/v1/users/"..PlayersId.."/followers/count",Method = "GET"})
+               response3 = httprequest({Url = "https://presence.roblox.com/v1/presence/users",Method = "POST",Headers = {["Content-Type"] = "application/json"},Body = HttpService:JSONEncode({userIds = {PlayersId}})})
+            end)
+         end)
+         local U_D = HttpService:JSONDecode(response1.Body)
+         local F_D = HttpService:JSONDecode(response2.Body)
+         local P_D = HttpService:JSONDecode(response3.Body)
+         local OnlineStatus= {[0] = "Offline",[1] = "Online",[2] = "In Game",[3] = "Studio"}
+         discord:Notification("Success","Name: "..U_D.name.."\nFallowers: "..F_D.count.."\nOnline Status: "..OnlineStatus[P_D.userPresences[1].userPresenceType],"Okay")
+      else
+         discord:Notification("Error","Enter a number!","Okay")
+      end
+   end)
 
-players:Seperator()
+   players:Seperator()
 
-players:Textbox("You can check badge with badge id","Enter a badge id",false,function(B_Id)
-local BadgeId = tonumber(B_Id) 
-if BadgeId then
-local httprequest = request or http_request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request)
-if not httprequest then discord:Notification("Error","Your Executor doesn't support request function","Okay") return end
-local response = httprequest({Url = "https://badges.roblox.com/v1/badges/"..BadgeId,Method = "GET",Headers = {["Content-Type"] = "application/json"}})
-if not response then discord:Notification("Error","Http Request Error","Okay") return end
-local data = HttpService:JSONDecode(response.Body)
-if not data then discord:Notification("Error","JSONDecode error","Okay") return end
-discord:Notification("Success","Name: "..data.name.."\nCreated: "..data.created:gsub("T"," "):gsub("%.%d+",""):gsub("%+%d+:%d+","").." UTC".."\nUpdated: "..data.updated:gsub("T"," "):gsub("%.%d+",""):gsub("%+%d+:%d+","").." UTC".."\nAwarded: "..data.statistics.awardedCount,"Okay")
-else
-discord:Notification("Error","Enter a number!","Okay")
-end
-end)
+   players:Textbox("You can check badge with badge id","Enter a badge id",false,function(B_Id)
+      local BadgeId = tonumber(B_Id) 
+      if BadgeId then
+         local httprequest = request or http_request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request)
+         if not httprequest then
+            discord:Notification("Error","Your Executor doesn't support request function","Okay") 
+            return
+         end
+         local response = httprequest({Url = "https://badges.roblox.com/v1/badges/"..BadgeId,Method = "GET",Headers = {["Content-Type"] = "application/json"}})
+         if not response then
+            discord:Notification("Error","Http Request Error","Okay") 
+            return 
+         end
+         local data = HttpService:JSONDecode(response.Body)
+         if not data then 
+            discord:Notification("Error","JSONDecode error","Okay") 
+            return 
+         end
+         discord:Notification("Success","Name: "..data.name.."\nCreated: "..data.created:gsub("T"," "):gsub("%.%d+",""):gsub("%+%d+:%d+","").." UTC".."\nUpdated: "..data.updated:gsub("T"," "):gsub("%.%d+",""):gsub("%+%d+:%d+","").." UTC".."\nAwarded: "..data.statistics.awardedCount,"Okay")
+      else
+         discord:Notification("Error","Enter a number!","Okay")
+      end
+   end)
+   
+   players:Seperator()
+   
+   local PlayerEspTable = {}
+   local NPS_ESP_Table = {}
+   getgenv().ConnectionEsp = false
+   getgenv().PlayerESP = false
+   getgenv().NPS_ESP = false
+   getgenv().Color = Color3.fromRGB(100, 100, 255)
+   
+   players:Colorpicker("ESP Color", Color3.fromRGB(100, 100, 255), function(ColorPicker)
+      getgenv().Color = ColorPicker
+      for _, v in pairs(PlayerEspTable) do
+         if v and v.Parent and v:IsDescendantOf(game) and v:IsA("Highlight") then
+            v.FillColor = getgenv().Color
+         end
+      end
+      for _, v in pairs(NPS_ESP_Table) do
+         if v and v:IsA("Highlight") and v:IsDescendantOf(game) then
+            v.FillColor = getgenv().Color
+         end
+      end
+   end)
+   
+   players:Toggle("Player ESP", false, function(state)
+      getgenv().PlayerESP = state
+      if getgenv().PlayerESP then
+         table.clear(PlayerEspTable)
+         for _, v in ipairs(Players:GetPlayers()) do
+            local StartChar = v.Character or v.CharacterAded:Wait()
+            if v and StartChar and StartChar.Name ~= LocalName then
+               local Highlight = Instance.new("Highlight", v.Character)
+               Highlight.FillColor = getgenv().Color or Color3.fromRGB(100, 100, 255)
+               table.insert(PlayerEspTable, Highlight)
+            end
+         end
+         getgenv().ConnectionEsp = Players.PlayerAdded:Connect(function(plresp)
+            local Highlight = Instance.new("Highlight", plresp.Character or plresp.CharacterAdded:Wait())
+            Highlight.FillColor = getgenv().Color or Color3.fromRGB(100, 100, 255)
+            table.insert(PlayerEspTable, Highlight)
+         end)
+      else
+         for _, v in pairs(PlayerEspTable) do
+            v:Destroy()
+         end
+         if getgenv().ConnectionEsp then 
+            getgenv().ConnectionEsp:Disconnect()
+         end
+         table.clear(PlayerEspTable)
+      end
+   end)
+   
+   players:Toggle("NPS ESP", false, function(state)
+      getgenv().NPS_ESP = state
+      if getgenv().NPS_ESP then
+         table.clear(NPS_ESP_Table)
+         for _, v in ipairs(workspace:GetDescendants()) do
+            if not Players:GetPlayerFromCharacter(v.Parent) and v:IsA("Humanoid") and v.Parent:IsA("Model") then 
+               local Highlight = Instance.new("Highlight", v.Parent)
+               Highlight.FillColor = getgenv().Color or Color3.fromRGB(100, 100, 255)
+               table.insert(NPS_ESP_Table, Highlight)
+            end
+         end
+      else
+         for _, v in pairs(NPS_ESP_Table) do
+            v:Destroy()
+         end
+         table.clear(NPS_ESP_Table)
+      end
+   end)
 
-players:Seperator()
-players:Button("Create Waypoint at Current Position",function()
-if getgenv().Wevorn_Ticket then if not player.Character:FindFirstChild("HumanoidRootPart")  then discord:Notification("Error","HumanoidRootPart  is not found","Okay!") return end getgenv().Wevorn_HumPosition = player.Character.HumanoidRootPart.Position discord:Notification("Success","Create Waypoint as "..tostring(getgenv().Wevorn_HumPosition),"Okay!") return end
-if not player.Character:FindFirstChild("HumanoidRootPart")  then discord:Notification("Error","HumanoidRootPart  is not found","Okay!") return end
-getgenv().Wevorn_HumPosition = player.Character.HumanoidRootPart.Position 
-discord:Notification("Success","Create Waypoint as "..tostring(getgenv().Wevorn_HumPosition),"Okay!")
-players:Button("Teleport to Saved Waypoint",function() if getgenv().Wevorn_HumPosition then game.Players.LocalPlayer.Character:PivotTo(CFrame.new(getgenv().Wevorn_HumPosition)) else discord:Notification("Error","No Waypoint  Found!","Okay") end end)
-players:Button("Tween to Saved Waypoint",function() if getgenv().Wevorn_HumPosition then local hum = game.Players.LocalPlayer.Character.HumanoidRootPart while (getgenv().Wevorn_HumPosition-hum.Position).Magnitude > 0.1 do hum.CFrame = hum.CFrame:Lerp(CFrame.new(getgenv().Wevorn_HumPosition),math.min(35 * task.wait() / (getgenv().Wevorn_HumPosition-hum.Position).Magnitude,1)) end else discord:Notification("Error","No Waypoint Found!","Okay") end end)
-players:Button("Move to Saved Waypoint",function() if getgenv().Wevorn_HumPosition then player.Character.Humanoid:MoveTo(getgenv().Wevorn_HumPosition) else discord:Notification("Error","No Waypoint  Found!","Okay") end end)
-players:Button("Clear Waypoint",function() getgenv().Wevorn_HumPosition = false discord:Notification("Success","Waypoint  is cleared","Okay!") end)
-players:Button("Copy Waypoint Position",function() if not getgenv().Wevorn_HumPosition then discord:Notification("Error","No Waypoint found","Okay!") return end setclipboard(tostring(getgenv().Wevorn_HumPosition)) end)
-getgenv().Wevorn_Ticket = true
-end)
-
+   players:Seperator()
+   players:Button("Create Waypoint at Current Position",function()
+      if getgenv().Wevorn_Ticket then
+         if not player.Character:FindFirstChild("HumanoidRootPart")  then 
+            discord:Notification("Error","HumanoidRootPart  is not found","Okay!")
+            return 
+         end 
+         getgenv().Wevorn_HumPosition = player.Character.HumanoidRootPart.Position 
+         discord:Notification("Success","Create Waypoint as "..tostring(getgenv().Wevorn_HumPosition),"Okay!") 
+         return 
+      end
+      if not player.Character:FindFirstChild("HumanoidRootPart")  then 
+         discord:Notification("Error","HumanoidRootPart  is not found","Okay!") 
+         return 
+      end
+      getgenv().Wevorn_HumPosition = player.Character.HumanoidRootPart.Position 
+      discord:Notification("Success","Create Waypoint as "..tostring(getgenv().Wevorn_HumPosition),"Okay!")
+      players:Button("Teleport to Saved Waypoint",function()
+         if getgenv().Wevorn_HumPosition then
+            game.Players.LocalPlayer.Character:PivotTo(CFrame.new(getgenv().Wevorn_HumPosition)) 
+         else 
+            discord:Notification("Error","No Waypoint  Found!","Okay") 
+         end
+      end)
+      players:Button("Tween to Saved Waypoint",function() 
+         if getgenv().Wevorn_HumPosition then 
+            local hum = game.Players.LocalPlayer.Character.HumanoidRootPart
+            while (getgenv().Wevorn_HumPosition-hum.Position).Magnitude > 0.1 do 
+               hum.CFrame = hum.CFrame:Lerp(CFrame.new(getgenv().Wevorn_HumPosition),math.min(35 * task.wait() / (getgenv().Wevorn_HumPosition-hum.Position).Magnitude,1))
+            end 
+         else
+            discord:Notification("Error","No Waypoint Found!","Okay") 
+         end 
+      end)
+      players:Button("Move to Saved Waypoint",function()
+         if getgenv().Wevorn_HumPosition then
+            player.Character.Humanoid:MoveTo(getgenv().Wevorn_HumPosition) 
+         else 
+            discord:Notification("Error","No Waypoint  Found!","Okay") 
+         end 
+      end)
+      players:Button("Clear Waypoint",function() 
+         getgenv().Wevorn_HumPosition = false 
+         discord:Notification("Success","Waypoint  is cleared","Okay!") 
+      end)
+      players:Button("Copy Waypoint Position",function() 
+         if not getgenv().Wevorn_HumPosition then 
+            discord:Notification("Error","No Waypoint found","Okay!") 
+            return 
+         end 
+         setclipboard(tostring(getgenv().Wevorn_HumPosition)) 
+      end)
+      getgenv().Wevorn_Ticket = true
+   end)
 end
 
 if SettingsWevorn["Player"] then
-local PlayerSection = serv:Channel("Player")
-PlayerSection:Label("Same as in the Players section, but only for you")
-PlayerSection:Seperator()
-PlayerSection:Label("You can change the basic attributes of the character.")
+   local PlayerSection = serv:Channel("Player")
+   PlayerSection:Label("Same as in the Players section, but only for you")
+   PlayerSection:Seperator()
+   PlayerSection:Label("You can change the basic attributes of the character.")
 
-local function GetHum()
-local character = player.Character
-if not character then return nil end 
-return character:FindFirstChildOfClass("Humanoid")
-end
+   local function GetHum()
+      local character = player.Character
+      if not character then 
+         return nil 
+      end 
+      return character:FindFirstChildOfClass("Humanoid")
+   end
 
-local SpeedSlider = PlayerSection:Slider("Player Speed",0,300,(GetHum() and GetHum().WalkSpeed) or 0,function(PlayerSpeed)
-game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = PlayerSpeed
-end)
+   local SpeedSlider = PlayerSection:Slider("Player Speed",0,300,(GetHum() and GetHum().WalkSpeed) or 0,function(PlayerSpeed)
+      game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = PlayerSpeed
+   end)
 
-local JumpSlider = PlayerSection:Slider("Player Jump Power",0,300,(GetHum() and (GetHum().UseJumpPower and GetHum().JumpPower or GetHum().JumpHeight)) or 0,function(PlayerJumpPower)
-if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid").UseJumpPower then
-game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid").JumpPower = PlayerJumpPower
-else
-game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid").JumpHeight = PlayerJumpPower
-end
-end)
+   local JumpSlider = PlayerSection:Slider("Player Jump Power",0,300,(GetHum() and (GetHum().UseJumpPower and GetHum().JumpPower or GetHum().JumpHeight)) or 0,function(PlayerJumpPower)
+      if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid").UseJumpPower then
+         game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid").JumpPower = PlayerJumpPower
+      else
+         game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid").JumpHeight = PlayerJumpPower
+      end
+   end)
 
-local GravitySlider = PlayerSection:Slider("Player Gravity",0,300,workspace.Gravity or 0,function(PlayerGravity)
-workspace.Gravity = PlayerGravity
-end)
+   local GravitySlider = PlayerSection:Slider("Player Gravity",0,300,workspace.Gravity or 0,function(PlayerGravity)
+      workspace.Gravity = PlayerGravity
+   end)
 
-PlayerSection:Button("Fast Settings",function()
-SpeedSlider:Change(95)
-JumpSlider:Change(GetHum().UseJumpPower and 60 or 40)
-GravitySlider:Change(45)
-end)
+   PlayerSection:Button("Fast Settings",function()
+      SpeedSlider:Change(95)
+      JumpSlider:Change(GetHum().UseJumpPower and 60 or 40)
+      GravitySlider:Change(45)
+   end)
 
-PlayerSection:Button("Basic Settings",function()
-SpeedSlider:Change(16)
-JumpSlider:Change(GetHum().UseJumpPower and 50 or 7.2)
-GravitySlider:Change(196.2)
-end)
+   PlayerSection:Button("Basic Settings",function()
+      SpeedSlider:Change(16)
+      JumpSlider:Change(GetHum().UseJumpPower and 50 or 7.2)
+      GravitySlider:Change(196.2)
+   end)
 
-PlayerSection:Seperator()
+   PlayerSection:Seperator()
 
-local tpwalking
-local tpjumping
+   local tpwalking
+   local tpjumping
 
-PlayerSection:Slider("Player Teleport Walk",0,50,0,function(speed)
-if tpwalking then tpwalking:Disconnect() end
-if speed == 0 then return end
-local humanoid = GetHum()
-if not humanoid then return end
-tpwalking = RunService.Heartbeat:Connect(function(delta)
-if humanoid.Parent and humanoid.MoveDirection.Magnitude > 0 then
-humanoid.Parent:TranslateBy(humanoid.MoveDirection * speed * delta * 10)
-end
-end)
-end)
+   PlayerSection:Slider("Player Teleport Walk",0,50,0,function(speed)
+      if tpwalking then 
+         tpwalking:Disconnect() 
+      end
+      if speed == 0 then 
+         return 
+      end
+      local humanoid = GetHum()
+      if not humanoid then
+         return 
+      end
+      tpwalking = RunService.Heartbeat:Connect(function(delta)
+         if humanoid.Parent and humanoid.MoveDirection.Magnitude > 0 then
+            humanoid.Parent:TranslateBy(humanoid.MoveDirection * speed * delta * 10)
+         end
+      end)
+   end)
 
-PlayerSection:Slider("Player Teleport Jump",0,50,0,function(boost)
-if tpjumping then tpjumping:Disconnect() end
-if boost == 0 then return end
-local humanoid = GetHum()
-if not humanoid then return end
-tpjumping = RunService.Heartbeat:Connect(function(delta)
-if humanoid.Parent then
-local root = humanoid.Parent:FindFirstChild("HumanoidRootPart")
-if root then
-local state = humanoid:GetState()
-if state == Enum.HumanoidStateType.Jumping or state == Enum.HumanoidStateType.Freefall then
-root.CFrame=root.CFrame + Vector3.new(0,boost * delta * 10,0)
-end
-end
-end
-end)
-end)
+   PlayerSection:Slider("Player Teleport Jump",0,50,0,function(boost)
+   if tpjumping then 
+      tpjumping:Disconnect() 
+   end
+   if boost == 0 then 
+      return 
+   end
+   local humanoid = GetHum()
+   if not humanoid then
+      return 
+   end
+   tpjumping = RunService.Heartbeat:Connect(function(delta)
+      if humanoid.Parent then
+         local root = humanoid.Parent:FindFirstChild("HumanoidRootPart")
+         if root then
+            local state = humanoid:GetState()
+               if state == Enum.HumanoidStateType.Jumping or state == Enum.HumanoidStateType.Freefall then
+                  root.CFrame=root.CFrame + Vector3.new(0,boost * delta * 10,0)
+               end
+            end
+         end
+      end)
+   end)
 
-PlayerSection:Seperator()
+   PlayerSection:Seperator()
 
-PlayerSection:Label("Current UserId:\n" .. LocalUserId)
-PlayerSection:Label("Current Account Age:\n" .. LocalAge .. " days")
+   PlayerSection:Label("Current UserId:\n" .. LocalUserId)
+   PlayerSection:Label("Current Account Age:\n" .. LocalAge .. " days")
 
-pcall(function()
-PlayerSection:Label("Current Roblox Hwid:\n" .. cloneref(game:GetService("RbxAnalyticsService")):GetClientId())
-end)
+   pcall(function()
+      PlayerSection:Label("Current Roblox Hwid:\n" .. cloneref(game:GetService("RbxAnalyticsService")):GetClientId())
+   end)
 
-if type(gethwid) == "function" then
-pcall(function() local _Hwid = gethwid() if #_Hwid > 58 then _Hwid = _Hwid:sub(1,58).."\n".._Hwid:sub(59) end PlayerSection:Label("Current Hwid:\n" .. _Hwid) end)
-elseif type(get_hwid) == "function" then
-pcall(function() local _Hwid = get_hwid() if #_Hwid > 58 then _Hwid = _Hwid:sub(1,58).."\n".._Hwid:sub(59) end PlayerSection:Label("Current Hwid:\n" .. _Hwid) end)
-else
-pcall(function() PlayerSection:Label("Current Hwid:\nYour Executor doesn't support gethwid or get_hwid function") end)
-end
+   if type(gethwid) == "function" then
+      pcall(function() 
+         local _Hwid = gethwid()
+          if #_Hwid > 58 then 
+             _Hwid = _Hwid:sub(1,58).."\n".._Hwid:sub(59) 
+          end 
+          PlayerSection:Label("Current Hwid:\n" .. _Hwid) 
+       end)
+    elseif type(get_hwid) == "function" then
+       pcall(function() 
+          local _Hwid = get_hwid() 
+          if #_Hwid > 58 then 
+             _Hwid = _Hwid:sub(1,58).."\n".._Hwid:sub(59) 
+         end PlayerSection:Label("Current Hwid:\n" .. _Hwid) 
+      end)
+   else
+      pcall(function() 
+         PlayerSection:Label("Current Hwid:\nYour Executor doesn't support gethwid or get_hwid function") 
+      end)
+   end
 
-PlayerSection:Seperator()
+   PlayerSection:Seperator()
 
-PlayerSection:Button("Copy UserId",function()
-setclipboard(LocalUserId)
-end)
+   PlayerSection:Button("Copy UserId",function()
+      setclipboard(LocalUserId)
+   end)
 
-PlayerSection:Button("Copy Account Age",function()
-setclipboard(LocalAge.." days")
-end)
+   PlayerSection:Button("Copy Account Age",function()
+      setclipboard(LocalAge.." days")
+   end)
 
-PlayerSection:Button("Copy Roblox Hwid",function()
-pcall(function()
-setclipboard(cloneref(game:GetService("RbxAnalyticsService")):GetClientId())
-end)
-end)
+   PlayerSection:Button("Copy Roblox Hwid",function()
+      pcall(function()
+         setclipboard(cloneref(game:GetService("RbxAnalyticsService")):GetClientId())
+      end)
+   end)
 
-PlayerSection:Button("Copy Hwid",function()
-pcall(function()
-if type(gethwid) == "function" then
-setclipboard(gethwid())
-elseif type(get_hwid) == "function" then
-setclipboard(get_hwid())
-else
-discord:Notification("Error","Your Executor doesn't support gethwid or get_hwid function","Okay")
-end
-end)
-end)
+   PlayerSection:Button("Copy Hwid",function()
+      pcall(function()
+         if type(gethwid) == "function" then
+            setclipboard(gethwid())
+         elseif type(get_hwid) == "function" then
+            setclipboard(get_hwid())
+         else
+            discord:Notification("Error","Your Executor doesn't support gethwid or get_hwid function","Okay")
+         end
+      end)
+   end)
 
-PlayerSection:Seperator()
+   PlayerSection:Seperator()
 
 PlayerSection:Button("Copy Player Coordinates",function()
 local pos
@@ -3499,7 +3817,7 @@ getgenv().Wevorn_GamePassesMethod = "Fire Signal Product"
 PurchaseExploits:Button("Use Signal with this game passes or use your method",function()
 if getgenv().Wevorn_GamePassesMethod == "Fire Signal GamePass" and GamePass then
 MarketplaceService:SignalPromptGamePassPurchaseFinished(game.Players.LocalPlayer,tostring(GamePass),true)
-discord:Notification("Success","Fired SignalPromptGamePassPurchaseFinished signal to server with ProductId: "..tostring(GamePass),"Okay!")
+discord:Notification("Success","Fired SignalPromptGamePassPurchaseFinished signal to server with Id: "..tostring(GamePass),"Okay!")
 elseif getgenv().Wevorn_GamePassesMethod == "Copy Name" and GamePass then
 setclipboard(MarketplaceService:GetProductInfo(GamePass, Enum.InfoType.GamePass).Name)
 elseif getgenv().Wevorn_GamePassesMethod == "Copy Destination" and GamePass then
@@ -3778,6 +4096,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 15108736400) t
    end)
 
    getgenv().Wevorn_Flex_Sniper = false
+   getgenv().Wevorn_AutoSearchCodes = false
    FlexSection:Toggle("Flex UGC Time Code Sniper", false, function(state)
       getgenv().Wevorn_Flex_Sniper = state
       if not getgenv().Wevorn_Code then 
@@ -3798,6 +4117,40 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 15108736400) t
             break
          end
       end
+   end)
+   
+   getgenv().Wevorn_MinS = 6
+   FlexSection:Slider("Minimum Symbols", 4, 15, 4, function(MINSIM)
+      getgenv().Wevorn_MinS = MINSIM
+   end)
+   
+   local UsedCodes = {}
+   FlexSection:Toggle("Auto Search Codes Sniper (Automatic selection)", false, function(state)
+      getgenv().Wevorn_AutoSearchCodes = state
+      if state then
+         table.clear(UsedCodes)
+         if isfile and isfile("Wevorn_Codes.txt") then
+            local oldcodes = readfile("Wevorn_Codes.txt")
+            for v in oldcodes:gmatch("[^\r\n]+") do
+               UsedCodes[v] = true
+            end
+         else
+            writefile("Wevorn_Codes.txt", "")
+         end
+      end
+      task.spawn(function()
+         while getgenv().Wevorn_AutoSearchCodes and task.wait(3.1) do
+            local New = ""
+            repeat
+               for i = 1, tonumber(getgenv().Wevorn_MinS) or 6 do
+                  New = New..tostring(string.char(math.random(97, 122)))
+              end
+            until not UsedCodes[New]
+            UsedCodes[New] = true
+            appendfile("Wevorn_Codes.txt", tostring(New).."\n")
+            ReplicatedStorage.RedeemCode:InvokeServer(tostring(New))
+         end
+      end)
    end)
 end
 
@@ -4121,7 +4474,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 14236123211) t
 end
 
 if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 91957280129749) then
-   local ObbySchooterSection = serv:Channel("Obby But On Shooter ")
+   local ObbySchooterSection = serv:Channel("Obby But On Shooter")
    getgenv().Wevorn_AutoGifts = false
    getgenv().AutoSpinWheel = state
    
@@ -4189,7 +4542,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 91957280129749
 end
 
 if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 131774425311876) then
-   local PlayForUGCSection = serv:Channel("Juega Por UGC")
+   local PlayForUGCSection = serv:Channel("Jade For UGC")
    
    getgenv().Wevorn_AutoSpin = false
    getgenv().Wevorn_AutoDailyGifts = false 
@@ -4242,8 +4595,6 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 13177442531187
          end
       end
    end)
-   
-   PlayForUGCSection:Label("The section was created at the suggestion of player ale28373526335")
 end
 
 if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~= 15108736400 and PlaceId ~= 91957280129749 and PlaceId ~= 131774425311876) then
@@ -4265,7 +4616,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~=
       discord:Notification("Teleport...", "Teleport to obby but on shorter", "Okay")
    end)
    
-   GameListSection:Button("Juega por UGC [Free Ugc]", function()
+   GameListSection:Button("Jade for ugc [Free Ugc]", function()
       TeleportService:Teleport(131774425311876, player)
       discord:Notification("Teleport...", "Teleport to Jade for ugc [Free Ugc]", "Okay")
    end)
