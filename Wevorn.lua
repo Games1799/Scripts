@@ -4537,6 +4537,10 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 91957280129749
 	      task.wait(getgenv().Wevorn_Ccold)
        end
    end)
+
+   ObbySchooterSection:Button("Debug [Use If You Bugged]", function()
+      getgenv().Wevorn_AntiBan = false
+   end)
    
    ObbySchooterSection:Label("The section was created at the suggestion of player proaidas78")
 end
