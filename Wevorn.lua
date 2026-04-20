@@ -4539,7 +4539,9 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 91957280129749
    end)
 
    ObbySchooterSection:Button("Debug [Use If You Bugged]", function()
-      getgenv().Wevorn_AntiBan = false
+	  if player.leaderstats.Stage.Value == 0 then
+         getgenv().Wevorn_AntiBan = false
+	  end
    end)
    
    ObbySchooterSection:Label("The section was created at the suggestion of player proaidas78")
