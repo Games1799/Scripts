@@ -4553,7 +4553,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 78411673022692
    
    _5_Section:Seperator()
    
-   _5_Section:Button("Find All", function()
+   _5_Section:Button("Find All [Use Fly]", function()
       for _, v in ipairs(workspace:GetDescendants()) do
          if v:IsA("ClickDetector") then
             fireclickdetector(v)
