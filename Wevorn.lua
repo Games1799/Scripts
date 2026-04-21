@@ -4547,6 +4547,48 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 91957280129749
    ObbySchooterSection:Label("The section was created at the suggestion of player proaidas78")
 end
 
+if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 78411673022692) then
+
+   local _5_Section = serv:Channel("Пятёрочка")
+   
+   _5_Section:Seperator()
+   
+   _5_Section:Button("Find All", function()
+      for _, v in ipairs(workspace:GetDescendants()) do
+         if v:IsA("ClickDetector") then
+            fireclickdetector(v)
+         end
+      end
+   end)
+   
+   _5_Section:Toggle("INF Lolipop", false, function(state)
+      if state then
+         getgenv().Wevorn_Lolipop_Farm = RunService.RenderStepped:Connect(function()
+            ReplicatedStorage.ReplicatedStorage_Source.Packages.Knit.Services.LolipopService.RF.CollectRegularLolipop:InvokeServer("Regular_7")
+         end)
+      else 
+         if getgenv().Wevorn_Lolipop_Farm then
+            getgenv().Wevorn_Lolipop_Farm:Disconnect()
+         end
+      end
+   end)
+   
+   _5_Section:Button("Get All Stars", function()
+      for _, v in ipairs(workspace:GetChildren()) do
+         if v.Name == "Star" then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
+         end
+         task.wait(1)
+      end
+   end)
+   
+   _5_Section:Button("Open All Locations", function()
+      for i = 1, 8 do
+         ReplicatedStorage.ReplicatedStorage_Source.Packages.Knit.Services.ObbyService.RF.NextObby:InvokeServer()
+      end
+   end)
+end
+
 if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 131774425311876) then
    local PlayForUGCSection = serv:Channel("Jade For UGC")
    
@@ -4603,7 +4645,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 13177442531187
    end)
 end
 
-if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~= 15108736400 and PlaceId ~= 91957280129749 and PlaceId ~= 131774425311876) then
+if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~= 15108736400 and PlaceId ~= 91957280129749 and PlaceId ~= 131774425311876 and PlaceId ~= 131774425311876) then
    local GameListSection = serv:Channel("UGC Game Scripts")
    GameListSection:Label("Wevorn Also Supported Another UGC Games.")
    
@@ -4625,6 +4667,11 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~=
    GameListSection:Button("Jade for ugc [Free Ugc]", function()
       TeleportService:Teleport(131774425311876, player)
       discord:Notification("Teleport...", "Teleport to Jade for ugc [Free Ugc]", "Okay")
+   end)
+
+   GameListSection:Button("Пятёрочка [Free UGC]", function()
+      TeleportService:Teleport(131774425311876, player)
+      discord:Notification("Teleport...", "Teleport to Пятёрочка [Free UGC]", "Okay")
    end)
    
    GameListSection:Label("More Games Added Soon...")
