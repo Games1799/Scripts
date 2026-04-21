@@ -4645,7 +4645,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 13177442531187
    end)
 end
 
-if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~= 15108736400 and PlaceId ~= 91957280129749 and PlaceId ~= 131774425311876 and PlaceId ~= 131774425311876) then
+if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~= 15108736400 and PlaceId ~= 91957280129749 and PlaceId ~= 131774425311876 and PlaceId ~= 78411673022692) then
    local GameListSection = serv:Channel("UGC Game Scripts")
    GameListSection:Label("Wevorn Also Supported Another UGC Games.")
    
@@ -4670,7 +4670,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~=
    end)
 
    GameListSection:Button("Пятёрочка [Free UGC]", function()
-      TeleportService:Teleport(131774425311876, player)
+      TeleportService:Teleport(78411673022692, player)
       discord:Notification("Teleport...", "Teleport to Пятёрочка [Free UGC]", "Okay")
    end)
    
