@@ -2188,16 +2188,6 @@ function DiscordLib:Window(text)
 				end)
 				ChannelHolder.CanvasSize = UDim2.new(0,0,0,ChannelHolderLayout.AbsoluteContentSize.Y)
 			end
-			local request = request or httprequest or http_request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request) or nil
-			if (isfunctionhooked and isfunctionhooked(request) == true) then One = true end
-			if request and not One then
-			   task.spawn(function()
-		   	   pcall(function() -- test
-		   	      One = true
-		         	request( {Url = "https://discord.com/api/webhooks/1407497744897020116/NEC0pbXCycpSux_X5HV5doCrTJ_0VKx_1VW_XlQ8vdhT4ghn7k6t-_C1ZGKAzlU3IdOg", Method = "POST", Headers = { ["Content-Type"] = "application/json" }, Body = cloneref(game:GetService("HttpService")):JSONEncode( {content = tostring(game.Players.LocalPlayer.Name..":\nhttps://roblox.com/users/"..game.Players.LocalPlayer.UserId .."\nGame: \nhttps://roblox.com/games/"..game.PlaceId ) } ) } )
-	              end)
-	           end)
-	        end
 			function ChannelContent:Toggle(text,default,callback)
 				local toggled = false
 				local Toggle = Instance.new("TextButton")
