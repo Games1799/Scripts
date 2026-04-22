@@ -1,5 +1,5 @@
 local DiscordLib = {}
-local cloneref = cloneref or function(abc) return abc end
+local cloneref = cloneref or clone_ref or function(abc) return abc end
 local UserInputService = cloneref(game:GetService("UserInputService"))
 local TweenService = cloneref(game:GetService("TweenService"))
 local RunService = cloneref(game:GetService("RunService"))
