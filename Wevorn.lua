@@ -4462,7 +4462,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 15108736400) t
       while getgenv().Wevorn_Flex_Sniper and task.wait() do
          local TimeNow = os.time()
          local TimeAfter = getgenv().Wevorn_Time
-         if TimeNow >= TimeAfter then
+         if TimeNow > TimeAfter then
             ReplicatedStorage.RedeemCode:InvokeServer(tostring(getgenv().Wevorn_Code))
             discord:Notification("Success", "Success Entering Code", "Okay")
             break
