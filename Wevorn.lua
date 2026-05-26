@@ -81,7 +81,7 @@ local DevProductsIds = {}
 local GamePassNames = {}
 local DevProductsNames = {}
 
-local cloneref = cloneref or clone_ref or function(a) -- Fake cloneref 
+local cloneref = cloneref or clone_ref or clonereference or clone_reference or (cache and cache.cloneref) or function(a) -- Fake cloneref 
    return a
 end
 
@@ -91,6 +91,7 @@ local TextChatService = cloneref(game:GetService("TextChatService"))
 local TeleportService = cloneref(game:GetService("TeleportService"))
 local ReplicatedFirst = cloneref(game:GetService("ReplicatedFirst"))
 local SoundService = cloneref(game:GetService("SoundService"))
+local BadgeService = cloneref(game:GetService("BadgeService"))
 local AssetService = cloneref(game:GetService("AssetService"))
 local HttpService = cloneref(game:GetService("HttpService"))
 local RunService = cloneref(game:GetService("RunService"))
@@ -100,24 +101,40 @@ local Players = cloneref(game:GetService("Players"))
 local Teams = cloneref(game:GetService("Teams"))
 
 local setclipboard = setclipboard or toclipboard or setrbxclipboard or set_clipboard or to_clipboard or set_rbx_clipboard or (Clipboard and Clipboard.set) or writeclipboard or write_clipboard or nil
+local getthreadidentity = getthreadidentity or get_thread_identity or (syn and syn.get_thread_identity) or syn_context_get or getthreadcontext or get_thread_context or getidentity or nil
+local setthreadidentity = setthreadidentity or set_thread_identity or (syn and syn.set_thread_identity) or syn_context_set or setthreadcontext or set_thread_context or settidentity or nil
 local clearteleportqueue = clearteleportqueue or clear_teleport_queue or (syn and syn.clear.teleport.queue) or (fluxus and fluxus.clear_teleport_queue) or nil
 local getconnections = getconnections or get_signal_cons or get_connections or getsignalcons or getsignalconnections or get_signal_connections or nil
 local queueonteleport = queueonteleport or queue_on_teleport or (syn and syn.queue_on_teleport) or (fluxus and fluxus.queue_on_teleport) or nil
+local getregistry = getregistry or get_registry or (debug and debug.GetRegistry) or (debug and debug.getregistry) or getreg or GetReg or nil
+local DeSync = (raknet and raknet.decync) or (Raknet and Raknet.desync) or (Rnet and Rnet.desync) or nil
 local hookfunction = hookfunction or hook_function or hookfunc or hook_func or nil
+local getscriptfromthread = getscriptfromthread or get_script_from_thread or nil
 local getnamecallmethod = getnamecallmethod or get_namecall_method or nil
 local fireproximityprompt = fireproximityprompt or fire_proximy_prompt or nil
 local hookmetamethod = hookmetamethod or hook_meta_method or nil
 local firesignal = firesignal or fire_signal or signalfire or signal_fire or nil
 local firetouchinterest = firetouchinterest or fire_touch_interest or nil
 local fireclickdetector = fireclickdetector or fire_click_detector or nil
-local getsenv = getsenv or get_senv or nil
+local getmenv = getmenv or get_menv or get_senv or getsenv or nil
+local getsenv = getsenv or get_senv or getmenv or get_menv or nil
+local getgenv = getgenv or get_genv or GetGenv or Get_Genv or nil
+local getuserdatatag = getuserdatatag or get_user_data_tag or nil
+local setfflag = setfflag or set_fflag or setflag or set_flag or nil
+local getgc = getgc or get_gc or GetGC or Get_GC or nil
 
-local waxwritefile = waxwritefile or wax_write_file or waxwrite_file or nil
-local waxreadfile = waxreadfile or wax_read_file or waxread_file or nil
-local writefile = writefile or write_file or createfile or create_file or nil
-local appendfile = appendfile or append_file or nil
-local readfile = readfile or read_file or nil
-local isfile = isfile or is_file or nil
+local getcn = getconstants or get_constants or (debug and debug.getconstants) or (debug and debug.get_constants) or nil
+local getcon = (debug and debug.getconstant) or getconstant or get_constant or (debug and debug.get_constant) or nil
+local setcn = (debug and debug.setconstant) or set_constant or setconstant or  (debug and debug.set_constant) or nil
+local getpr = getprotos or get_protos or (debug and debug.getprotos) or nil
+local getinfo = getinfo or get_info or (debug and debug.getinfo) or nil
+
+local waxwritefile = waxwritefile or wax_write_file or waxwrite_file or WaxWtiteFile or Wax_Wtite_File or nil
+local waxreadfile = waxreadfile or wax_read_file or waxread_file or Waxreadfile or Wax_Read_File or nil
+local writefile = writefile or write_file or createfile or create_file or WriteFile or Write_File or nil
+local appendfile = appendfile or append_file or AppendFile or Append_File or nil
+local readfile = readfile or read_file or ReadFile or Read_File or nil
+local isfile = isfile or is_file or IsFile or Is_File or nil
 
 if not writefile and waxwritefile then
    writefile = function(file, data)
@@ -226,11 +243,14 @@ local defaultSettings = {
     ["Value Explorer"] = true,
     ["ENV Explorer"] = true,
     ["Module Explorer"] = true,
-    ["Client Explorer"] = true,
+    ["Function Explorer"] = true,
+    ["Attribute Explorer"] = true,
+    ["Memory Explorer"] = true, 
     ["Players"] = true,
     ["Player"] = true,
     ["Network"] = true,
     ["Input Automations"] = true,
+    ["Auto Automations"] = true,
     ["Purchase Exploits"] = true,
     ["Purchase Signals"] = true,
     ["UGC Game Scripts"] = true
@@ -250,8 +270,56 @@ pcall(function() -- For Fire All Remotes
     end
 end)
 
+-- ===== Create obj Patch ===== --
+pcall(function() -- Credit: Infinite Yeald (Dex Explorer) 
+   Wevorn_GetPath = (function()
+      local StringFormat = function(s)
+         return (s:gsub('[%z\1-\31\\"]', function(c)
+            return "\\"..c:byte()
+         end))
+      end
+      local core = function(obj)
+         local __path, cur = "", obj
+         while cur do
+            if cur == game then
+               return "game"..__path
+            end
+            local name, class = tostring(cur), cur.ClassName
+            local par, seg = cur.Parent, nil
+            if string.match(name, "^[%a_][%w_]*$") then
+               seg = "."..name
+            else
+               seg = '["'..StringFormat(name)..'"]'
+            end
+            if par then
+               if par:FindFirstChild(name) ~= cur then
+                  local i = table.find(par:GetChildren(), cur)
+                  if i then
+                     seg = ":GetChildren()["..i.."]"
+                  end
+               end
+               if par == game then
+                  seg = ':GetService("'..class..'")'
+               end
+            else
+               return nil
+            end
+            __path, cur = seg..__path, par
+         end
+         return __path
+      end
+      return function(obj)
+         local _____ok, _____res = pcall(core, obj)
+         if _____ok then
+            return _____res
+         end
+         return nil
+      end
+   end)()
+end)
+
 local discord = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
-local win = discord:Window("Wevorn v1.8")
+local win = discord:Window("Wevorn v1.9")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
 local SettingsSection = serv2:Channel("???")
@@ -260,18 +328,17 @@ SettingsSection:Label("Soon...")
 if SettingsWevorn["Change Log"] then
    local changelog = serv:Channel("Change Log")
    changelog:Label("Welcome to Wevorn! \nThis script was created by Games1799")
-   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.8!")
-   changelog:Seperator()
-   changelog:Label("Added Aim Bot")
-   changelog:Label("Added Fire Signal On Free UGC")
-   changelog:Label("Added List Free UGC In Game")
-   changelog:Label("Added Auto Say !BuyItem")
-   changelog:Label("Added Client Explorer")
-   changelog:Label("Added Snipe And Uto Join On New Server")
-   changelog:Label("Added Section For Inbox Brainrot Shop Game")
-   changelog:Label("Added Section For Sleep For UGC Game")
-   changelog:Label("Added Section For Obby For UGC Game")
+   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.9!")
+   changelog:Label("Added Attribute Explorer")
+   changelog:Label("Added Auto Automations Section")
+   changelog:Label("Added Memory Explorer")
+   changelog:Label("Added DeSync Server CFrame")
+   changelog:Label("Added Copy Script Signal GamePass")
+   changelog:Label("Added Copy Script Signal Product")
+   changelog:Label("Added Copy Scripts")
+   changelog:Label("Added More Functions")
    changelog:Label("Bug Fixes")
+   changelog:Seperator()
 end
 
 if SettingsWevorn["Home"] then
@@ -294,11 +361,14 @@ if SettingsWevorn["Home"] then
    ["Value Explorer"] = true,
    ["ENV Explorer"] = true,
    ["Module Explorer"] = true,
-   ["Client Explorer"] = true,
+   ["Function Explorer"] = true,
+   ["Attribute Explorer"] = true,
+   ["Memory Explorer"] = true, 
    ["Players"] = true,
    ["Player"] = true,
    ["Network"] = true,
    ["Input Automations"] = true,
+   ["Auto Automations"] = true,
    ["Purchase Exploits"] = true,
    ["Purchase Signals"] = true,
    ["UGC Game Scripts"] = true
@@ -317,11 +387,14 @@ if SettingsWevorn["Home"] then
    ["Value Explorer"] = true,
    ["ENV Explorer"] = true,
    ["Module Explorer"] = true,,
-   ["Client Explorer"] = true,
+   ["Function Explorer"] = true,
+   ["Attribute Explorer"] = true,
+   ["Memory Explorer"] = true,
    ["Players"] = true,
    ["Player"] = true,
    ["Network"] = true,
    ["Input Automations"] = true,
+   ["Auto Automations"] = true,
    ["Purchase Exploits"] = true,
    ["Purchase Signals"] = true,
    ["UGC Game Scripts"] = true
@@ -355,12 +428,8 @@ if SettingsWevorn["Home"] then
           end)
        else
           T_C:Disconnect()
-          if type(clearteleportqueue) == "function" then
-              clearteleportqueue()
-          end
        end
     end)
-    
     Home:Seperator() 
 end
 
@@ -379,88 +448,163 @@ if SettingsWevorn["Scripts"] then
       end
    end)
 
+   getgenv().Wevorn_CopyScriptToggle = false
+   Scripts:Seperator()
+   
+   Scripts:Toggle("Copy Script And Not Execute", false, function(state)
+      getgenv().Wevorn_CopyScriptToggle = state
+   end)
+
    Scripts:Button("Infinite yield",function()
-      loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+      if not getgenv().Wevorn_CopyScriptToggle then
+         loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+      else
+         setclipboard("loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()")
+      end
    end)
 
    Scripts:Button("Dex explorer",function()
-      loadstring(game:HttpGet('https://raw.githubusercontent.com/infyiff/backup/main/dex.lua'))()
+      if not getgenv().Wevorn_CopyScriptToggle then
+         loadstring(game:HttpGet('https://raw.githubusercontent.com/infyiff/backup/main/dex.lua'))()
+      else
+         setclipboard("loadstring(game:HttpGet('https://raw.githubusercontent.com/infyiff/backup/main/dex.lua'))()")
+      end
    end)
 
    Scripts:Button("Dex explorer ++",function()
-      loadstring(game:HttpGet("https://github.com/AZYsGithub/DexPlusPlus/releases/latest/download/out.lua"))()
+      if not getgenv().Wevorn_CopyScriptToggle then
+         loadstring(game:HttpGet("https://github.com/AZYsGithub/DexPlusPlus/releases/latest/download/out.lua"))()
+      else
+         setclipboard('loadstring(game:HttpGet("https://github.com/AZYsGithub/DexPlusPlus/releases/latest/download/out.lua"))()')
+      end
    end)
 
    Scripts:Button("Remote spy",function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/SimpleSpyV3/main.lua"))()
+      if not getgenv().Wevorn_CopyScriptToggle then
+         loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/SimpleSpyV3/main.lua"))()
+      else
+         setclipboard('loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/SimpleSpyV3/main.lua"))()')
+      end
    end)
 
    Scripts:Button("Dev Products Purchaser", function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/ckw69/Wyborn/refs/heads/main/Dev%20Product%20Purchase"))()
+      if not getgenv().Wevorn_CopyScriptToggle then
+         loadstring(game:HttpGet("https://raw.githubusercontent.com/ckw69/Wyborn/refs/heads/main/Dev%20Product%20Purchase"))()
+      else
+         setclipboard('loadstring(game:HttpGet("https://raw.githubusercontent.com/ckw69/Wyborn/refs/heads/main/Dev%20Product%20Purchase"))()')
+      end
    end)
    
     Scripts:Button("F3X", function()
-       loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/refs/heads/main/f3x.lua"))()
+       if not getgenv().Wevorn_CopyScriptToggle then
+          loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/refs/heads/main/f3x.lua"))()
+       else
+          setclipboard('loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/refs/heads/main/f3x.lua"))()')
+       end
    end)
    
    Scripts:Button("Audio Logger", function()
-      loadstring(game:HttpGet(('https://raw.githubusercontent.com/infyiff/backup/main/audiologger.lua'),true))()
+      if not getgenv().Wevorn_CopyScriptToggle then
+         loadstring(game:HttpGet(('https://raw.githubusercontent.com/infyiff/backup/main/audiologger.lua'),true))()
+      else
+         setclipboard("loadstring(game:HttpGet(('https://raw.githubusercontent.com/infyiff/backup/main/audiologger.lua'),true))()")
+      end
    end)
    
    Scripts:Button("Teleport Tool", function()
-       local TpTool = Instance.new("Tool")
-       pcall(function() TpTool.Name = GetRandomString() end)
-       TpTool.RequiresHandle = false
-       TpTool.TextureId = "rbxassetid://6723742952"
-       TpTool.Parent = game.Players.LocalPlayer:FindFirstChildOfClass("Backpack")
+      if not getgenv().Wevorn_CopyScriptToggle then
+         local TpTool = Instance.new("Tool")
+         pcall(function() TpTool.Name = GetRandomString() end)
+         TpTool.RequiresHandle = false
+         TpTool.TextureId = "rbxassetid://6723742952"
+         TpTool.Parent = game.Players.LocalPlayer:FindFirstChildOfClass("Backpack")
 
-       local mouse = game.Players.LocalPlayer:GetMouse()
-       TpTool.Activated:Connect(function()
-              local root = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-              if not root then return end
-              if not mouse.Target then return end
-              root.CFrame = CFrame.new(mouse.Hit.Position + Vector3.new(0,3,0))
-              pcall(function() TpTool.Name = GetRandomString() end)
-       end)
+         local mouse = game.Players.LocalPlayer:GetMouse()
+         TpTool.Activated:Connect(function()
+            local root = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if not root then return end
+            if not mouse.Target then return end
+            root.CFrame = CFrame.new(mouse.Hit.Position + Vector3.new(0,3,0))
+            pcall(function() TpTool.Name = GetRandomString() end)
+          end)
+       else
+          setclipboard('loadstring(game:HttpGet("https://github.com/Games1799/Scripts/blob/main/TpTool.lua"))()')
+      end
    end)
 
    Scripts:Button("Hydroxide", function()
-       local owner = "Upbolt"
-       local branch = "revision"
-       local function webImport(file)
-           return loadstring(game:HttpGetAsync(("https://raw.githubusercontent.com/%s/Hydroxide/%s/%s.lua"):format(owner, branch, file)), file .. '.lua')()
+      if not getgenv().Wevorn_CopyScriptToggle then
+          local owner = "Upbolt"
+          local branch = "revision"
+          local function webImport(file)
+              return loadstring(game:HttpGetAsync(("https://raw.githubusercontent.com/%s/Hydroxide/%s/%s.lua"):format(owner, branch, file)), file .. '.lua')()
+          end
+          webImport("init")
+          webImport("ui/main")
+       else
+          setclipboard("local owner = \"Upbolt\"\nlocal branch = \"revision\"\nlocal function webImport(file)\n   return loadstring(game:HttpGetAsync((\"https://raw.githubusercontent.com/%s/Hydroxide/%s/%s.lua\"):format(owner,branch,file)),file..\".lua\")()\nend\nwebImport(\"init\")\nwebImport(\"ui/main\")")
        end
-       webImport("init")
-       webImport("ui/main")
    end)
 
    Scripts:Button("Adonis Anti Cheat Bypass", function()
-       loadstring(game:HttpGet('https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua'))()
+      if not getgenv().Wevorn_CopyScriptToggle then
+         loadstring(game:HttpGet('https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua'))()
+      else
+         setclipboard("loadstring(game:HttpGet('https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua'))()")
+      end
    end)
    
    Scripts:Button("Server Browser", function()
-       loadstring(game:HttpGet("https://www.scriptblox.com/raw/Server-Browser_80"))()
+      if not getgenv().Wevorn_CopyScriptToggle then
+         loadstring(game:HttpGet("https://www.scriptblox.com/raw/Server-Browser_80"))()
+      else
+         setclipboard('loadstring(game:HttpGet("https://www.scriptblox.com/raw/Server-Browser_80"))()')
+      end
+   end)
+   
+   Scripts:Button("Ketamine", function()
+      if not getgenv().Wevorn_CopyScriptToggle then
+         loadstring(game:HttpGet("https://raw.githubusercontent.com/InfernusScripts/Ketamine/refs/heads/main/Ketamine.lua"))()
+      else
+         setclipboard('loadstring(game:HttpGet("https://raw.githubusercontent.com/InfernusScripts/Ketamine/refs/heads/main/Ketamine.lua"))()')
+      end
    end)
 
    Scripts:Seperator()
    Scripts:Label("Scripts by Games1799")
 
    Scripts:Button("JustScript",function()
-       loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/JustScript.lua"))()
+      if not getgenv().Wevorn_CopyScriptToggle then
+         loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/JustScript.lua"))()
+      else
+         setclipboard('loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/JustScript.lua"))()')
+      end
    end)
 
    Scripts:Button("RemoteBrowser",function()
-       loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/RemoteBrowser"))()
+      if not getgenv().Wevorn_CopyScriptToggle then
+         loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/RemoteBrowser"))()
+      else
+         setclipboard('loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/RemoteBrowser"))()')
+      end
    end)
 
    Scripts:Button("RemoteBrowser V3 (Beta)",function()
-       loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/RemoteBrowserV3_Beta"))()
+      if not getgenv().Wevorn_CopyScriptToggle then
+         loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/RemoteBrowserV3_Beta"))()
+      else
+         setclipboard('loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/RemoteBrowserV3_Beta"))()')
+      end
    end)
    
    Scripts:Seperator() 
    
    Scripts:Button("Original Just A Script [Working In 2026]", function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/JustAScriptFix.lua"))()
+      if not getgenv().Wevorn_CopyScriptToggle then
+         loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/JustAScriptFix.lua"))()
+      else
+         setclipboard('loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/JustAScriptFix.lua"))()')
+      end
    end)
 end
 
@@ -500,72 +644,39 @@ if SettingsWevorn["UGC Limiteds"] then
    UGCLimiteds:Toggle("Enable Auto Click Purchase (PromptGui v4)",false,function(state)
       local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
       local CoreGui = cloneref(game:GetService("CoreGui"))
+      local GuiService = cloneref(game:GetService("GuiService"))
       getgenv().Wevorn_New_AutoClickerPurchase = state
       while getgenv().Wevorn_New_AutoClickerPurchase and task.wait() do
-            task.spawn(function()
-                 pcall(function()
-                    if CoreGui.FoundationOverlay then
-                    if CoreGui.FoundationOverlay.ProductPurchaseModal then
-                    if CoreGui.FoundationOverlay.ProductPurchaseModal.Sheet then
-                    if CoreGui.FoundationOverlay.ProductPurchaseModal.Sheet.Content then
-                    if CoreGui.FoundationOverlay.ProductPurchaseModal.Sheet.Content.Actions then
-                    if CoreGui.FoundationOverlay.ProductPurchaseModal.Sheet.Content.Actions[1] then
-                    local SusButtonFullName = CoreGui.FoundationOverlay.ProductPurchaseModal.Sheet.Content.Actions[1]
-                    local SusButtonPos = SusButtonFullName.AbsolutePosition + (SusButtonFullName.AbsolutePosition / 3)
-                    VirtualInputManager:SendMouseButtonEvent(SusButtonPos.X,SusButtonPos.Y,0,true,game,0)
-                    task.wait()
-                    VirtualInputManager:SendMouseButtonEvent(SusButtonPos.X,SusButtonPos.Y,0,false,game,0)
-                    end end end end end end
-                 end)
-             end)
-        end
+         task.spawn(function()
+            pcall(function()
+               for _, v in ipairs(CoreGui.FoundationOverlay:GetDescendants()) do
+                  if string.find(v.Name, "Buy") and v.Parent.Name == "1" then
+                     VirtualInputManager:SendMouseButtonEvent(v.AbsolutePosition.X + v.AbsoluteSize.X * (0.5 - v.AnchorPoint.X), v.AbsolutePosition.Y + v.AbsoluteSize.Y * (0.5 - v.AnchorPoint.Y) + GuiService:GetGuiInset().Y, 0, true, game, 1)
+                     VirtualInputManager:SendMouseButtonEvent(v.AbsolutePosition.X + v.AbsoluteSize.X * (0.5 - v.AnchorPoint.X), v.AbsolutePosition.Y + v.AbsoluteSize.Y * (0.5 - v.AnchorPoint.Y) + GuiService:GetGuiInset().Y, 0, false, game, 1)
+                  end
+               end 
+            end)
+         end)
+      end
    end)
-   
    
    UGCLimiteds:Toggle("Enable Auto Click Close Error (PromptGui v4)",false,function(state)
-     local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
-     local CoreGui = cloneref(game:GetService("CoreGui"))
-     getgenv().Wevorn_New_AutoClickerCloseErors = state
-     while getgenv().Wevorn_New_AutoClickerCloseErors and task.wait() do
-           task.spawn(function()
-                pcall(function()
-                   if CoreGui.FoundationOverlay then
-                   if CoreGui.FoundationOverlay.ProductPurchasePrompt then
-                   if CoreGui.FoundationOverlay.ProductPurchasePrompt.Sheet then
-                   if CoreGui.FoundationOverlay.ProductPurchasePrompt.Sheet.Content then
-                   if CoreGui.FoundationOverlay.ProductPurchasePrompt.Sheet.Content.Actions then
-                   if CoreGui.FoundationOverlay.ProductPurchasePrompt.Sheet.Content.Actions[1] then
-                   local CloseErrorButton = cloneref(game:GetService("CoreGui")).FoundationOverlay.ProductPurchasePrompt.Sheet.Content.Actions[1]
-                   local CloseErrorButtonPos = CloseErrorButton.AbsolutePosition + (CloseErrorButton.AbsolutePosition / 3)
-                   VirtualInputManager:SendMouseButtonEvent(CloseErrorButtonPos.X,CloseErrorButtonPos.Y,0,true,game,0)
-                   task.wait()
-                   VirtualInputManager:SendMouseButtonEvent(CloseErrorButtonPos.X,CloseErrorButtonPos.Y,0,false,game,0)
-                   end end end end end end
-               end)
-          end)
-       end
-   end)
-   
-   UGCLimiteds:Toggle("Enable Auto Close Prompt (PromptGui v4)",false,function(state)
-     local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
-     local CoreGui = cloneref(game:GetService("CoreGui"))
-     getgenv().Wevorn_New_AutoClickerClose = state
-     while getgenv().Wevorn_New_AutoClickerClose and task.wait() do
-           task.spawn(function()
-                pcall(function()
-                   if CoreGui.FoundationOverlay then
-                   if CoreGui.FoundationOverlay.ProductPurchaseModal then 
-                   if CoreGui.FoundationOverlay.ProductPurchaseModal.Sheet then
-                   if CoreGui.FoundationOverlay.ProductPurchaseModal.Sheet.CloseAffordance then 
-                   local CloseButtonFullName = CoreGui.FoundationOverlay.ProductPurchaseModal.Sheet.CloseAffordance
-                   local CloseButtonPos = CloseButtonFullName.AbsolutePosition + (CloseButtonFullName.AbsoluteSize * 1.65) -  Vector2.new(10,-15)
-                   VirtualInputManager:SendMouseButtonEvent(CloseButtonPos.X,CloseButtonPos.Y,0,true,game,0)
-                   task.wait()
-                   VirtualInputManager:SendMouseButtonEvent(CloseButtonPos.X,CloseButtonPos.Y,0,false,game,0)
-                   end end end end
-                end)
-           end)
-        end
+      local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
+      local CoreGui = cloneref(game:GetService("CoreGui"))
+      local GuiService = cloneref(game:GetService("GuiService"))
+      getgenv().Wevorn_New_AutoClickerCloseErors = state
+      while getgenv().Wevorn_New_AutoClickerCloseErors and task.wait() do
+         task.spawn(function()
+            pcall(function()
+               for _, v in ipairs(CoreGui.FoundationOverlay:GetDescendants()) do
+                  if v.Name == "1" and v.Parent.Name == "Actions" then
+                     VirtualInputManager:SendMouseButtonEvent(v.AbsolutePosition.X + v.AbsoluteSize.X * (0.5 - v.AnchorPoint.X), v.AbsolutePosition.Y + v.AbsoluteSize.Y * (0.5 - v.AnchorPoint.Y) + GuiService:GetGuiInset().Y, 0, true, game, 1)
+                     VirtualInputManager:SendMouseButtonEvent(v.AbsolutePosition.X + v.AbsoluteSize.X * (0.5 - v.AnchorPoint.X), v.AbsolutePosition.Y + v.AbsoluteSize.Y * (0.5 - v.AnchorPoint.Y) + GuiService:GetGuiInset().Y, 0, false, game, 1)
+                  end
+               end 
+            end)
+         end)
+      end
    end)
    
    UGCLimiteds:Seperator()
@@ -1569,12 +1680,14 @@ end
 setreadonly(mt,true)
 end)
 
-for _, v in ipairs(game:GetDescendants()) do
-if v:IsA("RemoteEvent") or v:IsA("RemoteFunction") or v:IsA("UnstableRemoteEvent") or v:IsA("BindableEvent") or v:IsA("BindableFunction") then
-table.insert(_Remotes,v.Name)
-table.insert(__Remotes,v)
-end
-end
+pcall(function()
+   for _, v in ipairs(game:GetDescendants()) do
+      if v:IsA("RemoteEvent") or v:IsA("RemoteFunction") or v:IsA("UnstableRemoteEvent") or v:IsA("BindableEvent") or v:IsA("BindableFunction") then
+         table.insert(_Remotes,v.Name)
+         table.insert(__Remotes,v)
+      end
+   end
+end)
 
 Remotes:Dropdown("What Remote Do You Want Fired",_Remotes,function(x)
 local ndx = table.find(_Remotes,x)
@@ -2116,29 +2229,29 @@ discord:Notification("Error","Server Not Found","Okay...")
 end
 end)
 
-Games:Button("Teleport To Largest Server",function()
-local server = "https://games.roblox.com/v1/games/"..PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
-local LargestServer, Next 
-repeat 
-local url = server 
-if Next then url = url.."&cursor="..Next end
-local Servers = game:HttpGet(url,true)
-local _Servers = HttpService:JSONDecode(Servers)
-if _Servers.data and #_Servers.data > 0 then 
-for _, v in ipairs(_Servers.data) do
-if v.maxPlayers - v.playing > 0 and (not LargestServer or v.playing > LargestServer.playing) then
-LargestServer = v
-end
-end
-end
-until not Next
-if LargestServer then
-discord:Notification("Teleporting","Teleporting to...\n"..PlaceId.."\nJob ID: "..LargestServer.id,"Okay!")
-TeleportService:TeleportToPlaceInstance(PlaceId,LargestServer.id,game.Players.LocalPlayer)
-else
-discord:Notification("Error","Server Not Found","Okay...")
-end
-end)
+   Games:Button("Teleport To Largest Server",function()
+      local server = "https://games.roblox.com/v1/games/"..PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
+      local LargestServer, Next 
+      repeat 
+         local url = server 
+         if Next then url = url.."&cursor="..Next end
+            local Servers = game:HttpGet(url,true)
+            local _Servers = HttpService:JSONDecode(Servers)
+            if _Servers.data and #_Servers.data > 0 then 
+               for _, v in ipairs(_Servers.data) do
+                  if v.maxPlayers - v.playing > 0 and (not LargestServer or v.playing > LargestServer.playing) then
+                     LargestServer = v
+                  end
+               end
+            end
+         until not Next
+         if LargestServer then
+            discord:Notification("Teleporting","Teleporting to...\n"..PlaceId.."\nJob ID: "..LargestServer.id,"Okay!")
+            TeleportService:TeleportToPlaceInstance(PlaceId,LargestServer.id,game.Players.LocalPlayer)
+         else
+            discord:Notification("Error","Server Not Found","Okay...")
+         end
+   end)
 
    Games:Button("Force Close Roblox App",function()
       game:Shutdown()
@@ -2825,7 +2938,6 @@ getgenv().SelectedIdk = nil
 
 if SettingsWevorn["Module Explorer"] then
    local ModuleSection = serv:Channel("Module Explorer")
-   
    local TableServices = { workspace, player:FindFirstChildWhichIsA("PlayerGui"), player:FindFirstChildWhichIsA("PlayerScripts"), ReplicatedStorage, ReplicatedFirst, Lighting, Teams, SoundService }
    
    for _, service in ipairs(TableServices) do
@@ -2940,16 +3052,19 @@ if SettingsWevorn["Module Explorer"] then
    ModuleSection:Seperator()
 end
 
-if SettingsWevorn["Client Explorer"] then
-   local ClientSection = serv:Channel("Client Explorer")
+if SettingsWevorn["Function Explorer"] then
+   local FunctionSection = serv:Channel("Function Explorer")
    if not getsenv then
-      ClientSection:Label("Error: Your Executor Doesn't Support Getsenv function")
+      FunctionSection:Label("Error: Your Executor Doesn't Support Getsenv function")
+   end
+   if not getmenv then
+      FunctionSection:Label("Error: Your Executor Doesn't Support Getmenv function")
    end
    if not hookfunction then
-      ClientSection:Label("Error: Your Executor Doesn't Support Hookfunction")
+      FunctionSection:Label("Error: Your Executor Doesn't Support Hookfunction")
    end
-   ClientSection:Label("Select LocalPlayer For Parse Functions")
 
+  -- === LocalScript Explorer === --
    local FunctionsTable = {}
    local FunctionsNamesTable = {}
    getgenv().YourLocalScript = nil
@@ -2964,12 +3079,12 @@ if SettingsWevorn["Client Explorer"] then
       end
    end
 
-   ClientSection:Dropdown("Select LocalScript For Parse Functions", FunctionsNamesTable, function(YourLScript)
+   FunctionSection:Dropdown("Select LocalScript For Parse Functions", FunctionsNamesTable, function(YourLScript)
       local lnx = table.find(FunctionsNamesTable, YourLScript)
       getgenv().YourLocalScript = FunctionsTable[lnx]
    end)
    
-   ClientSection:Button("Start Parse LocalScript Functions", function()
+   FunctionSection:Button("Start Parse LocalScript Functions", function()
       if not getsenv then 
          discord:Notification("Error", "Your Executor Doesn't Support Getsenv Function", "Okay")
          return
@@ -3008,15 +3123,15 @@ if SettingsWevorn["Client Explorer"] then
          discord:Notification("Error", "Functions Is Not Found", "Okay")
          return
       end
-      ClientSection:Seperator()
-      ClientSection:Dropdown("Select Function...", TableFuncName, function(YourFunc)
+      FunctionSection:Seperator()
+      FunctionSection:Dropdown("Select Function...", TableFuncName, function(YourFunc)
          local funcndx = table.find(TableFuncName, YourFunc)
          getgenv().Wevorn_YourFunc = TableFunc[funcndx]
       end)
-      ClientSection:Textbox("Enter Augments...", "Enter arguments for Function", false, function(YourGum)
+      FunctionSection:Textbox("Enter Augments...", "Enter arguments for Function", false, function(YourGum)
          getgenv().Wevorn_FuncArgs = YourGum
       end)
-      ClientSection:Button("Use Function On Your Arguments", function()
+      FunctionSection:Button("Use Function On Your Arguments", function()
          if not getgenv().Wevorn_YourFunc then
             discord:Notification("Error", "Select Function", "Okay")
             return
@@ -3046,7 +3161,23 @@ if SettingsWevorn["Client Explorer"] then
             end
          end
       end)
-      ClientSection:Toggle("Hook Function And Return Your Arguments", false, function(state)
+      FunctionSection:Seperator()
+      FunctionSection:Button("Copy Function Name", function()
+         if not getgenv().Wevorn_YourFunc then
+            discord:Notification("Error", "Select Function", "Okay")
+            return
+         end
+         setclipboard(getinfo(getgenv().Wevorn_YourFunc).name or "nil")
+      end)
+      FunctionSection:Button("Copy Memory Link", function()
+         if not getgenv().Wevorn_YourFunc then
+            discord:Notification("Error", "Select Function", "Okay")
+            return
+         end
+         setclipboard(tostring(getgenv().Wevorn_YourFunc))
+      end)
+      FunctionSection:Seperator()
+      FunctionSection:Toggle("Hook Function And Return Your Arguments", false, function(state)
          getgenv().Wevorn_HookFunc = state
          if not hookfunction then
             discord:Notification("Error", "Your Executor Doesn't Support Hookfunction", "Okay")
@@ -3077,6 +3208,461 @@ if SettingsWevorn["Client Explorer"] then
          end
       end)
    end) 
+   
+   -- === Module Script === --
+   FunctionSection:Seperator()
+   local FunctionsModuleTable = {}
+   local FunctionsModuleNamesTable = {}
+   getgenv().YourModuleScript = nil
+   
+   for _, v in pairs(TableServices) do
+      for _, k in ipairs(v:GetDescendants()) do
+         if k:IsA("ModuleScript") and k.Name ~= "Animate" then
+            table.insert(FunctionsModuleTable, k)
+            table.insert(FunctionsModuleNamesTable, k.Name)
+         end
+      end
+   end
+   
+   FunctionSection:Dropdown("Select ModuleScript For Parse Functions", FunctionsModuleNamesTable, function(YourMScript)
+      local mnx = table.find(FunctionsModuleNamesTable, YourMScript)
+      getgenv().YourModuleScript = FunctionsModuleTable[mnx]
+   end)
+   
+   FunctionSection:Button("Start Parse ModuleScript Functions", function()
+      if not getmenv then 
+         discord:Notification("Error", "Your Executor Doesn't Support Getmenv Function", "Okay")
+         return
+      end
+      local TableFunc = {}
+      local TableFuncName = {}
+      getgenv().Wevorn_HookMFunc = false
+      if not getgenv().YourModuleScript then
+         discord:Notification("Error", "Select ModuleScript", "Okay")
+         return
+      end
+      local __ENV = getmenv(getgenv().YourModuleScript)
+      local vsf = {}
+      local function ENV_Parse(ENV)
+         if vsf[ENV] then return end
+         vsf[ENV] = true
+         for i, v in pairs(ENV) do
+            if i ~= "script" and type(v) == "function" then
+               table.insert(TableFuncName, tostring(i))
+               table.insert(TableFunc, v)
+            elseif i ~= "script" and type(v) == "table" then
+               for u, p in pairs(v) do
+                  if type(p) == "function" then
+                     local namefc = tostring(i).."."..tostring(u)
+                     table.insert(TableFuncName, tostring(namefc))
+                     table.insert(TableFunc, p)
+                  elseif type(p) == "table" then
+                     ENV_Parse(p)
+                  end
+               end
+            end
+         end
+      end
+      ENV_Parse(__ENV)
+      if #TableFunc == 0 then
+         discord:Notification("Error", "Functions Is Not Found", "Okay")
+         return
+      end
+      FunctionSection:Seperator()
+      FunctionSection:Dropdown("Select Function...", TableFuncName, function(YourFunc)
+         local funcndx = table.find(TableFuncName, YourFunc)
+         getgenv().Wevorn_MYourFunc = TableFunc[funcndx]
+      end)
+      FunctionSection:Textbox("Enter Augments...", "Enter arguments for Function", false, function(YourGum)
+         getgenv().Wevorn_MFuncArgs = YourGum
+      end)
+      FunctionSection:Button("Use Function On Your Arguments", function()
+         if not getgenv().Wevorn_MYourFunc then
+            discord:Notification("Error", "Select Function", "Okay")
+            return
+         end
+         if getgenv().Wevorn_FuncArgs then
+            local _args_ = getgenv().Wevorn_MFuncArgs
+            local _func_ = getgenv().Wevorn_MYourFunc 
+            if _args_ and _args_ ~= "" and loadstring then
+               local _13, _14 = pcall(function()
+                  local wr = loadstring("return function(f) return f(".._args_..") end")()
+                  wr(_func_)
+               end)
+               if _13 then
+                  discord:Notification("Success", "Success Use Function On '"..tostring(_args_).."' Augments", "Okay")
+               else
+                  discord:Notification("Function Error", "Function Return Error '"..tostring(_14).."'", "Okay")
+               end
+            else 
+               local _9, _10 = pcall(function()
+                  _func_()
+               end)
+               if _9 then
+                  discord:Notification("Success", "Success Use Function", "Okay")
+               else
+                  discord:Notification("Function Error", "Function Return Error '"..tostring(_10).."'", "Okay")
+               end
+            end
+         end
+      end)
+      FunctionSection:Seperator()
+      FunctionSection:Button("Copy Function Name", function()
+         if not getgenv().Wevorn_MYourFunc then
+            discord:Notification("Error", "Select Function", "Okay")
+            return
+         end
+         setclipboard(getinfo(getgenv().Wevorn_MYourFunc).name or "nil")
+      end)
+      FunctionSection:Button("Copy Memory Link", function()
+         if not getgenv().Wevorn_MYourFunc then
+            discord:Notification("Error", "Select Function", "Okay")
+            return
+         end
+         setclipboard(tostring(getgenv().Wevorn_MYourFunc))
+      end)
+      FunctionSection:Seperator()
+      FunctionSection:Toggle("Hook Function And Return Your Arguments", false, function(state)
+         getgenv().Wevorn_MHookFunc = state
+         if not hookfunction then
+            discord:Notification("Error", "Your Executor Doesn't Support Hookfunction", "Okay")
+            return
+         end
+         if not getgenv().Wevorn_MYourFunc then
+            discord:Notification("Error", "Select Function", "Okay")
+            return
+         end
+         if state then
+            if not getgenv().Wevorn_MOldFunc then
+               getgenv().Wevorn_MOldFunc = getgenv().Wevorn_MYourFunc
+            end
+            getgenv().Wevorn_Hooked = hookfunction(getgenv().Wevorn_MOldFunc, function(...)
+               local _args_ = getgenv().Wevorn_MFuncArgs
+               if _args_ and _args_ ~= "" then
+                  local wr = loadstring("return function() return ".._args_.." end")()
+                  return wr()
+               end
+               return getgenv().Wevorn_MOldFunc(...)
+            end)
+         else
+            if getgenv().Wevorn_MOldFunc then
+               getgenv().Wevorn_MYourFunc = getgenv().Wevorn_MOldFunc
+               getgenv().Wevorn_MOldFunc = nil
+               getgenv().Wevorn_MHooked = nil
+            end
+         end
+      end)
+   end) 
+end
+
+local AttributesObj = {}
+local AttributeObjNames = {}
+if SettingsWevorn["Attribute Explorer"] then
+   local AttributeSection = serv:Channel("Attribute Explorer")
+   AttributeSection:Seperator()
+   AttributeSection:Button("Get Attributes", function()
+      if getgenv().Wevorn_AtLoaded then
+         discord:Notification("Error", "You Already Loaded Attributes", "Okay")
+         return
+      end
+      getgenv().Wevorn_AtLoaded = true
+      local tableser = {workspace, player, ReplicatedStorage, ReplicatedFirst}
+      for _, p in pairs(tableser) do
+         for _, v in ipairs(p:GetDescendants()) do
+            local AllAttributes = v:GetAttributes()
+            if next(AllAttributes) and not v:IsA("UIStroke") then
+               local AtObjPatch = tostring(Wevorn_GetPath(v))
+               local RawObjPatch = AtObjPatch:gsub('game:GetService%("', ''):gsub('"%)', '')
+               local LastObjPatch = RawObjPatch:sub(-58)
+               local GoodObjPatch = LastObjPatch:gsub("^[^%.%[]+%.", "")
+               table.insert(AttributeObjNames, tostring(GoodObjPatch))
+               table.insert(AttributesObj, v)
+            end
+         end
+      end
+   
+      AttributeSection:Dropdown("Select Object", AttributeObjNames, function(atr)
+         local adx = table.find(AttributeObjNames, atr)
+         getgenv().Wevorn_YourObjAttribute = AttributesObj[adx]
+      end)
+   
+      AttributeSection:Button("Start Attribute Parsing", function()
+         if not getgenv().Wevorn_YourObjAttribute then
+            discord:Notification("Error", "Select Object For Parsing Attributes", "Error")
+            return
+         end
+         local Attributes = {} 
+         local AttributeNames = {}
+         local Attr = getgenv().Wevorn_YourObjAttribute:GetAttributes()
+         for i, v in pairs(Attr) do
+            table.insert(AttributeNames, tostring(i))
+            table.insert(Attributes, v)
+         end
+         AttributeSection:Seperator()
+         AttributeSection:Dropdown("Select Attribute...", AttributeNames, function(atrr)
+            getgenv().Wevorn_YourAttribute = atrr
+         end)
+         AttributeSection:Textbox("Enter New Attribute Value", "Enter new Value", false, function(newat)
+            getgenv().Wevorn_NewAtValue = newat
+         end)
+         AttributeSection:Button("Check Attribute Value", function()
+            if not getgenv().Wevorn_YourAttribute then
+               discord:Notification("Error", "Select Attribute", "Okay")
+               return
+            end
+            discord:Notification("Success", "Current Attribute Value Is '".. tostring(getgenv().Wevorn_YourObjAttribute:GetAttribute(tostring(getgenv().Wevorn_YourAttribute))).."'", "Okay")
+         end)
+         AttributeSection:Button("Change Value In Attribute", function()
+            if not getgenv().Wevorn_YourAttribute then
+               discord:Notification("Error", "Select Attribute", "Okay")
+               return
+            end
+            if not getgenv().Wevorn_NewAtValue then
+               discord:Notification("Error", "Enter New Attribute Value", "Okay")
+               return
+            end
+            getgenv().Wevorn_YourObjAttribute:SetAttribute(tostring(getgenv().Wevorn_YourAttribute), getgenv().Wevorn_NewAtValue)
+            discord:Notification("Success", "Success Change Attribute Value To '"..tostring(getgenv().Wevorn_NewAtValue).."'", "Okay")
+         end)
+      end)
+   end)
+   AttributeSection:Seperator()
+end
+
+local memfunc
+if SettingsWevorn["Memory Explorer"] then
+   getgenv().Wevorn_AntiFreeze = false
+   local MemorySection = serv:Channel("Memory Explorer")
+   if not getgc then
+      MemorySection:Label("Error: Your Executor Doesn't Support Getgc Function")
+   end
+   if not getcn then
+      MemorySection:Label("Error: Your Executor Doesn't Support debug.getconstants Function")
+   end
+   if not getinfo then
+      MemorySection:Label("Error: Your Executor Doesn't Support debug.getinfo Function")
+   end
+   if not getscriptfromthread then
+      MemorySection:Label("Error: Your Executor Doesn't Support getscriptfromthread Function")
+   end
+   MemorySection:Seperator()
+   MemorySection:Textbox("Enter Your Memory Link Or Function Name", "table: 0x134456890...", false, function(memlink)
+      getgenv().Wevorn_MemoryLink = memlink
+   end)
+   MemorySection:Button("Parse Your Memory Link", function()
+      if not getgc then
+         discord:Notification("Error", "Your Executor Doesn't Support Getgc function", "Okay")
+         return
+      end
+      if not getgenv().Wevorn_MemoryLink then
+         discord:Notification("Error", "Enter Your Memory Link", "Okay")
+         return
+      end
+      if string.find(tostring(getgenv().Wevorn_MemoryLink), "table: ") then
+         local tablinknames, tabink, tablelinkvisit = {}, {}, {}
+         getgenv().Wevorn_NeedUseReg = false
+         local function ParseTableLink(tbl, pref)
+           if tablelinkvisit[tbl] then
+              return
+           end
+           tablelinkvisit[tbl] = true
+           for i, k in pairs(tbl) do
+               if type(k) == "table" then
+                  ParseTableLink(k, pref..tostring(i)..".")
+               elseif type(k) ~= "table" then
+                  table.insert(tablinknames, pref..tostring(i))
+                  table.insert(tabink, { tbl = tbl, key = i } )
+               end
+            end
+         end
+         for _, v in pairs(getgc(true)) do
+            if type(v) == "table" then
+               if tostring(getgenv().Wevorn_MemoryLink) == tostring(v) then
+                  ParseTableLink(v, "")
+                  MemorySection:Dropdown("Select Table...", tablinknames, function(ytbl)
+                     local tlink = table.find(tablinknames, ytbl)
+                     getgenv().Wevorn_YourLinkTable = tabink[tlink]
+                  end)
+                  MemorySection:Textbox("Enter New Value Is Table", "Enter New Value", false, function(nwit) 
+                     getgenv().Wevorn_NewValueMemTable = nwit
+                  end)
+                  MemorySection:Button("Check Value In Table", function()
+                     if not getgenv().Wevorn_YourLinkTable then
+                        discord:Notification("Error", "Select Table", "Okay")
+                        return
+                     end
+                     if getgenv().Wevorn_YourLinkTable then
+                       discord:Notification("Success", "Current Value Is '"..tostring(getgenv().Wevorn_YourLinkTable.tbl[getgenv().Wevorn_YourLinkTable.key]).."'", "Okay")
+                       return
+                    end
+                  end)
+                  MemorySection:Button("Change Value In Table", function()
+                     if not getgenv().Wevorn_YourLinkTable then
+                        discord:Notification("Error", "Select Table", "Okay")
+                        return
+                     end
+                     if not getgenv().Wevorn_NewValueMemTable then
+                        discord:Notification("Error", "Select New Value", "Okay")
+                        return
+                     end
+                     getgenv().Wevorn_YourLinkTable.tbl[getgenv().Wevorn_YourLinkTable.key] = getgenv().Wevorn_NewValueMemTable
+                  end)
+                  break
+               end
+            end
+         end
+         if #tablinknames == 0 then
+            getgenv().Wevorn_NeedUseReg = true
+         end
+         if getgenv().Wevorn_NeedUseReg then
+            for _, v in pairs(getregistry()) do
+               if type(v) == "table" then
+                  tablinknames, tabink, tablelinkvisit = {}, {}, {}
+                  if tostring(getgenv().Wevorn_MemoryLink) == tostring(v) then
+                     ParseTableLink(v, "")
+                     MemorySection:Dropdown("Select Table...", tablinknames, function(ytbl)
+                        local tlink = table.find(tablinknames, ytbl)
+                        getgenv().Wevorn_YourLinkTable = tabink[tlink]
+                     end)
+                     MemorySection:Textbox("Enter New Value Is Table", "Enter New Value", false, function(nwit) 
+                     getgenv().Wevorn_NewValueMemTable = nwit
+                  end)
+                  MemorySection:Button("Check Value In Table", function()
+                     if not getgenv().Wevorn_YourLinkTable then
+                        discord:Notification("Error", "Select Table", "Okay")
+                        return
+                     end
+                     if getgenv().Wevorn_YourLinkTable then
+                          getgenv().Wevorn_YourLinkTable.tbl[getgenv().Wevorn_YourLinkTable.key] = getgenv().Wevorn_NewValueMemTable
+                          return
+                       end
+                     end)
+                     MemorySection:Button("Change Value In Table", function()
+                        if not getgenv().Wevorn_YourLinkTable then
+                           discord:Notification("Error", "Select Table", "Okay")
+                           return
+                        end
+                        if not getgenv().Wevorn_NewValueMemTable then
+                           discord:Notification("Error", "Select New Value", "Okay")
+                           return
+                        end
+                        getgenv().Wevorn_YourLinkTable.tbl[getgenv().Wevorn_YourLinkTable.key] = getgenv().Wevorn_NewValueMemTable
+                     end)
+                     break
+                  end
+               end
+            end
+         end
+      elseif string.find(tostring(getgenv().Wevorn_MemoryLink), "function: ") then
+         for _, v in pairs(getgc(true)) do
+            if type(v) == "function" then
+               local cnnames, cnobj, chksus = {}, {}, nil
+               if getgenv().Wevorn_MemoryLink == tostring(v) then
+                  chksus = true
+                  local CnFunc = v
+                  for i, k in pairs(getcn(v)) do
+                     table.insert(cnnames, tostring(k))
+                     table.insert(cnobj, {id = i, cnst= k})
+                  end
+                  if #cnnames == 0 then
+                     discord:Notification("Error", "Constants Is Not Found", "Okay")
+                     return
+                  end
+                  MemorySection:Dropdown("Select Constant...", cnnames, function(ycn)
+                     local cnx = table.find(cnnames, ycn)
+                     getgenv().Wevorn_YourConstant = cnobj[cnx]
+                  end)
+                  MemorySection:Textbox("Enter New Constant...", "Enter New Constant In Function", false, function(yrcn)
+                     getgenv().Wevorn_NewConstant = yrcn
+                  end)
+                  MemorySection:Button("Check Constant", function()
+                     if not getgenv().Wevorn_YourConstant then
+                        discord:Notification("Error", "Select Constant", "Okay")
+                        return
+                     end
+                     discord:Notification("Success", "Your Constant Is '"..tostring(getcon(v, getgenv().Wevorn_YourConstant.id)).."'", "Okay")
+                  end)
+                  MemorySection:Button("Change Constant", function()
+                     if not getgenv().Wevorn_YourConstant then
+                        discord:Notification("Error", "Select Constant", "Okay")
+                        return
+                     end
+                     if not getgenv().Wevorn_NewConstant then
+                        discord:Notification("Error", "Enter New Constant", "Okay")
+                        return
+                     end
+                     getcn(v, tonumber(getgenv().Wevorn_YourConstant.id), tostring(getgenv().Wevorn_NewConstant))
+                     discord:Notification("Success", "Success Change Constant", "Okay")
+                  end)
+                  MemorySection:Seperator()
+               end
+            end
+         end
+      elseif string.find(tostring(getgenv().Wevorn_MemoryLink), "thread: ") then
+         for _, v in pairs(getregistry()) do
+            if getgenv().Wevorn_MemoryLink == tostring(v) then
+               MemorySection:Label("Thread: "..tostring(v))
+               MemorySection:Label("Script: "..tostring(getscriptfromthread(v)) or "nil")
+               MemorySection:Label("Status: "..coroutine.status(v))
+               MemorySection:Seperator()
+               break
+           end
+        end
+      elseif string.find(tostring(getgenv().Wevorn_MemoryLink), "userdata: ") then
+         for _, v in pairs(getgc()) do
+            if getgenv().Wevorn_MemoryLink == tostring(v) then
+               MemorySection:Label("UserData: "..tostring(v))
+               MemorySection:Label("Tag: "..tostring(getuserdatatag(v)) or "nil")
+               MemorySection:Seperator()
+            end
+         end
+      else
+         local cnnames, cnobj, chksus = {}, {}, nil
+         for _, v in pairs(getgc(false)) do
+            if type(v) == "function" then
+               if getinfo(v).name == getgenv().Wevorn_MemoryLink then
+                  chksus = true
+                  local CnFunc = v
+                  for i, k in pairs(getcn(v)) do
+                     table.insert(cnnames, tostring(k))
+                     table.insert(cnobj, {id = i, cnst= k})
+                  end
+                  if #cnnames == 0 then
+                     discord:Notification("Error", "Constants Is Not Found", "Okay")
+                     return
+                  end
+                  MemorySection:Dropdown("Select Constant...", cnnames, function(ycn)
+                     local cnx = table.find(cnnames, ycn)
+                     getgenv().Wevorn_YourConstant = cnobj[cnx]
+                  end)
+                  MemorySection:Textbox("Enter New Constant...", "Enter New Constant In Function", false, function(yrcn)
+                     getgenv().Wevorn_NewConstant = yrcn
+                  end)
+                  MemorySection:Button("Check Constant", function()
+                     if not getgenv().Wevorn_YourConstant then
+                        discord:Notification("Error", "Select Constant", "Okay")
+                        return
+                     end
+                     discord:Notification("Success", "Your Constant Is '"..tostring(getcon(v, getgenv().Wevorn_YourConstant.id)).."'", "Okay")
+                  end)
+                  MemorySection:Button("Change Constant", function()
+                     if not getgenv().Wevorn_YourConstant then
+                        discord:Notification("Error", "Select Constant", "Okay")
+                        return
+                     end
+                     if not getgenv().Wevorn_NewConstant then
+                        discord:Notification("Error", "Enter New Constant", "Okay")
+                        return
+                     end
+                     getcn(v, tonumber(getgenv().Wevorn_YourConstant.id), tostring(getgenv().Wevorn_NewConstant))
+                     discord:Notification("Success", "Success Change Constant", "Okay")
+                  end)
+                  MemorySection:Seperator()
+               end
+            end
+         end
+      end
+   end)
 end
 
 if SettingsWevorn["Players"] then
@@ -3347,6 +3933,20 @@ if SettingsWevorn["Players"] then
              local CamPos = camera.CFrame.Position
              camera.CFrame = camera.CFrame:Lerp(CFrame.new(CamPos, Best.Position), getgenv().Wevorn_Smoothness / 5)
           end
+      end
+   end)
+   
+   players:Seperator()
+
+   players:Toggle("DeSync Server Player CFrame", false, function(state)
+      if not DeSync then 
+         discord:Notification("Error", "Your Executor Doesn't Support raknet.desync function", "Okay")
+         return
+      end
+      if state then
+         DeSync(true)
+      else
+         DeSync(false)
       end
    end)
 
@@ -4024,6 +4624,310 @@ if SettingsWevorn["Input Automations"] then
    end)
 end
 
+if SettingsWevorn["Auto Automations"] then
+   local AutoAutomationsSection = serv:Channel("Auto Automations")
+   AutoAutomationsSection:Seperator()
+   AutoAutomationsSection:Label("Teleport Player To Objects Or Objects To Player") 
+   AutoAutomationsSection:Seperator()
+   
+   AutoAutomationsSection:Toggle("Teleport objects to player [false = player to objects]", false, function(state)
+      getgenv().Wevorn_TPC_OP = state
+   end)
+   
+   AutoAutomationsSection:Toggle("Exact match search", false, function(state)
+      getgenv().Wevorn_TPC_EX = state
+   end)
+   
+   getgenv().Wevorn_TPC_OP = false
+   getgenv().Wevorn_TPC_EX = false
+   getgenv().Wevorn_TPC_Name = nil
+   getgenv().Wevorn_TPC_SD = 0
+   
+   AutoAutomationsSection:Dropdown("Select Name To Teleportation", {
+         "Coin", 
+         "Money", 
+         "Cash", 
+         "Tix",
+         "Ticket", 
+         "Stage", 
+         "Gift", 
+         "Collectible",
+      }, function(obtt)
+      getgenv().Wevorn_TPC_Name = obtt
+   end)
+   
+   AutoAutomationsSection:Textbox("Or Enter Your Name To Teleportation Here...", "Enter Name", false, function(sname)
+      getgenv().Wevorn_TPC_Name = sname
+   end)
+   
+   AutoAutomationsSection:Textbox("Enter Teleportation Cooldown (In Seconds)", "Enter Cooldown...", false, function(stime)
+      local st = tonumber(stime)
+      if not st then 
+         discord:Notification("Error", "Enter A Number", "Okay")
+         return
+      end
+      getgenv().Wevorn_TPC_SD = st
+   end)
+   
+   AutoAutomationsSection:Button("Start Teleportation", function()
+      if not getgenv().Wevorn_TPC_Name then
+         discord:Notification("Error", "Enter a Name", "Okay")
+         return
+      end
+      if not getgenv().Wevorn_TPC_EX then
+         for _, v in ipairs(workspace:GetDescendants()) do
+            if (v:IsA("Part") or v:IsA("Model") or v:IsA("BasePart")) and string.find(v.Name, getgenv().Wevorn_TPC_Name) then
+               if getgenv().Wevorn_TPC_OP then
+                  v:PivotTo(player.Character:GetPivot())
+               else
+                  player.Character:PivotTo(v:GetPivot())
+               end
+            end
+            task.wait(getgenv().Wevorn_TPC_SD)
+         end
+      else
+         for _, v in ipairs(workspace:GetDescendants()) do
+            if (v:IsA("Part") or v:IsA("Model") or v:IsA("BasePart")) and v.Name == getgenv().Wevorn_TPC_Name then
+               if getgenv().Wevorn_TPC_OP then
+                  v:PivotTo(player.Character:GetPivot())
+               else
+                  player.Character:PivotTo(v:GetPivot())
+               end
+            end
+         end
+         task.wait(getgenv().Wevorn_TPC_SD)
+      end
+   end)
+   
+   AutoAutomationsSection:Seperator()
+   AutoAutomationsSection:Label("Teleport Object In Object") 
+   AutoAutomationsSection:Seperator()
+   
+   AutoAutomationsSection:Toggle("Teleport objects to player [false = player to objects]", false, function(state)
+      getgenv().Wevorn_TP_OP = state
+   end)
+   
+   AutoAutomationsSection:Toggle("Use GetDescendants [false = GetChildren]", false, function(state)
+      getgenv().Wevorn_TP_GD = state
+   end)
+   
+   getgenv().Wevorn_TP_OP = false
+   getgenv().Wevorn_TP_GD = false
+   getgenv().Wevorn_TP_OBJ_TYPE = "All"
+   getgenv().Wevorn_TP_OBJ_CD = 0
+   getgenv().Wevorn_TP_OBJ_PATCH = nil
+   
+   AutoAutomationsSection:Dropdown("Teleport Objects Type...", {
+         "Only Parts", 
+         "Only Models", 
+         "Only BaseParts", 
+         "Only Parts And Models", 
+         "Only BaseParts And Models", 
+         "Only BaseParts And Parts",
+         "All", 
+       }, function(top)
+      getgenv().Wevorn_TP_OBJ_TYPE = tostring(top)
+   end)
+   
+   local function decode(str)
+      return (str:gsub("\\(%d+)", function(n)
+         return string.char(tonumber(n))
+      end))
+      end
+      local function resolve(r, path)
+         local obj = r
+         path = tostring(path)
+         path = path:gsub("^game:GetService%([\"']?[Ww]orkspace[\"']?%)%.?", ""):gsub("^game%.[Ww]orkspace%.?", ""):gsub("^workspace%.?", "")
+         path = path:gsub("%[[\"'](.-)[\"']%]", function(name)
+         return decode(name)
+      end)
+      for part in path:gmatch("[^%.]+") do
+         local name, index = part:match("^(.-):GetChildren%(%)[%[](%d+)%]$")
+         if name then
+            obj = obj:FindFirstChild(name)
+            if not obj then return nil end
+            obj = obj:GetChildren()[tonumber(index)]
+         else
+            obj = obj:FindFirstChild(part)
+         end
+         if not obj then
+            return nil
+        end
+     end
+     return obj
+   end
+
+   AutoAutomationsSection:Textbox("Enter obj patch", "Enter obj patch here...", false, function(objp)
+      local obj = resolve(workspace, objp)
+      if not obj then
+         discord:Notification("Error", "Object Is Not Found", "Okay")
+         return
+      end
+      getgenv().Wevorn_TP_OBJ_PATCH = obj
+   end)
+   
+   AutoAutomationsSection:Textbox("Cooldown Teleportations (In Seconds)", "Enter Cooldown", false, function(objc)
+      local objct = tonumber(objc)
+      if not objct then
+         discord:Notification("Error", "Enter a Number", "Okay")
+         return
+      end
+      getgenv().Wevorn_TP_OBJ_CD = objct
+   end)
+   
+   AutoAutomationsSection:Button("Start Teleportation", function()
+      if not getgenv().Wevorn_TP_OBJ_PATCH then
+         discord:Notification("Error", "Enter a obj patch", "Okay")
+         return
+      end
+      if getgenv().Wevorn_TP_OBJ_TYPE == "Only Parts" then
+         if getgenv().Wevorn_TP_GD then
+            for _, v in ipairs(getgenv().Wevorn_TP_OBJ_PATCH:GetDescendants()) do
+               if v:IsA("Part") then
+                  if getgenv().Wevorn_TP_OP then
+                     v:PivotTo(player.Character:GetPivot())
+                  else
+                     player.Character:PivotTo(v:GetPivot())
+                  end
+               end
+               task.wait(getgenv().Wevorn_TP_OBJ_CD)
+            end
+         else
+            for _, v in ipairs(getgenv().Wevorn_TP_OBJ_PATCH:GetChildren()) do
+               if v:IsA("Part") then
+                  if getgenv().Wevorn_TP_OP then
+                     v:PivotTo(player.Character:GetPivot())
+                  else
+                     player.Character:PivotTo(v:GetPivot())
+                  end
+               end
+               task.wait(getgenv().Wevorn_TP_OBJ_CD)
+            end
+         end
+      elseif getgenv().Wevorn_TP_OBJ_TYPE  == "Only Models" then
+         if getgenv().Wevorn_TP_GD then
+            for _, v in ipairs(getgenv().Wevorn_TP_OBJ_PATCH:GetDescendants()) do
+               if v:IsA("Model") then
+                   if getgenv().Wevorn_TP_OP then
+                      v:PivotTo(player.Character:GetPivot())
+                   else
+                      player.Character:PivotTo(v:GetPivot())
+                  end
+                  task.wait(getgenv().Wevorn_TP_OBJ_CD)
+               end
+            end
+         else
+            for _, v in ipairs(getgenv().Wevorn_TP_OBJ_PATCH:GetChildren()) do
+               if v:IsA("Model") then
+                  if getgenv().Wevorn_TP_OP then
+                     v:PivotTo(player.Character:GetPivot())
+                  else
+                     player.Character:PivotTo(v:GetPivot())
+                  end
+               end
+               task.wait(getgenv().Wevorn_TP_OBJ_CD)
+            end
+         end
+      elseif getgenv().Wevorn_TP_OBJ_TYPE  == "Only BaseParts" then
+         if getgenv().Wevorn_TP_GD then
+            for _, v in ipairs(getgenv().Wevorn_TP_OBJ_PATCH:GetDescendants()) do
+               if v:IsA("BasePart") then
+                  if getgenv().Wevorn_TP_OP then
+                     v:PivotTo(player.Character:GetPivot())
+                  else
+                     player.Character:PivotTo(v:GetPivot())
+                  end
+               end
+               task.wait(getgenv().Wevorn_TP_OBJ_CD)
+            end
+         else
+            for _, v in ipairs(getgenv().Wevorn_TP_OBJ_PATCH:GetChildren()) do
+               if v:IsA("BasePart") then
+                  if getgenv().Wevorn_TP_OP then
+                     v:PivotTo(player.Character:GetPivot())
+                  else
+                     player.Character:PivotTo(v:GetPivot())
+                  end
+               end
+               task.wait(getgenv().Wevorn_TP_OBJ_CD)
+            end
+         end
+      elseif getgenv().Wevorn_TP_OBJ_TYPE  == "Only Parts And Models" then
+         if getgenv().Wevorn_TP_GD then
+            for _, v in ipairs(getgenv().Wevorn_TP_OBJ_PATCH:GetDescendants()) do
+               if v:IsA("Part") or v:IsA("Model") then
+                  if getgenv().Wevorn_TP_OP then
+                     v:PivotTo(player.Character:GetPivot())
+                  else
+                     player.Character:PivotTo(v:GetPivot())
+                  end
+               end
+               task.wait(getgenv().Wevorn_TP_OBJ_CD)
+            end
+         else
+            for _, v in ipairs(getgenv().Wevorn_TP_OBJ_PATCH:GetChildren()) do
+               if v:IsA("Part") or v:IsA("Model") then
+                  if getgenv().Wevorn_TP_OP then
+                     v:PivotTo(player.Character:GetPivot())
+                  else
+                     player.Character:PivotTo(v:GetPivot())
+                  end
+               end
+               task.wait(getgenv().Wevorn_TP_OBJ_CD)
+            end
+         end
+      elseif getgenv().Wevorn_TP_OBJ_TYPE == "Only BaseParts And Parts" then
+         if getgenv().Wevorn_TP_GD then
+            for _, v in ipairs(getgenv().Wevorn_TP_OBJ_PATCH:GetDescendants()) do
+               if v:IsA("BasePart") or v:IsA("Part") then
+                  if getgenv().Wevorn_TP_OP then
+                     v:PivotTo(player.Character:GetPivot())
+                  else
+                     player.Character:PivotTo(v:GetPivot())
+                  end
+               end
+               task.wait(getgenv().Wevorn_TP_OBJ_CD)
+            end
+         else
+            for _, v in ipairs(getgenv().Wevorn_TP_OBJ_PATCH:GetChildren()) do
+               if v:IsA("BasePart") or v:IsA("Part") then
+                  if getgenv().Wevorn_TP_OP then
+                     v:PivotTo(player.Character:GetPivot())
+                  else
+                     player.Character:PivotTo(v:GetPivot())
+                  end
+               end
+               task.wait(getgenv().Wevorn_TP_OBJ_CD)
+            end
+         end
+      elseif getgenv().Wevorn_TP_OBJ_TYPE == "All" then
+         if getgenv().Wevorn_TP_GD then
+            for _, v in ipairs(getgenv().Wevorn_TP_OBJ_PATCH:GetDescendants()) do
+               if v:IsA("Part") or v:IsA("Model") or v:IsA("BasePart")  then
+                  if getgenv().Wevorn_TP_OP then
+                     v:PivotTo(player.Character:GetPivot())
+                  else
+                     player.Character:PivotTo(v:GetPivot())
+                  end
+               end
+               task.wait(getgenv().Wevorn_TP_OBJ_CD)
+            end
+         else
+            for _, v in ipairs(getgenv().Wevorn_TP_OBJ_PATCH:GetChildren()) do
+               if v:IsA("Part") or v:IsA("Model") or v:IsA("BasePart")  then
+                  if getgenv().Wevorn_TP_OP then
+                     v:PivotTo(player.Character:GetPivot())
+                  else
+                     player.Character:PivotTo(v:GetPivot())
+                  end
+               end
+               task.wait(getgenv().Wevorn_TP_OBJ_CD)
+            end
+         end
+      end
+   end)
+end
+
 if SettingsWevorn["Purchase Exploits"] then
 local PurchaseExploits = serv:Channel("Purchase Exploits")
 
@@ -4057,25 +4961,52 @@ end)
 setreadonly(mt,true)
 end)
 
+getgenv().Wevorn_oldIsInGroup = nil
+getgenv().Wevorn_IsGroupHook = nil
+getgenv().Wevorn_IsInGroupHook = false
+
+PurchaseExploits:Toggle("All Player.IsInGroup return true", false, function(state)
+   local mt = getrawmetatable(game)
+   setreadonly(mt,false)
+    if state then
+      if old_namecall == nil then
+         old_namecall = mt.__namecall
+      end
+      mt.__namecall = function(self,...)
+         local method = getnamecallmethod()
+         if self == game.Players.LocalPlayer and method == "IsInGroup" then
+            return true
+         end
+         return old_namecall(self,...)
+      end
+   else
+       if old_namecall then
+         mt.__namecall = old_namecall
+      end
+   end
+   setreadonly(mt,true)
+end)
+
 pcall(function()
-if getgenv().Wevorn_API_Settings and getgenv().Wevorn_API_Settings["Game Passes"] then
-GamePassLink = HttpService:JSONDecode(game:HttpGet(getgenv().Wevorn_API_Settings["Game Passes"]))
-else
-GamePassLink = HttpService:JSONDecode(game:HttpGet("https://apis.roblox.com/game-passes/v1/universes/"..game.GameId.."/game-passes?passView=Full&pageSize=100"))
-end
+   if getgenv().Wevorn_API_Settings and getgenv().Wevorn_API_Settings["Game Passes"] then
+      GamePassLink = HttpService:JSONDecode(game:HttpGet(getgenv().Wevorn_API_Settings["Game Passes"]))
+   else
+      GamePassLink = HttpService:JSONDecode(game:HttpGet("https://apis.roblox.com/game-passes/v1/universes/"..game.GameId.."/game-passes?passView=Full&pageSize=100"))
+   end
 end)
 
 if GamePassLink then
-pcall(function()
-for _, v in ipairs(GamePassLink.gamePasses) do
-table.insert(GamePassNames,v.name)
-table.insert(GamePassIds,v.id)
-end
-end)
+   pcall(function()
+      for _, v in ipairs(GamePassLink.gamePasses) do
+         table.insert(GamePassNames,v.name)
+         table.insert(GamePassIds,v.id)
+       end
+   end)
 end
 
 PurchaseExploits:Dropdown("What do you want to do with Game Passes?...",{
         "Fire Signal GamePass",
+        "Copy Script",
         "Copy Name",
         "Copy Destination", 
         "Copy Time Create",
@@ -4099,24 +5030,26 @@ PurchaseExploits:Label("If nothing shows above, no GamePass found.")
 getgenv().Wevorn_GamePassesMethod = "Fire Signal Product"
 
 PurchaseExploits:Button("Use Signal with this game passes or use your method",function()
-if getgenv().Wevorn_GamePassesMethod == "Fire Signal GamePass" and GamePass then
-MarketplaceService:SignalPromptGamePassPurchaseFinished(game.Players.LocalPlayer,tostring(GamePass),true)
-discord:Notification("Success","Fired SignalPromptGamePassPurchaseFinished signal to server with Id: "..tostring(GamePass),"Okay!")
-elseif getgenv().Wevorn_GamePassesMethod == "Copy Name" and GamePass then
-setclipboard(MarketplaceService:GetProductInfo(GamePass, Enum.InfoType.GamePass).Name)
-elseif getgenv().Wevorn_GamePassesMethod == "Copy Destination" and GamePass then
-setclipboard(MarketplaceService:GetProductInfo(GamePass, Enum.InfoType.GamePass).Description)
-elseif getgenv().Wevorn_GamePassesMethod == "Copy Time Create" and GamePass then
-setclipboard(MarketplaceService:GetProductInfo(GamePass, Enum.InfoType.GamePass).Created:gsub("T"," "):gsub("%.%d+",""):gsub("Z","").." UTC")
-elseif getgenv().Wevorn_GamePassesMethod == "Copy Time Update" and GamePass then
-setclipboard(MarketplaceService:GetProductInfo(GamePass, Enum.InfoType.GamePass).Updated:gsub("T"," "):gsub("%.%d+",""):gsub("Z","").." UTC")
-elseif getgenv().Wevorn_GamePassesMethod == "Copy Price" and GamePass then
-setclipboard(MarketplaceService:GetProductInfo(GamePass, Enum.InfoType.GamePass).PriceInRobux or "N/A")
-elseif getgenv().Wevorn_GamePassesMethod == "Copy Id" and GamePass then
-setclipboard(GamePass)
-elseif not GamePass then
-discord:Notification("Error","Select GamePass","Okay")
-end
+   if getgenv().Wevorn_GamePassesMethod == "Fire Signal GamePass" and GamePass then
+      MarketplaceService:SignalPromptGamePassPurchaseFinished(game.Players.LocalPlayer,tostring(GamePass),true)
+      discord:Notification("Success","Fired SignalPromptGamePassPurchaseFinished signal to server with Id: "..tostring(GamePass),"Okay!")
+   elseif getgenv().Wevorn_GamePassesMethod == "Copy Script" and GamePass then
+      setclipboard('game:GetService("MarketplaceService"):SignalPromptGamePassPurchaseFinished(game.Players.LocalPlayer,'..tonumber(GamePass)..', true)')
+   elseif getgenv().Wevorn_GamePassesMethod == "Copy Name" and GamePass then
+      setclipboard(MarketplaceService:GetProductInfo(GamePass, Enum.InfoType.GamePass).Name)
+   elseif getgenv().Wevorn_GamePassesMethod == "Copy Destination" and GamePass then
+      setclipboard(MarketplaceService:GetProductInfo(GamePass, Enum.InfoType.GamePass).Description)
+   elseif getgenv().Wevorn_GamePassesMethod == "Copy Time Create" and GamePass then
+      setclipboard(MarketplaceService:GetProductInfo(GamePass, Enum.InfoType.GamePass).Created:gsub("T"," "):gsub("%.%d+",""):gsub("Z","").." UTC")
+   elseif getgenv().Wevorn_GamePassesMethod == "Copy Time Update" and GamePass then
+      setclipboard(MarketplaceService:GetProductInfo(GamePass, Enum.InfoType.GamePass).Updated:gsub("T"," "):gsub("%.%d+",""):gsub("Z","").." UTC")
+   elseif getgenv().Wevorn_GamePassesMethod == "Copy Price" and GamePass then
+      setclipboard(MarketplaceService:GetProductInfo(GamePass, Enum.InfoType.GamePass).PriceInRobux or "N/A")
+   elseif getgenv().Wevorn_GamePassesMethod == "Copy Id" and GamePass then
+      setclipboard(GamePass)
+   elseif not GamePass then
+      discord:Notification("Error","Select GamePass","Okay")
+   end
 end)
 
 PurchaseExploits:Button("Fire All GamePasseses",function()
@@ -4160,6 +5093,7 @@ getgenv().Wevorn_ProductMethod = "Fire Signal Product"
 
 PurchaseExploits:Dropdown("What do you want to do with product?...",{
         "Fire Signal Product",
+        "Copy Script",
         "Copy Name",
         "Copy Destination", 
         "Copy Time Create",
@@ -4181,24 +5115,26 @@ end)
 PurchaseExploits:Label("If nothing shows above, no Dev Products found.")
 
 PurchaseExploits:Button("Use Signal with this product or use your method",function()
-if getgenv().Wevorn_ProductMethod == "Fire Signal Product" and DevProduct then
-MarketplaceService:SignalPromptProductPurchaseFinished(game.Players.LocalPlayer.UserId,tostring(DevProduct),true)
-discord:Notification("Success","Fired SignalPromptProductPurchaseFinished signal to server with ProductId: "..tostring(DevProduct),"Okay!")
-elseif getgenv().Wevorn_ProductMethod == "Copy Name" and DevProduct then
-setclipboard(MarketplaceService:GetProductInfo(DevProduct, Enum.InfoType.Product).Name)
-elseif getgenv().Wevorn_ProductMethod == "Copy Destination" and DevProduct then
-setclipboard(MarketplaceService:GetProductInfo(DevProduct,Enum.InfoType.Product).Description)
-elseif getgenv().Wevorn_ProductMethod == "Copy Time Create" and DevProduct then
-setclipboard(MarketplaceService:GetProductInfo(DevProduct, Enum.InfoType.Product).Created:gsub("T"," "):gsub("%.%d+",""):gsub("Z","").." UTC")
-elseif getgenv().Wevorn_ProductMethod == "Copy Time Update" and DevProduct then
-setclipboard(MarketplaceService:GetProductInfo(DevProduct, Enum.InfoType.Product).Updated:gsub("T"," "):gsub("%.%d+",""):gsub("Z","").." UTC")
-elseif getgenv().Wevorn_ProductMethod == "Copy Price" and DevProduct then
-setclipboard(MarketplaceService:GetProductInfo(DevProduct,Enum.InfoType.Product).PriceInRobux or "N/A")
-elseif getgenv().Wevorn_ProductMethod == "Copy Id" and DevProduct then
-setclipboard(DevProduct)
-elseif not DevProduct then
-discord:Notification("Error","Select Dev Product","Okay")
-end
+   if getgenv().Wevorn_ProductMethod == "Fire Signal Product" and DevProduct then
+      MarketplaceService:SignalPromptProductPurchaseFinished(game.Players.LocalPlayer.UserId,tostring(DevProduct),true)
+      discord:Notification("Success","Fired SignalPromptProductPurchaseFinished signal to server with ProductId: "..tostring(DevProduct),"Okay!")
+   elseif getgenv().Wevorn_ProductMethod == "Copy Script" and DevProduct then
+      setclipboard('game:GetService("MarketplaceService"):SignalPromptProductPurchaseFinished(game.Players.LocalPlayer.UserId,'..tonumber(DevProduct)..', true)')
+   elseif getgenv().Wevorn_ProductMethod == "Copy Name" and DevProduct then
+      setclipboard(MarketplaceService:GetProductInfo(DevProduct, Enum.InfoType.Product).Name)
+   elseif getgenv().Wevorn_ProductMethod == "Copy Destination" and DevProduct then
+      setclipboard(MarketplaceService:GetProductInfo(DevProduct,Enum.InfoType.Product).Description)
+   elseif getgenv().Wevorn_ProductMethod == "Copy Time Create" and DevProduct then
+      setclipboard(MarketplaceService:GetProductInfo(DevProduct, Enum.InfoType.Product).Created:gsub("T"," "):gsub("%.%d+",""):gsub("Z","").." UTC")
+   elseif getgenv().Wevorn_ProductMethod == "Copy Time Update" and DevProduct then
+      setclipboard(MarketplaceService:GetProductInfo(DevProduct, Enum.InfoType.Product).Updated:gsub("T"," "):gsub("%.%d+",""):gsub("Z","").." UTC")
+   elseif getgenv().Wevorn_ProductMethod == "Copy Price" and DevProduct then
+      setclipboard(MarketplaceService:GetProductInfo(DevProduct,Enum.InfoType.Product).PriceInRobux or "N/A")
+   elseif getgenv().Wevorn_ProductMethod == "Copy Id" and DevProduct then
+      setclipboard(DevProduct)
+   elseif not DevProduct then
+      discord:Notification("Error","Select Dev Product","Okay")
+   end
 end)
 
 PurchaseExploits:Button("Fire All Dev Products",function()
@@ -4225,7 +5161,6 @@ end
 end)
 
 PurchaseExploits:Seperator()
-PurchaseExploits:Label("Pretty much the same as the one above but for Free UGC")
 
 getgenv().Wevorn_SafeFreeUGCMode = false
 getgenv().FreeUGCSignal = false
@@ -4280,16 +5215,97 @@ PurchaseExploits:Button("Claim All Free UGC In This Game", function()
       discord:Notification("Success", "Success Used SignalPromptPurchaseFinished With Id "..freeugcid.." / Ststus: "..tostring(getgenv().FreeUGCSignal), "Okay")
    end)
    PurchaseExploits:Button("Say !BuyItem {id}", function()
+      if not FreeUGCData[getgenv().YourUGCFree] then
+         discord:Notification("Error", "Select Free UGC", "Okay")
+         return
+      end
       local freeugcid = FreeUGCData[getgenv().YourUGCFree]
       local channel = TextChatService.TextChannels.RBXGeneral
       channel:SendAsync("!BuyItem "..freeugcid)
    end)
    PurchaseExploits:Button("Copy ugc Id", function()
+      if not FreeUGCData[getgenv().YourUGCFree] then
+         discord:Notification("Error", "Select Free UGC", "Okay")
+         return
+      end
       setclipboard(FreeUGCData[getgenv().YourUGCFree])
+   end)
+   PurchaseExploits:Button("Copy Signal Prompt Finished", function()
+      if not FreeUGCData[getgenv().YourUGCFree] then
+         discord:Notification("Error", "Select Free UGC", "Okay")
+         return
+      end
+      setclipboard('game:GetService("MarketplaceService"):SignalPromptPurchaseFinished(game.Players.LocalPlayer,'.. tonumber(FreeUGCData[getgenv().YourUGCFree]) .. ','.. tostring(getgenv().FreeUGCSignal)..')')
    end)
    PurchaseExploits:Seperator()
    discord:Notification("Success", "Success Claimed All Free UGC In This Game", "Okay")
 end)
+
+getgenv().Wevorn_BadgeSafeHK = false
+PurchaseExploits:Button("Claim Badge list In This Game", function()
+   if getgenv().Wevorn_BadgesClaimed then
+      discord:Notification("Error", "You Already Claimed All Badges In This Game", "Okay")
+      return
+   end
+   getgenv().Wevorn_BadgesClaimed = true
+   local BadgeJson = game:HttpGet("https://badges.roblox.com/v1/universes/"..game.GameId.."/badges")
+   local BadgeCJson = HttpService:JSONDecode(BadgeJson)
+   local BadgeNames, Badges = {}, {}
+   getgenv().Wevorn_BadgeHook = false
+   getgenv().Wevorn_BadgeSafeHK = false
+   for _, v in pairs(BadgeCJson.data) do
+      table.insert(BadgeNames, tostring(v.name or v.Name or v.BadgeName or v.Badgename or v.badgename))
+      table.insert(Badges, v.id or v.Id)
+   end
+   PurchaseExploits:Seperator()
+   
+   PurchaseExploits:Toggle("All UserHasBadgeAsync Return True",false,function(state)
+      local mt = getrawmetatable(game)
+      setreadonly(mt,false)
+      if state then
+         if old_namecall == nil then
+            old_namecall = mt.__namecall
+         end
+         mt.__namecall = function(self,...)
+            local method = getnamecallmethod()
+            if self.ClassName == "BadgeService" and method == "UserHasBadgeAsync" then
+               return true
+            end
+            return old_namecall(self,...)
+         end
+      else
+         if old_namecall then
+            mt.__namecall = old_namecall
+         end
+      end
+      setreadonly(mt,true)
+   end)
+    
+   PurchaseExploits:Dropdown("Select Your Badge...", BadgeNames, function(BD)
+      local bnx = table.find(BadgeNames, BD)
+      getgenv().Wevorn_YourBadge = Badges[bnx]
+   end)
+   PurchaseExploits:Button("Copy Badge Id", function()
+      if not getgenv().Wevorn_YourBadge then
+         discord:Notification("Error", "Select Badge", "Okay")
+         return
+      end
+      setclipboard(tostring(getgenv().Wevorn_YourBadge))
+   end)
+   PurchaseExploits:Button("Check Award Count", function()
+      if not getgenv().Wevorn_YourBadge then
+         discord:Notification("Error", "Select Badge", "Okay")
+         return
+      end
+      local BadgeAwardedJson = game:HttpGet("https://badges.roblox.com/v1/badges/"..getgenv().Wevorn_YourBadge)
+      local RawBadgeArardedJson = HttpService:JSONDecode(BadgeAwardedJson)
+      local Badge_Day = RawBadgeArardedJson.statistics.pastDayAwardedCount or "nil"
+      local Badge_Rate = RawBadgeArardedJson.statistics.winRatePercentage * 100 .."%" or "nil"
+      local Badge_All = RawBadgeArardedJson.statistics.awardedCount or "nil"
+      discord:Notification("Success", "All Rewarded Count: "..Badge_All.."\nAll Rewarded Count In This Day: "..Badge_Day.."\nWin Rate: "..Badge_Rate, "Okay")
+   end)
+end)
+
 end
 
 if SettingsWevorn["Purchase Signals"] then
@@ -4462,7 +5478,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 15108736400) t
       while getgenv().Wevorn_Flex_Sniper and task.wait() do
          local TimeNow = os.time()
          local TimeAfter = getgenv().Wevorn_Time
-         if TimeNow > TimeAfter then
+         if TimeNow >= TimeAfter then
             ReplicatedStorage.RedeemCode:InvokeServer(tostring(getgenv().Wevorn_Code))
             discord:Notification("Success", "Success Entering Code", "Okay")
             break
@@ -4541,20 +5557,6 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 14236123211) t
    
    PunchSection:Toggle("Auto Open Eggs", false, function(state)
       getgenv().Wevorn_AutoOpen = state
-      local p_ye, p_no = pcall(function()
-         MarketplaceService:SignalPromptGamePassPurchaseFinished(player, 219171214, true)
-         task.wait(1)
-         MarketplaceService:SignalPromptGamePassPurchaseFinished(player, 219176576, true)
-      end)
-      if not p_ye then
-         if type(firesignal) == "function" then
-            pcall(function()
-               firesignal(MarketplaceService.PromptGamePassPurchaseFinished, player, 219171214, true)
-               task.wait(1)
-               firesignal(MarketplaceService.PromptGamePassPurchaseFinished, player, 219176576, true)
-            end)
-         end
-      end
       while getgenv().Wevorn_AutoOpen and task.wait() do
          ReplicatedStorage.Events.PlayerPressedKeyOnEgg:FireServer("1")
       end
@@ -4581,7 +5583,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 14236123211) t
       getgenv().Wevorn_AutoArena = state
       while getgenv().Wevorn_AutoArena and task.wait() do
           local HumanoidPart = (player.Character and player.Character.HumanoidRootPart) or player.CharacterAdded:Wait():WaitForChild("HumanoidRootPart", math.huge) -- Не показывайте взятке 
-          if not getgenv().Wevorn_Targetthen then
+          if not getgenv().Wevorn_Target then
              for _, v in ipairs(workspace.BreakableParts.Dungeon:GetChildren()) do
                 if v:IsA("Model") then
                    getgenv().Wevorn_Target = v
