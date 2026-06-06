@@ -2,25 +2,39 @@
 -- https://t.me/Games1799
 -- https://t.me/Roblox_free_ugc_2026
 
-local players = game:GetService("Players")
+local cloneref = cloneref or clone_ref or clonereference or clone_reference or (cache and cache.cloneref) or function(a) -- Fake cloneref 
+   return a
+end
+
+local setclipboard = setclipboard or toclipboard or setrbxclipboard or set_clipboard or to_clipboard or set_rbx_clipboard or (Clipboard and Clipboard.set) or writeclipboard or write_clipboard or nil
+local players = cloneref(game:GetService("Players"))
+local CoreGui = cloneref(game:GetService("CoreGui"))
+local StarterGui = cloneref(game:GetService("StarterGui"))
+local RunService = cloneref(game:GetService("RunService"))
+local MarketplaceService = cloneref(game:GetService("MarketplaceService"))
 local player = players.LocalPlayer
-local CoreGui = game:GetService("CoreGui")
-local StarterGui = game:GetService("StarterGui")
-local RunService = game:GetService("RunService")
-local MarketplaceService = game:GetService("MarketplaceService")
+
+pcall(function()
+   if type(getgenv) ~= "function" then
+      function getgenv()
+         return _G
+      end
+   end
+end)
+
 getgenv().SignalDelay = 0
+getgenv().TP7 = false
+getgenv().HideAll = false
+getgenv().SignalTrue7 = false
+
 local cache = {}
 local hi = false
 local hi1 = false
-local Id,productInfo
-
-_G.TP7 = false
-_G.HideAll = false
-_G.SignalTrue7 = false
+local Id, productInfo
 
 local mouse = player:GetMouse()
 mouse.Button1Down:Connect(function()
-if not _G.TP7 then return end
+if not getgenv().TP7 then return end
 if not player then return end
 if not player.Character then return end
 if not mouse.Target then return end
@@ -33,7 +47,7 @@ spawn(function()
 while task.wait(0.1) do
 for _, v in pairs(game.Players:GetPlayers()) do
 if v ~= player and v.Character then
-if _G.HideAll then
+if getgenv().HideAll then
 if not HidePlayers[v] then
 HidePlayers[v] = v.Character.Parent
 end
@@ -48,9 +62,18 @@ end
 end
 end)
 
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
+local Library = nil
+pcall(function()
+   Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
+end)
 
-local Window = Library:NewWindow("Just script v2.1 ☃️")
+if not Library then
+   pcall(function()
+      Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/Lubary/Wizard.lua"))()
+   end)
+end
+
+local Window = Library:NewWindow("Just script v2.2 ⛱️")
 
 local Section = Window:NewSection("Полезные скрипты")
 
@@ -108,9 +131,9 @@ local Section = Window:NewSection("Перемещение")
 
 Section:CreateToggle("Телепорт мышкой", function(state)
 if state then
-_G.TP7 = true
+getgenv().TP7 = true
 else
-_G.TP7 = false
+getgenv().TP7 = false
 end
 end)
 
@@ -231,9 +254,9 @@ local Section = Window:NewSection("Инструменты")
 
 Section:CreateToggle("Скрыть игроков", function(state)
 if state then
-_G.HideAll = true
+getgenv().HideAll = true
 else
-_G.HideAll = false
+getgenv().HideAll = false
 end
 end)
 
@@ -309,7 +332,7 @@ end)
 local Section = Window:NewSection("Сигналы покупки")
 
 Section:CreateToggle("Сигнал true", function(state7)
-_G.SignalTrue7 = state7
+getgenv().SignalTrue7 = state7
 end)
 
 getgenv().hi2 = {toggle = false}
@@ -321,7 +344,7 @@ while hi2.toggle do
 task.wait(getgenv().SignalDelay)
 if Id then
 pcall(function()
-local signal = _G.SignalTrue7
+local signal = getgenv().SignalTrue7
 local productInfo = cache[Id]
 if productInfo then
 if productInfo.type == "GamePass" then
@@ -385,7 +408,7 @@ end)
 
 Section:CreateButton("Использовать сигнал", function()
     pcall(function()
-        local signal = _G.SignalTrue7
+        local signal = getgenv().SignalTrue7
         local idUsed = tonumber(Id)
         if not idUsed then return end
 
@@ -430,53 +453,5 @@ Duration = 5,
 })
 hi1 = true
 break
-end
-end
-
-if not _G.Prompt_ICON1 then
-_G.Prompt_ICON1 = true
-
-while task.wait(1) do  
-    local purchasePrompt = CoreGui:FindFirstChild("PurchasePromptApp")  
-    if purchasePrompt then  
-        local price, image, priceText, imageSrc  
-
-        local productPurchase = purchasePrompt:FindFirstChild("ProductPurchaseContainer")  
-        if productPurchase and productPurchase.Animator:FindFirstChild("ProductPurchaseModal") then  
-            local alert = productPurchase.Animator.ProductPurchaseModal:FindFirstChild("AlertContents")  
-            if alert then  
-                price = alert.Footer.Buttons["1"].ButtonContent.ButtonMiddleContent.Text  
-                image = alert.MiddleContent.Content.ItemIcon  
-                priceText = price.Text  
-                imageSrc = image.Image  
-            end  
-        end  
-
-        if not priceText then  
-            local robuxUpsell = purchasePrompt:FindFirstChild("RobuxUpsellContainer")  
-            if robuxUpsell and robuxUpsell:FindFirstChild("Prompt") then  
-                local children = robuxUpsell.Prompt.Children:GetChildren()  
-                if children[8] and children[8]:FindFirstChild("1") then  
-                    local upsell = children[8]["1"].RobuxUpsellModal.AlertContents.MiddleContent.Content.ProductDetails  
-                    price = upsell.ItemDetailsFrame.ItemDetails.ItemCost  
-                    image = upsell.ItemIcon  
-                    priceText = price.Text  
-                    imageSrc = image.Image  
-                end  
-            end  
-        end  
-
-        if priceText and imageSrc then  
-            StarterGui:SetCore("SendNotification", {  
-                Title = "Появилось окно покупки!",  
-                Text = "Стоимость — "..priceText,  
-                Icon = imageSrc,  
-                Duration = 5,  
-            })  
-
-            repeat task.wait(1)  
-            until not (price and price.Parent and image and image.Parent)  
-        end  
-    end  
 end
 end
