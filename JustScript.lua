@@ -63,12 +63,14 @@ end
 end)
 
 local Library = nil
+local Wizard = true
 pcall(function()
    Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 end)
 
 if not Library then
    pcall(function()
+      Wizard = false
       Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/Lubary/Wizard.lua"))()
    end)
 end
@@ -411,10 +413,8 @@ Section:CreateButton("Использовать сигнал", function()
         local signal = getgenv().SignalTrue7
         local idUsed = tonumber(Id)
         if not idUsed then return end
-
         local info = cache[idUsed] or _G.productInfo
         if not info or not info.type then return end
-
         if info.type == "GamePass" then
             MarketplaceService:SignalPromptGamePassPurchaseFinished(player, idUsed, signal)
         elseif info.type == "Product" then
@@ -427,21 +427,22 @@ Section:CreateButton("Использовать сигнал", function()
     end)
 end)
 
-local Window = Library:NewWindow("Создатель скрипта")
+if Wizard then
+   local Window = Library:NewWindow("Создатель скрипта")
+   local Section = Window:NewSection("Телеграм")
 
-local Section = Window:NewSection("Телеграм")
+   Section:CreateButton("Телеграм канал", function()local copy  = "https://t.me/roblox_free_ugc_2026"
+      setclipboard(tostring(copy))
+   end)
 
-Section:CreateButton("Телеграм канал", function()local copy  = "https://t.me/roblox_free_ugc_2026"
-setclipboard(tostring(copy))
-end)
+   Section:CreateButton("Юзер в тг", function()local copy  = "https://t.me/Games1799"
+      setclipboard(tostring(copy))
+   end)
 
-Section:CreateButton("Юзер в тг", function()local copy  = "https://t.me/Games1799"
-setclipboard(tostring(copy))
-end)
-
-Section:CreateButton("Скрыть это окно", function()
-game:GetService("CoreGui").WizardLibrary.Container["\208\161\208\190\208\183\208\180\208\176\209\130\208\181\208\187\209\140\209\129\208\186\209\128\208\184\208\191\209\130\208\176Window"]:Destroy()
-end)
+   Section:CreateButton("Скрыть это окно", function()
+      game:GetService("CoreGui").WizardLibrary.Container["\208\161\208\190\208\183\208\180\208\176\209\130\208\181\208\187\209\140\209\129\208\186\209\128\208\184\208\191\209\130\208\176Window"]:Destroy()
+   end)
+end
 
 for i, v in pairs(game:GetDescendants()) do
 if v.Name == "__FUNCTION" then
