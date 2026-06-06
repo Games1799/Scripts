@@ -23,8 +23,7 @@ local FolderKeep = Instance.new("Folder")
 local textSize = 17
 if WindowCustomTextSize and tonumber(WindowCustomTextSize) then
     textSize = tonumber(WindowCustomTextSize)
-		v:Destroy()
-	end
+    v:Destroy()
 end
 
 CoastifiedLibrary.Name = "nolimanoms_UILib"
