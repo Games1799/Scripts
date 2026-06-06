@@ -71,7 +71,7 @@ end)
 if not Library then
    pcall(function()
       Wizard = false
-      Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/Lubary/Wizard.lua"))()
+      Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/Libary/Wizard.lua"))()
    end)
 end
 
