@@ -59,28 +59,10 @@ if (isfunctionhooked and isfunctionhooked(game.HttpGet)) then
    return
 end
 
-local White = loadstring(game.HttpGet(game, "https://pastefy.app/D9LMki3l/raw"))()
-if White[Name] ~= tostring(AnalyticsService.GetClientId(AnalyticsService)) then
-   player.Kick(player, "You Are Not Whitelisted\nYou Can Buy Whitelist For 2.5k robux")
-   setclipboard("https://discord.com/users/1264634909952311472")
-   return 
-end
-
-White = {}
-White = nil
-
 if tostring(player.Name) ~= tostring(player.Character.Name) then 
    player.Kick(player, "Nice Try Bro :)")
    return
 end
-
-local CheckDown = game.HttpGet(game, "https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/Toggle2.lua")
-CheckDown = string.gsub(CheckDown, "%s+", "")
-if tostring(CheckDown) ~= "true" then
-   player.Kick(player, "Sniper Is Down\nDm Me If You want Know Why")
-   setclipboard("https://discord.com/users/1264634909952311472")
-   return 
-end 
 
 pcall(function()
    if request then
