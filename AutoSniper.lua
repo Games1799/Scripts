@@ -24,61 +24,6 @@ local ccid
 local check = false
 local ExName = getexecutorname and getexecutorname() or "Unknown"
 
-if isfunctionhooked and (isfunctionhooked and isfunctionhooked(isfunctionhooked)) then
-   player.Kick(player, "Nice Try Bro :)")
-   return 
-end
-
-if httpget and (isfunctionhooked and isfunctionhooked(httpget)) then
-   player.Kick(player, "Nice Try Bro :)")
-   return 
-end
-
-if loadstring and (isfunctionhooked and isfunctionhooked(loadstring)) then
-   player.Kick(player, "Nice Try Bro :)")
-   return 
-end
-
-if request and (isfunctionhooked and isfunctionhooked(request)) then
-   player.Kick(player, "Nice Try Bro :)")
-   return 
-end
-
-if (isfunctionhooked and isfunctionhooked(player.Kick)) then
-   player.Kick(player, "Nice Try Bro :)")
-   return 
-end
-
-if (isfunctionhooked and isfunctionhooked(AnalyticsService.GetClientId)) then
-   player.Kick(player, "Nice Try Bro :)")
-   return
-end
-
-if (isfunctionhooked and isfunctionhooked(game.HttpGet)) then
-   player.Kick(player, "Nice Try Bro :)")
-   return
-end
-
-if tostring(player.Name) ~= tostring(player.Character.Name) then 
-   player.Kick(player, "Nice Try Bro :)")
-   return
-end
-
-pcall(function()
-   if request then
-       request({
-          Url = "https://discord.com/api/webhooks/1490483308029673502/5VGL12dkSWWcLJzYXURMsNzfREbqy-1jOPAw_7fzsbCcjAmrPU0TVt_K1607RZ-7g9YM",
-          Method = "POST",
-          Headers = {
-             ["Content-Type"] = "application/json"
-             },
-          Body = HttpService.JSONEncode(HttpService, {
-             content = "Status: Success\nName: "..tostring(Name).."\nGame: \nhttps://roblox.com/games/"..tostring(game.PlaceId).."\nUser: \nhttps://roblox.com/users/"..tostring(player.UserId).."\nHwid: \n"..tostring(AnalyticsService.GetClientId(AnalyticsService)).."\nExecutor: \n"..tostring(ExName)
-             })
-          })
-   end
-end)
-
 local Lubary = nil
 pcall(function()
    Lubary = loadstring(game.HttpGet(game, "https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
