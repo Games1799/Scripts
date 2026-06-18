@@ -34,11 +34,11 @@ local Id, productInfo
 
 local mouse = player:GetMouse()
 mouse.Button1Down:Connect(function()
-if not getgenv().TP7 then return end
-if not player then return end
-if not player.Character then return end
-if not mouse.Target then return end
-player.Character:PivotTo(CFrame.new(mouse.Hit.Position + Vector3.new(0, 3, 0)))
+   if not getgenv().TP7 then return end
+   if not player then return end
+   if not player.Character then return end
+   if not mouse.Target then return end
+   player.Character:PivotTo(CFrame.new(mouse.Hit.Position + Vector3.new(0, 3, 0)))
 end)
 
 local HidePlayers = {}
@@ -80,63 +80,62 @@ local Window = Library:NewWindow("Just script v2.2 ⛱️")
 local Section = Window:NewSection("Полезные скрипты")
 
 Section:CreateButton("Инфернум", function()
-loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+   loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
 end)
 
 Section:CreateButton("Декс", function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/dex.lua"))()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/dex.lua"))()
 end)
 
 Section:CreateButton("Вуверн", function()
-loadstring(Game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/Wevorn.lua"))()
+   loadstring(Game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/Wevorn.lua"))()
 end)
 
 Section:CreateButton("Ремот спай", function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/SimpleSpyV3/main.lua"))()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/SimpleSpyV3/main.lua"))()
 end)
 
 Section:CreateButton("Ремоут браузер", function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/RemoteBrowser"))()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/RemoteBrowser"))()
 end)
 
 Section:CreateButton("Dev Products Purchaser", function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/ckw69/Wyborn/refs/heads/main/Dev%20Product%20Purchase"))()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/ckw69/Wyborn/refs/heads/main/Dev%20Product%20Purchase"))()
 end)
 
 Section:CreateButton("Адонис байпас", function()
-for i, v in pairs(game:GetDescendants()) do
-if v.Name == "__FUNCTION" then
-loadstring(game:HttpGet('https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua'))()
-hi = true
-break
-end
-end
-
-if not hi then
-StarterGui:SetCore("SendNotification", {
-Title = "Не найдено",
-Text = "Адонис не найден",
-Duration = 5,
-})
-end
+   for i, v in pairs(game:GetDescendants()) do
+      if v.Name == "__FUNCTION" then
+         loadstring(game:HttpGet('https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua'))()
+         hi = true
+         break
+      end
+   end
+   if not hi then
+      StarterGui:SetCore("SendNotification", {
+         Title = "Не найдено",
+         Text = "Адонис не найден",
+         Duration = 5,
+      })
+   end
 end)
 
 Section:CreateButton("Ремоут браузер v3 (бета)", function()
-loadstring(Game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/RemoteBrowserV3_Beta"))()
+   loadstring(Game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/RemoteBrowserV3_Beta"))()
 end)
 
 Section:CreateButton("???", function()
-return nil
+   return nil
 end)
 
 local Section = Window:NewSection("Перемещение")
 
 Section:CreateToggle("Телепорт мышкой", function(state)
-if state then
-getgenv().TP7 = true
-else
-getgenv().TP7 = false
-end
+   if state then
+      getgenv().TP7 = true
+   else
+      getgenv().TP7 = false
+   end
 end)
 
 Section:CreateButton("Скопировать координаты", function()
@@ -255,35 +254,35 @@ end)
 local Section = Window:NewSection("Инструменты")
 
 Section:CreateToggle("Скрыть игроков", function(state)
-if state then
-getgenv().HideAll = true
-else
-getgenv().HideAll = false
-end
+   if state then
+      getgenv().HideAll = true
+   else
+      getgenv().HideAll = false
+   end
 end)
 
 Section:CreateButton("FireProximityPrompt", function()
-for _, v in ipairs(workspace:GetDescendants()) do
-if v:IsA("ProximityPrompt") then
-fireproximityprompt(v)
-end
-end
+   for _, v in ipairs(workspace:GetDescendants()) do
+      if v:IsA("ProximityPrompt") then
+         fireproximityprompt(v)
+      end
+   end
 end)
 
 Section:CreateButton("HoldDuration 0", function()
-for _, v in next, workspace:GetDescendants() do
-if v:IsA("ProximityPrompt") then
-v.HoldDuration = 0
-end
-end
+   for _, v in next, workspace:GetDescendants() do
+      if v:IsA("ProximityPrompt") then
+         v.HoldDuration = 0
+      end
+   end
 end)
 
 Section:CreateButton("FireAllClickDetectors", function()
-for _, v in ipairs(workspace:GetDescendants()) do
-if v:IsA("ClickDetector") then
-fireclickdetector(v)
-end
-end
+   for _, v in ipairs(workspace:GetDescendants()) do
+      if v:IsA("ClickDetector") then
+         fireclickdetector(v)
+      end
+   end
 end)
 
 Section:CreateButton("KillAura", function()
@@ -329,6 +328,48 @@ end
 end
 end
 end
+end)
+
+local Section = Window:NewSection("Угс лимитки")
+getgenv().Wevorn_AutoClickPurchase_Just = false
+getgenv().Wevorn_AutoClickCloseError_Just = false
+
+Section:CreateToggle("Авто кликер покупки", function(state)
+   local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
+   local CoreGui = cloneref(game:GetService("CoreGui"))
+   local GuiService = cloneref(game:GetService("GuiService"))
+   getgenv().Wevorn_AutoClickPurchase_Just = state
+   while getgenv().Wevorn_AutoClickPurchase_Just and task.wait(0.05) do
+      task.spawn(function()
+         pcall(function()
+            for _, v in ipairs(CoreGui.FoundationOverlay:GetDescendants()) do
+               if string.find(v.Name, "Buy") and v.Parent.Name == "1" then
+                  VirtualInputManager:SendMouseButtonEvent(v.AbsolutePosition.X + v.AbsoluteSize.X * (0.5 - v.AnchorPoint.X), v.AbsolutePosition.Y + v.AbsoluteSize.Y * (0.5 - v.AnchorPoint.Y) + GuiService:GetGuiInset().Y, 0, true, game, 1)
+                  VirtualInputManager:SendMouseButtonEvent(v.AbsolutePosition.X + v.AbsoluteSize.X * (0.5 - v.AnchorPoint.X), v.AbsolutePosition.Y + v.AbsoluteSize.Y * (0.5 - v.AnchorPoint.Y) + GuiService:GetGuiInset().Y, 0, false, game, 1)
+               end
+            end 
+         end)
+      end)
+   end
+end)
+
+Section:CreateToggle("Авто закрыть ошибку", function(state)
+   local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
+   local CoreGui = cloneref(game:GetService("CoreGui"))
+   local GuiService = cloneref(game:GetService("GuiService"))
+   getgenv().Wevorn_AutoClickCloseError_Just = state
+   while getgenv().Wevorn_AutoClickCloseError_Just and task.wait(0.05) do
+      task.spawn(function()
+         pcall(function()
+            for _, v in ipairs(CoreGui.FoundationOverlay:GetDescendants()) do
+               if v.Name == "1" and not v.FindFirstChild(v, "BuyButton") then
+                  VirtualInputManager:SendMouseButtonEvent(v.AbsolutePosition.X + v.AbsoluteSize.X * (0.5 - v.AnchorPoint.X), v.AbsolutePosition.Y + v.AbsoluteSize.Y * (0.5 - v.AnchorPoint.Y) + GuiService:GetGuiInset().Y, 0, true, game, 1)
+                  VirtualInputManager:SendMouseButtonEvent(v.AbsolutePosition.X + v.AbsoluteSize.X * (0.5 - v.AnchorPoint.X), v.AbsolutePosition.Y + v.AbsoluteSize.Y * (0.5 - v.AnchorPoint.Y) + GuiService:GetGuiInset().Y, 0, false, game, 1)
+               end
+            end 
+         end)
+      end)
+   end
 end)
 
 local Section = Window:NewSection("Сигналы покупки")
@@ -444,15 +485,15 @@ if Wizard then
    end)
 end
 
-for i, v in pairs(game:GetDescendants()) do
-if v.Name == "__FUNCTION" then
-StarterGui:SetCore("SendNotification", {
-Title = "Найден адонис!",
-Text = "Проверьте !Buyitem и !Buyasset",
-Button1 = "Ок",
-Duration = 5,
-})
-hi1 = true
-break
-end
+for _, v in pairs(game:GetDescendants()) do
+   if v.Name == "__FUNCTION" then
+      StarterGui:SetCore("SendNotification", {
+         Title = "Найден адонис!",
+         Text = "Проверьте !Buyitem и !Buyasset",
+         Button1 = "Ок",
+         Duration = 5,
+      })
+      hi1 = true
+      break
+   end
 end
