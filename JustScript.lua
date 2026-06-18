@@ -75,7 +75,7 @@ if not Library then
    end)
 end
 
-local Window = Library:NewWindow("Just script v2.2 ⛱️")
+local Window = Library:NewWindow("Just script v2.3 🍁")
 
 local Section = Window:NewSection("Полезные скрипты")
 
