@@ -253,7 +253,7 @@ local defaultSettings = {
     ["Auto Automations"] = true,
     ["Purchase Exploits"] = true,
     ["Purchase Signals"] = true,
-    ["UGC Game Scripts"] = true
+    ["Game Scripts"] = true
 }
 
 for i, v in pairs(defaultSettings) do
@@ -319,7 +319,7 @@ pcall(function() -- Credit: Infinite Yeald (Dex Explorer)
 end)
 
 local discord = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
-local win = discord:Window("Wevorn v1.9")
+local win = discord:Window("Wevorn v1.9.1 [ScriptHub v1] [Last Update: 23.07.2026]")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
 local SettingsSection = serv2:Channel("???")
@@ -329,14 +329,8 @@ if SettingsWevorn["Change Log"] then
    local changelog = serv:Channel("Change Log")
    changelog:Label("Welcome to Wevorn! \nThis script was created by Games1799")
    changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.9!")
-   changelog:Label("Added Attribute Explorer")
-   changelog:Label("Added Auto Automations Section")
-   changelog:Label("Added Memory Explorer")
-   changelog:Label("Added DeSync Server CFrame")
-   changelog:Label("Added Copy Script Signal GamePass")
-   changelog:Label("Added Copy Script Signal Product")
-   changelog:Label("Added Copy Scripts")
-   changelog:Label("Added More Functions")
+   changelog:Label("Added Section For Free UGC Obby (AFK or Game) Game")
+   changelog:Label("Added Section For Roll For Free UGC Game")
    changelog:Label("Bug Fixes")
    changelog:Seperator()
 end
@@ -371,7 +365,7 @@ if SettingsWevorn["Home"] then
    ["Auto Automations"] = true,
    ["Purchase Exploits"] = true,
    ["Purchase Signals"] = true,
-   ["UGC Game Scripts"] = true
+   ["Game Scripts"] = true
  }
  loadstring(Game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/Wevorn.lua"))()]])
     end)
@@ -397,7 +391,7 @@ if SettingsWevorn["Home"] then
    ["Auto Automations"] = true,
    ["Purchase Exploits"] = true,
    ["Purchase Signals"] = true,
-   ["UGC Game Scripts"] = true
+   ["Game Scripts"] = true
  }
  
  getgenv().Wevorn_API_Settings = {
@@ -616,7 +610,7 @@ if SettingsWevorn["UGC Limiteds"] then
    UGCLimiteds:Label("With this, you can get #1 serials of web UGC item drops!")
 
    UGCLimiteds:Button("Teleport to Rolimons UGC Game", function()
-      TeleportService:Teleport(14056754882,game.Players.LocalPlayer)
+      TeleportService:Teleport(14056754882, game.Players.LocalPlayer)
    end)
 
    UGCLimiteds:Button("Game detected VirtualInputManager? You can try bypass it!",function()
@@ -678,169 +672,27 @@ if SettingsWevorn["UGC Limiteds"] then
          end)
       end
    end)
-   
    UGCLimiteds:Seperator()
    
-   UGCLimiteds:Toggle("Enable Auto Click Purchase (PromptGui v3)",false,function(state)
-      local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
-      local CoreGui = cloneref(game:GetService("CoreGui"))
-      getgenv().Wevorn_V3_AutoClickerPurchase = state
-      while getgenv().Wevorn_V3_AutoClickerPurchase and task.wait() do
-            task.spawn(function()
-                 pcall(function()
-                    if CoreGui.FoundationOverlay then
-                    if CoreGui.FoundationOverlay.ProductPurchaseModal then
-                    if CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer then
-                    if CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer.Sheet then
-                    if CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer.Sheet.Content then
-                    if CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer.Sheet.Content.Actions then
-                    if CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer.Sheet.Content.Actions["1"] then
-                    local SusButtonFullName = cloneref(game:GetService("CoreGui")).FoundationOverlay.ProductPurchaseModal.SheetContainer.Sheet.Content.Actions["1"]
-                    local SusButtonPos = SusButtonFullName.AbsolutePosition
-                    VirtualInputManager:SendMouseButtonEvent(SusButtonPos.X,SusButtonPos.Y,0,true,game,0)
-                    task.wait()
-                    VirtualInputManager:SendMouseButtonEvent(SusButtonPos.X,SusButtonPos.Y,0,false,game,0)
-                    end end end end end end end
-                 end)
-             end)
-        end
+   local DetectConnect
+   UGCLimiteds:Toggle("Enable Prompt Detector", false, function(state)
+      if state then
+         DetectConnect = MarketplaceService.PromptPurchaseRequestedV2:Connect(function(_, Id, ...)
+            discord:Notification("Prompt Detected!", "Prompt Id: "..Id, "Okay")
+         end)
+      else
+         if DetectConnect then
+            DetectConnect:Disconnect()
+         end
+      end
    end)
    
-   UGCLimiteds:Toggle("Enable Auto Click Close Error (PromptGui v3)",false,function(state)
-     local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
-     local CoreGui = cloneref(game:GetService("CoreGui"))
-     getgenv().Wevorn_V3_AutoClickerCloseErors = state
-     while getgenv().Wevorn_V3_AutoClickerCloseErors and task.wait() do
-           task.spawn(function()
-                pcall(function()
-                   if CoreGui.FoundationOverlay then
-                   if CoreGui.FoundationOverlay.ProductPurchasePrompt then
-                   if CoreGui.FoundationOverlay.ProductPurchasePrompt.SheetContainer then
-                   if CoreGui.FoundationOverlay.ProductPurchasePrompt.SheetContainer.Sheet then
-                   if CoreGui.FoundationOverlay.ProductPurchasePrompt.SheetContainer.Sheet.Content then
-                   if CoreGui.FoundationOverlay.ProductPurchasePrompt.SheetContainer.Sheet.Content.Actions then
-                   if CoreGui.FoundationOverlay.ProductPurchasePrompt.SheetContainer.Sheet.Content.Actions["1"] then
-                   local CloseErrorButton = cloneref(game:GetService("CoreGui")).FoundationOverlay.ProductPurchasePrompt.SheetContainer.Sheet.Content.Actions["1"]
-                   local CloseErrorButtonPos = CloseErrorButton.AbsolutePosition + (CloseErrorButton.AbsolutePosition / 3)
-                   VirtualInputManager:SendMouseButtonEvent(CloseErrorButtonPos.X,CloseErrorButtonPos.Y,0,true,game,0)
-                   task.wait()
-                   VirtualInputManager:SendMouseButtonEvent(CloseErrorButtonPos.X,CloseErrorButtonPos.Y,0,false,game,0)
-                   end end end end end end end
-               end)
-          end)
-       end
-   end)
-   
-   UGCLimiteds:Toggle("Enable Auto Close Prompt (PromptGui v3)",false,function(state)
-     local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
-     local CoreGui = cloneref(game:GetService("CoreGui"))
-     getgenv().Wevorn_V3_AutoClickerClose = state
-     while getgenv().Wevorn_V3_AutoClickerClose and task.wait() do
-           task.spawn(function()
-                pcall(function()
-                   if CoreGui.FoundationOverlay then
-                   if CoreGui.FoundationOverlay.ProductPurchaseModal then 
-                   if CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer then
-                   if CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer.Sheet then 
-                   if CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer.Sheet.CloseAffordance then
-                   local CloseButtonFullName = CoreGui.FoundationOverlay.ProductPurchaseModal.SheetContainer.Sheet.CloseAffordance
-                   local CloseButtonPos = CloseButtonFullName.AbsolutePosition + (CloseButtonFullName.AbsoluteSize * 1.65) -  Vector2.new(10,-15)
-                   VirtualInputManager:SendMouseButtonEvent(CloseButtonPos.X,CloseButtonPos.Y,0,true,game,0)
-                   task.wait()
-                   VirtualInputManager:SendMouseButtonEvent(CloseButtonPos.X,CloseButtonPos.Y,0,false,game,0)
-                   end end end end end
-                end)
-           end)
-        end
-   end)   
-   
-   UGCLimiteds:Seperator()
-
-   UGCLimiteds:Toggle("Enable Auto Click Purchaser (PromptGui v2)",false,function(state)
-      local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
-      local CoreGui = cloneref(game:GetService("CoreGui"))
-      getgenv().Wevorn_AutoClickerPurchase = state
-      while getgenv().Wevorn_AutoClickerPurchase and task.wait() do
-            task.spawn(function()
-                 pcall(function()
-                    if CoreGui.PurchasePromptApp then
-                    if CoreGui.PurchasePromptApp.ProductPurchaseContainer then
-                    if CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator then
-                    if CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchaseModal then
-                    if CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchaseModal.AlertContents then
-                    if CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchaseModal.AlertContents.Footer then
-                    if CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchaseModal.AlertContents.Footer.Buttons then 
-                    if CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchaseModal.AlertContents.Footer.Buttons[1] then
-                    local SusButtonFullName = CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchaseModal.AlertContents.Footer.Buttons[1]
-                    local SusButtonPos = SusButtonFullName.AbsolutePosition + (SusButtonFullName.AbsolutePosition / 2.4)
-                    VirtualInputManager:SendMouseButtonEvent(SusButtonPos.X,SusButtonPos.Y,0,true,game,0)
-                    task.wait()
-                    VirtualInputManager:SendMouseButtonEvent(SusButtonPos.X,SusButtonPos.Y,0,false,game,0)
-                    end end end end end end end end 
-                 end)
-             end)
-        end
-   end)
-
-   UGCLimiteds:Toggle("Enable Auto Click Close Error (PromptGui v2)",false,function(state)
-     local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
-     local CoreGui = cloneref(game:GetService("CoreGui"))
-     getgenv().Wevorn_AutoClickerCloseErors = state
-     while getgenv().Wevorn_AutoClickerCloseErors and task.wait() do
-           task.spawn(function()
-                pcall(function()
-                   if CoreGui.PurchasePromptApp then
-                   if CoreGui.PurchasePromptApp.ProductPurchaseContainer then
-                   if CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator then
-                   if CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchasePrompt then
-                   if CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchasePrompt.AlertContents then
-                   if CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchasePrompt.AlertContents.Footer then
-                   if CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchasePrompt.AlertContents.Footer.Buttons then
-                   if CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchasePrompt.AlertContents.Footer.Buttons["1"] then
-                   local CloseErrorButton = cloneref(game:GetService("CoreGui")).PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchasePrompt.AlertContents.Footer.Buttons["1"]
-                   local CloseErrorButtonPos = CloseErrorButton.AbsolutePosition + (CloseErrorButton.AbsolutePosition / 2.4)
-                   VirtualInputManager:SendMouseButtonEvent(CloseErrorButtonPos.X,CloseErrorButtonPos.Y,0,true,game,0)
-                   task.wait()
-                   VirtualInputManager:SendMouseButtonEvent(CloseErrorButtonPos.X,CloseErrorButtonPos.Y,0,false,game,0)
-                   end end end end end end end end
-               end)
-          end)
-       end
-   end)
-
-   UGCLimiteds:Toggle("Enable Auto Close Prompt (PromptGui v2)",false,function(state)
-     local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
-     local CoreGui = cloneref(game:GetService("CoreGui"))
-     getgenv().Wevorn_AutoClickerClose = state
-     while getgenv().Wevorn_AutoClickerClose and task.wait() do
-           task.spawn(function()
-                pcall(function()
-                   if CoreGui.PurchasePromptApp then
-                   if CoreGui.PurchasePromptApp.ProductPurchaseContainer then 
-                   if CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator then
-                   if CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchaseModal then 
-                   if CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchaseModal.AlertContents then
-                   if CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchaseModal.AlertContents.TitleContainer then
-                   if CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchaseModal.AlertContents.TitleContainer.TitleArea then
-                   if CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchaseModal.AlertContents.TitleContainer.TitleArea.Title then
-                   if CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchaseModal.AlertContents.TitleContainer.TitleArea.Title.CloseButton then
-                   local CloseButtonFullName = CoreGui.PurchasePromptApp.ProductPurchaseContainer.Animator.ProductPurchaseModal.AlertContents.TitleContainer.TitleArea.Title.CloseButton
-                   local CloseButtonPos = CloseButtonFullName.AbsolutePosition + (CloseButtonFullName.AbsoluteSize * 1.65) -  Vector2.new(10,-15)
-                   VirtualInputManager:SendMouseButtonEvent(CloseButtonPos.X,CloseButtonPos.Y,0,true,game,0)
-                   task.wait()
-                   VirtualInputManager:SendMouseButtonEvent(CloseButtonPos.X,CloseButtonPos.Y,0,false,game,0)
-                   end end end end end end end end end
-                end)
-           end)
-        end
-   end)
-
    UGCLimiteds:Seperator()
 
    UGCLimiteds:Toggle("Enable Auto Signal True On PromptPurchase",false,function(state)
        if state then
-          Conn_2 = MarketplaceService.PromptPurchaseRequestedV2:Connect(function(_,Conn_Id_2)
-              MarketplaceService:SignalPromptPurchaseFinished(game.Players.LocalPlayer,Conn_Id_2,true)
+          Conn_2 = MarketplaceService.PromptPurchaseRequestedV2:Connect(function(_, Conn_Id_2)
+              MarketplaceService:SignalPromptPurchaseFinished(player, Conn_Id_2, true)
           end)
        else
            Conn_2:Disconnect()
@@ -850,7 +702,7 @@ if SettingsWevorn["UGC Limiteds"] then
    UGCLimiteds:Toggle("Enable Auto Signal False On PromptPurchase",false,function(state)
        if state then
           Conn_3 = MarketplaceService.PromptPurchaseRequestedV2:Connect(function(_,Conn_Id_2)
-              MarketplaceService:SignalPromptPurchaseFinished(game.Players.LocalPlayer,Conn_Id_2,false)
+              MarketplaceService:SignalPromptPurchaseFinished(player, Conn_Id_2, false)
           end)
        else
             Conn_3:Disconnect()
@@ -859,8 +711,8 @@ if SettingsWevorn["UGC Limiteds"] then
 
    UGCLimiteds:Toggle("Enable Auto Signal True On PromptBundlePurchase",false,function(state)
        if state then 
-          Conn_4 = MarketplaceService.PromptPurchaseRequestedV2:Connect(function(_,Conn_Id_3)
-              MarketplaceService:SignalPromptBundlePurchaseFinished(game.Players.LocalPlayer,Conn_Id_3,true)
+          Conn_4 = MarketplaceService.PromptPurchaseRequestedV2:Connect(function(_, Conn_Id_3)
+              MarketplaceService:SignalPromptBundlePurchaseFinished(player, Conn_Id_3, true)
           end)
        else
            Conn_4:Disconnect()
@@ -869,8 +721,8 @@ if SettingsWevorn["UGC Limiteds"] then
 
    UGCLimiteds:Toggle("Enable Auto Signal False On PromptBundlePurchase",false,function(state)
        if state then 
-          Conn_5 = MarketplaceService.PromptPurchaseRequestedV2:Connect(function(_,Conn_Id_4)
-              MarketplaceService:SignalPromptBundlePurchaseFinished(game.Players.LocalPlayer,Conn_Id_4,false)
+          Conn_5 = MarketplaceService.PromptPurchaseRequestedV2:Connect(function(_, Conn_Id_4)
+              MarketplaceService:SignalPromptBundlePurchaseFinished(player, Conn_Id_4, false)
           end)
        else
            Conn_5:Disconnect()
@@ -917,47 +769,47 @@ if SettingsWevorn["UGC Limiteds"] then
     local _SRC
     
     UGCLimiteds:Toggle("Auto Check Remaing Copies", false, function(state)
-        if not getgenv().Wevorn_StatusId_ and not getgenv().Wevorn_CheckCPR  then
-            discord:Notification("Error", "Enter a ugc id", "Okay")
-            return
-        end
-        getgenv().Wevorn_CheckCPR = state
-        while getgenv().Wevorn_CheckCPR and task.wait(1) do
-            local TCR = MarketplaceService:GetProductInfo(getgenv().Wevorn_StatusId_)
-            if TCR.IsLimited or TCR.IsLimitedUnique then
-                SRC = TCR.Remaining
-            else
-                 SRC = "nil"
-            end
-            pcall(function()
-                if getgenv().Wevorn_UPNOT then
-                    AutoCheckRemaingCopies:Change("Ramaing Copies – "..SRC)
-                    if not _SRC then
-                        _SRC = SRC
-                    end
-                    if SRC ~= _SRC then
-                        _SRC = SRC
-                        discord:Notification("Change Copies", "Remaining: "..SRC.."\nId: "..getgenv().Wevorn_StatusId_, "Okay")
-                    end
-                else
-                    AutoCheckRemaingCopies:Change("Ramaing Copies – "..SRC)
-                end
-            end)
+       if not getgenv().Wevorn_StatusId_ and not getgenv().Wevorn_CheckCPR  then
+          discord:Notification("Error", "Enter a ugc id", "Okay")
+          return
+      end
+      getgenv().Wevorn_CheckCPR = state
+      while getgenv().Wevorn_CheckCPR and task.wait(1) do
+          local TCR = MarketplaceService:GetProductInfo(getgenv().Wevorn_StatusId_)
+          if TCR.IsLimited or TCR.IsLimitedUnique then
+              SRC = TCR.Remaining
+          else
+             SRC = "nil"
+          end
+          pcall(function()
+              if getgenv().Wevorn_UPNOT then
+                  AutoCheckRemaingCopies:Change("Ramaing Copies – "..SRC)
+                  if not _SRC then
+                      _SRC = SRC
+                  end
+                  if SRC ~= _SRC then
+                      _SRC = SRC
+                      discord:Notification("Change Copies", "Remaining: "..SRC.."\nId: "..getgenv().Wevorn_StatusId_, "Okay")
+                  end
+              else
+                  AutoCheckRemaingCopies:Change("Ramaing Copies – "..SRC)
+              end
+          end)
         end
     end)
     
     UGCLimiteds:Toggle("Use Notifications", false, function(state)
-        getgenv().Wevorn_UPNOT = state
+       getgenv().Wevorn_UPNOT = state
     end)
 
     UGCLimiteds:Seperator()
 
     UGCLimiteds:Toggle("Open Console After Purchase",false,function(state)
-        getgenv().Wevorn_OpenConsole = state
+       getgenv().Wevorn_OpenConsole = state
     end)
 
     UGCLimiteds:Toggle("Auto Purchase Paid Items (For Below)",false,function(state)
-        getgenv().Wevorn_BuyPaidItems = state
+       getgenv().Wevorn_BuyPaidItems = state
     end)
       
     UGCLimiteds:Seperator()
@@ -1004,6 +856,7 @@ if SettingsWevorn["UGC Limiteds"] then
                                     VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
                              end 
                              local sus,eror = pcall(function()
+                                      setthreadidentity(7)
                                       MarketplaceService:PerformPurchase(PurchaseInfoType,PurchaseProductId,PurchasePrice,PurchaseRequestId,IsRobloxPurchase,PurchaseCollectibleItemId,PurchaseCollectibleProductId,IdempotencyKey,PurchaseAuthToken,timedOptionsDays)
                               end)
                               if not sus then 
@@ -1056,6 +909,7 @@ if SettingsWevorn["UGC Limiteds"] then
                                              task.wait(0.01)
                                              VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
                                       end
+                                      setthreadidentity(7)
                                       MarketplaceService:PerformPurchaseV2(InfoType,ProductId,Price,RequestId,IsRbxPurchase,collectiblesProductDetails)
                               end)
                       end)
@@ -1101,6 +955,7 @@ if SettingsWevorn["UGC Limiteds"] then
                                                VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
                                         end
                                         _Ye,_No = pcall(function()
+                                                setthreadidentity(7)
                                                 cloneref(game:GetService("HttpRbxApiService")):GetAsyncFullUrl(PurchaseLink,Enum.HttpContentType.ApplicationJson,false,{},JsonData)
                                         end)
                                 end
@@ -1133,6 +988,7 @@ if SettingsWevorn["UGC Limiteds"] then
                                task.wait(0.01)
                                VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
                        end
+                               setthreadidentity(7)
                                MarketplaceService:PerformBulkPurchase(PurchaseOrderQuest,PurchasOptions)
                        end)
                else
@@ -2796,32 +2652,32 @@ getgenv().Wevorn_Your_Getgenv = nil
 getgenv().Wevorn_New_Getgenv  = nil
 
 ENSection:Dropdown("Select _G object", _GTable2, function(Y_G)
-getgenv().Wevorn_Your_G = Y_G
+  getgenv().Wevorn_Your_G = Y_G
 end)
 
 ENSection:Textbox("Enter a New Value In _G Object", "New Value", false, function(New_G_Value)
-getgenv().Wevorn_New_G = New_G_Value
+  getgenv().Wevorn_New_G = New_G_Value
 end)
 
 ENSection:Button("Check Value In This _G Object", function()
-if getgenv().Wevorn_Your_G then 
-discord:Notification("Success", "Value in This _G object is '"..tostring(_G[getgenv().Wevorn_Your_G]).."'", "Okay")
-else
-discord:Notification("Error", "Select _G object", "Okay")
-end
+  if getgenv().Wevorn_Your_G then 
+      discord:Notification("Success", "Value in This _G object is '"..tostring(_G[getgenv().Wevorn_Your_G]).."'", "Okay")
+   else
+      discord:Notification("Error", "Select _G object", "Okay")
+   end
 end)
 
 ENSection:Button("Change Value In This _G Object", function()
-if not getgenv().Wevorn_Your_G then 
-discord:Notification("Error", "Select _G Object", "Okay")
-return
-end
-if not getgenv().Wevorn_New_G then 
-discord:Notification("Error", "Enter a new value In _G Object", "Okay")
-return
-end
-_G[getgenv().Wevorn_Your_G] = getgenv().Wevorn_New_G
-discord:Notification("Success", "Success change Value In _G Object", "Okay")
+   if not getgenv().Wevorn_Your_G then 
+      discord:Notification("Error", "Select _G Object", "Okay")
+      return
+   end
+   if not getgenv().Wevorn_New_G then 
+      discord:Notification("Error", "Enter a new value In _G Object", "Okay")
+      return
+   end
+   _G[getgenv().Wevorn_Your_G] = getgenv().Wevorn_New_G
+   discord:Notification("Success", "Success change Value In _G Object", "Okay")
 end)
 
 ENSection:Button("Change Value In All _G Objects", function()
@@ -5446,7 +5302,7 @@ discord:Notification("Success!","Success used SignalPromptBulkPurchaseFinished",
 end)
 end
 
-if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 15108736400) then
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 15108736400) then
    local FlexSection = serv:Channel("Flex UGC Codes")
    FlexSection:Label("You can snipe ugc time code in this game")
 
@@ -5521,7 +5377,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 15108736400) t
    end)
 end
 
-if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 14236123211) then
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 14236123211) then
    local PunchSection = serv:Channel("Punch Simulator")
    
    getgenv().Wevorn_AutoTrain = false
@@ -5826,7 +5682,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 14236123211) t
    end)
 end
 
-if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 91957280129749) then
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 91957280129749) then
    local ObbySchooterSection = serv:Channel("Obby But On Shooter")
    getgenv().Wevorn_AutoGifts = false
    getgenv().AutoSpinWheel = state
@@ -5898,7 +5754,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 91957280129749
    ObbySchooterSection:Label("The section was created at the suggestion of player proaidas78")
 end
 
-if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 131774425311876) then
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 131774425311876) then
    local PlayForUGCSection = serv:Channel("Jade For UGC")
    
    getgenv().Wevorn_AutoSpin = false
@@ -5954,7 +5810,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 13177442531187
    end)
 end
 
-if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 78411673022692) then
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 78411673022692) then
    local _5_Section = serv:Channel("Пятёрочка")
    _5_Section:Seperator()
    
@@ -5994,7 +5850,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 78411673022692
    end)
 end
 
-if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 108903312165288) then
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 108903312165288) then
    local SleepSection = serv:Channel("Sleep For UGC")
    getgenv().Wevorn_AutoFarmCoin = false
    getgenv().Wevorn_Target_Coin = nil
@@ -6038,7 +5894,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 10890331216528
    SleepSection:Label("The section was created at the suggestion of player rhenz_tyzy")
 end
 
-if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 123571290918498) then
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 123571290918498) then
    local InboxBrainrotSection = serv:Channel("Inbox Brainrot Shop")
    
    getgenv().Wevorn_FreeLostMachine = false
@@ -6096,7 +5952,7 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 12357129091849
    end)
 end
 
-if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 80692223709267) then
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 80692223709267) then
    local ObbyForFreeUGCSection = serv:Channel("Obby For Free UGC")
    getgenv().Wevorn_AutoObby = false
    
@@ -6132,9 +5988,64 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId and PlaceId == 80692223709267
    ObbyForFreeUGCSection:Label("The section was created at the suggestion of player jdgbdfs")
 end
 
-if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~= 15108736400 and PlaceId ~= 91957280129749 and PlaceId ~= 131774425311876 and PlaceId ~= 78411673022692 and PlaceId ~= 108903312165288 and PlaceId ~= 123571290918498 and PlaceId ~= 80692223709267) then
-   local GameListSection = serv:Channel("UGC Game Scripts")
-   GameListSection:Label("Wevorn Also Supported Another UGC Games.")
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 83343070132643) then
+   local RollForFreeUGCSection = serv:Channel("Roll For Free UGC")
+   getgenv().Wevorn_AutoRoll = false
+   getgenv().Wevorn_AutoGifts = false
+   getgenv().Wevorn_AutoDailyGifts = false
+   
+   RollForFreeUGCSection:Toggle("Auto Roll", false, function(state)
+      getgenv().Wevorn_AutoRoll = state
+      while getgenv().Wevorn_AutoRoll and task.wait() do
+         ReplicatedStorage.Remotes.Rolls.Roll_Event:FireServer()
+      end
+   end)
+   
+   RollForFreeUGCSection:Toggle("Auto Gifts", false, function(state)
+      getgenv().Wevorn_AutoGifts = state
+      while getgenv().Wevorn_AutoGifts and task.wait(10) do
+         for i = 1, 12 do 
+            ReplicatedStorage.Remotes.UiEvents.ClaimPlayTimeReward:InvokeServer(i)
+         end
+      end
+   end)
+   
+   RollForFreeUGCSection:Toggle("Auto Daily Gifts", false, function(state)
+      getgenv().Wevorn_AutoDailyGifts = state
+      while getgenv().Wevorn_AutoDailyGifts and task.wait() do
+         for i = 1, 10 do 
+            ReplicatedStorage.Remotes.UiEvents.ClaimDaily:FireServer(i, false)
+         end
+      end
+   end)
+   RollForFreeUGCSection:Label("The section was created at the suggestion of player MooNzz320")
+end
+
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 14019433109) then
+   local FreeUGCObbySection = serv:Channel("Free UGC Obby")
+   getgenv().Wevorn_AutoObby = false
+   
+   FreeUGCObbySection:Toggle("Auto Obby", false, function(state)
+      getgenv().Wevorn_AutoObby = state
+      while getgenv().Wevorn_AutoObby and task.wait() do
+         if player.leaderstats.Stage.Value == 77 then 
+            return 
+         end
+         player.Character:PivotTo(workspace.Checkpoints[player.leaderstats.Stage.Value + 1]:GetPivot())
+      end
+   end)
+end
+
+if SettingsWevorn["Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~= 15108736400 and PlaceId ~= 91957280129749 and PlaceId ~= 131774425311876 and PlaceId ~= 78411673022692 and PlaceId ~= 108903312165288 and PlaceId ~= 123571290918498 and PlaceId ~= 80692223709267 and PlaceId ~= 83343070132643 and PlaceId ~= 14019433109) then
+   local GameListSection = serv:Channel("Game Scripts")
+   GameListSection:Label("Wevorn Also Supported Another Games.")
+    
+   GameListSection:Label("Scripts For Games")
+   GameListSection:Label("Coming Soon...")
+   
+   GameListSection:Seperator()
+   
+   GameListSection:Label("Scripts For UGC Games")
    
    GameListSection:Button("Punch Simulator", function()
       TeleportService:Teleport(14236123211, player)
@@ -6176,11 +6087,21 @@ if SettingsWevorn["UGC Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~=
       discord:Notification("Teleport...", "Teleport to Obby For Free UGC", "Okay")
    end)
    
+   GameListSection:Button("Roll For Free UGC", function()
+      TeleportService:Teleport(83343070132643, player)
+      discord:Notification("Teleport...", "Teleport to Roll For Free UGC", "Okay")
+   end)
+   
+   GameListSection:Button("Free UGC Obby (AFK or Game)", function()
+      TeleportService:Teleport(14019433109, player)
+      discord:Notification("Teleport...", "Teleport to Free UGC Obby (AFK or Game)", "Okay")
+   end)
+   
    GameListSection:Label("More Games Added Soon...")
    
    GameListSection:Seperator()
 
-   GameListSection:Textbox("Do you want to offer a game? Write it here (only FREE UGC Games)", "Enter Game Name Here...", false, function(IdkGame)
+   GameListSection:Textbox("Do you want to offer a game? Write it here", "Enter Game Name Here...", false, function(IdkGame)
       getgenv().Wevorn_Feedback = tostring(IdkGame)
    end)
    
