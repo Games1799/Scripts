@@ -320,7 +320,7 @@ pcall(function() -- Credit: Infinite Yeald (Dex Explorer)
 end)
 
 local discord = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
-local win = discord:Window("Wevorn v1.9.2 [ScriptHub v2] [Last Update: 28.07.2026]")
+local win = discord:Window("Wevorn v1.9.2 [ScriptHub v2] [Last Update: 29.07.2026]")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
 local SettingsSection = serv2:Channel("???")
