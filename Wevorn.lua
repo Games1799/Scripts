@@ -7,6 +7,7 @@
  ░╚═════╝░╚═╝░░╚═╝╚═╝░░░░░╚═╝╚══════╝╚═════╝░
 ]]--
 
+--!strict
 local LoadTime = tick()
 local player = game.Players.LocalPlayer
 local LocalUserId = player.UserId or nil
@@ -81,8 +82,8 @@ local DevProductsIds = {}
 local GamePassNames = {}
 local DevProductsNames = {}
 
-local cloneref = cloneref or clone_ref or clonereference or clone_reference or (cache and cache.cloneref) or function(a) -- Fake cloneref 
-   return a
+local cloneref = cloneref or clone_ref or clonereference or clone_reference or (cache and cache.cloneref) or function<T>(Instance: T): T 
+   return Instance
 end
 
 local MarketplaceService  = cloneref(game:GetService("MarketplaceService"))
@@ -164,19 +165,19 @@ if not isfile and readfile then
 end
 
 if firesignal and not fireproximityprompt then
-   fireproximityprompt = function(prompt)
+   fireproximityprompt = function(prompt: ProximityPrompt): nil
       firesignal(prompt.Triggered)
    end
 end
 
 if firesignal and not fireclickdetector then
-   fireclickdetector = function(Detector)
+   fireclickdetector = function(Detector: ClickDetector): nil
       firesignal(Detector.MouseClick)
    end
 end
 
 if firesignal and not firetouchinterest then
-   firetouchinterest = function(part1, part2, toggle)
+   firetouchinterest = function(part1: BasePart, part2: BasePart, toggle: number): nil
       if toggle == 1 then
          firesignal(part1.Touched, part2)
       else
@@ -186,10 +187,10 @@ if firesignal and not firetouchinterest then
 end
 
 local Fake = false
-pcall(function() -- for weak executors 
+pcall(function() 
    if type(getgenv) ~= "function" then
       Fake = true
-      function getgenv() -- Fake getgenv
+      function getgenv(): table -- Fake getgenv
          return _G
       end
    end
@@ -319,7 +320,7 @@ pcall(function() -- Credit: Infinite Yeald (Dex Explorer)
 end)
 
 local discord = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
-local win = discord:Window("Wevorn v1.9.1 [ScriptHub v1] [Last Update: 23.07.2026]")
+local win = discord:Window("Wevorn v1.9.2 [ScriptHub v2] [Last Update: 28.07.2026]")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
 local SettingsSection = serv2:Channel("???")
@@ -329,8 +330,10 @@ if SettingsWevorn["Change Log"] then
    local changelog = serv:Channel("Change Log")
    changelog:Label("Welcome to Wevorn! \nThis script was created by Games1799")
    changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.9!")
-   changelog:Label("Added Section For Free UGC Obby (AFK or Game) Game")
-   changelog:Label("Added Section For Roll For Free UGC Game")
+   changelog:Label("Added Section For Slap Tower 2 Game")
+   changelog:Label("Added Section Titan Train Simulator Game")
+   changelog:Label("Added Section Jump For UGC Game")
+   changelog:Label("Added Cobalt [Working Saved Version] In Section Scripts")
    changelog:Label("Bug Fixes")
    changelog:Seperator()
 end
@@ -433,7 +436,7 @@ if SettingsWevorn["Scripts"] then
    
    local GetRandomString
    pcall(function()
-       GetRandomString = function()
+       GetRandomString = function(): string
           local s = ""
           for i = 2, 25 do
               s = s .. string.char(math.random(1,250))
@@ -561,6 +564,14 @@ if SettingsWevorn["Scripts"] then
          loadstring(game:HttpGet("https://raw.githubusercontent.com/InfernusScripts/Ketamine/refs/heads/main/Ketamine.lua"))()
       else
          setclipboard('loadstring(game:HttpGet("https://raw.githubusercontent.com/InfernusScripts/Ketamine/refs/heads/main/Ketamine.lua"))()')
+      end
+   end)
+   
+   Scripts:Button("Cobalt [Working Saved Version]", function()
+      if not getgenv().Wevorn_CopyScriptToggle then
+         loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/Cobalt.lua"))()
+      else
+         setclipboard('loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/Cobalt.lua"))()')
       end
    end)
 
@@ -6036,12 +6047,143 @@ if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 14019433109) then
    end)
 end
 
-if SettingsWevorn["Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~= 15108736400 and PlaceId ~= 91957280129749 and PlaceId ~= 131774425311876 and PlaceId ~= 78411673022692 and PlaceId ~= 108903312165288 and PlaceId ~= 123571290918498 and PlaceId ~= 80692223709267 and PlaceId ~= 83343070132643 and PlaceId ~= 14019433109) then
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 79089892790758) then
+   local Slap2Section = serv:Channel("Slap Tower 2")
+   Slap2Section:Seperator()
+   
+   Slap2Section:Button("Teleport To The End", function()
+      game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(-10.124056, 353.999908, 308.816254)))
+   end)
+   
+   Slap2Section:Label("lol idk what else can you do in this game besides teleport to the end :/")
+   Slap2Section:Seperator()
+   Slap2Section:Label("The section was created at the suggestion of player Frost_emas40")
+end
+
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 18213102218) then
+   local TitanTrainSection = serv:Channel("Titan Train Simulator")
+   
+   getgenv().Wevorn_AutoTrain = false
+   getgenv().Wevorn_AutoGifts = false
+   getgenv().Wevorn_AutoRebirth = false
+   getgenv().Wevorn_AutoAttack = false
+   getgenv().Wevorn_AutoSkillAttack = false
+   getgenv().Wevorn_AutoDailyGifts = false
+   
+   TitanTrainSection:Toggle("Auto Train", false, function(state)
+      getgenv().Wevorn_AutoTrain = state
+      while getgenv().Wevorn_AutoTrain and task.wait() do
+         ReplicatedStorage.Packages["_Index"]["sleitnick_knit@1.5.1"].knit.Services.TrainService.RE.Train:FireServer()
+      end
+   end)
+   
+   TitanTrainSection:Toggle("Auto Gifts", false, function(state)
+      getgenv().Wevorn_AutoGifts = state
+      while getgenv().Wevorn_AutoGifts and task.wait(60) do
+         for i = 1, 12 do
+            ReplicatedStorage.Packages["_Index"]["sleitnick_knit@1.5.1"].knit.Services.OnlineRewardService.RE.ClaimOnlineReward:FireServer(i)
+         end
+      end
+   end)
+   
+   TitanTrainSection:Toggle("Auto Rebirth", false, function(state)
+      getgenv().Wevorn_AutoRebirth = state
+      while getgenv().Wevorn_AutoRebirth and task.wait(1) do
+         ReplicatedStorage.Packages["_Index"]["sleitnick_knit@1.5.1"].knit.Services.RebirthService.RF.Rebirth:InvokeServer()
+      end
+   end)
+   
+   TitanTrainSection:Toggle("Auto Attack", false, function(state)
+      getgenv().Wevorn_AutoAttack = state
+      while getgenv().Wevorn_AutoAttack and task.wait() do
+         ReplicatedStorage.Packages["_Index"]["sleitnick_knit@1.5.1"].knit.Services.FightService.RE.Attack:FireServer()
+      end
+   end)
+   
+   TitanTrainSection:Toggle("Auto Skill Attack", false, function(state)
+      getgenv().Wevorn_AutoSkillAttack = state
+      while getgenv().Wevorn_AutoSkillAttack and task.wait() do
+         ReplicatedStorage.Packages["_Index"]["sleitnick_knit@1.5.1"].knit.Services.FightService.RE.SkillAttack:FireServer()
+      end
+   end)
+   
+   TitanTrainSection:Toggle("Auto Skill Attack", false, function(state)
+      getgenv().Wevorn_AutoDailyGifts = state
+      while getgenv().Wevorn_AutoDailyGifts and task.wait(1000) do
+         for i = 1, 7 do
+            ReplicatedStorage.Packages["_Index"]["sleitnick_knit@1.5.1"].knit.Services.DailyRewardService.RE.ClaimDailyReward:FireServer(i)
+         end
+      end
+   end)
+   
+   TitanTrainSection:Seperator()
+   TitanTrainSection:Label("The section was created at the suggestion of player io_33391")
+end
+
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 100422722440654) then
+   local JumpUGCSection = serv:Channel("Jump For UGC")
+   
+   getgenv().Wevorn_AutoJump = false
+   getgenv().Wevorn_AutoGifts = false
+   getgenv().Wevorn_AutoDailyGifts = false
+   
+   JumpUGCSection:Toggle("Auto Jump", false, function(state)
+      getgenv().Wevorn_AutoJump = state
+      while getgenv().Wevorn_AutoJump and task.wait(0.05) do
+         local Character = player.Character or player.CharacterAdded:Wait() 
+         local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+         Humanoid.Jump = true
+         task.wait()
+         Humanoid.Jump = false
+      end
+   end)
+   
+   JumpUGCSection:Toggle("Auto Gifts", false, function(state)
+      getgenv().Wevorn_AutoGifts = state
+      while getgenv().Wevorn_AutoGifts and task.wait(10) do
+         ReplicatedStorage.RemoteEvents.ClaimPlayTimeReward:FireServer()
+      end
+   end)
+   
+   JumpUGCSection:Toggle("Auto Daily Gifts", false, function(state)
+      getgenv().Wevorn_AutoDailyGifts = state
+      while getgenv().Wevorn_AutoDailyGifts and task.wait(100) do
+         ReplicatedStorage.RemoteEvents.ClaimDailyReward:FireServer()
+      end
+   end)
+end
+
+local GameList = {
+   [1] = 14236123211,
+   [2] = 15108736400,
+   [3] = 91957280129749, 
+   [4] = 131774425311876,
+   [5] = 78411673022692,
+   [6] = 108903312165288,
+   [7] = 123571290918498,
+   [8] = 80692223709267,
+   [9] = 83343070132643,
+   [10] = 14019433109,
+   [11] = 79089892790758,
+   [12] = 18213102218,
+   [13] = 100422722440654,
+}
+
+if SettingsWevorn["Game Scripts"] and not table.find(GameList, PlaceId) then
    local GameListSection = serv:Channel("Game Scripts")
    GameListSection:Label("Wevorn Also Supported Another Games.")
     
    GameListSection:Label("Scripts For Games")
-   GameListSection:Label("Coming Soon...")
+   
+   GameListSection:Button("Slap Tower 2", function()
+      TeleportService:Teleport(79089892790758, player)
+      discord:Notification("Teleport...", "Teleport to Slap Tower 2", "Okay")
+   end)
+   
+   GameListSection:Button("Titan Train Simulator", function()
+      TeleportService:Teleport(18213102218, player)
+      discord:Notification("Teleport...", "Teleport to Titan Train Simulator", "Okay")
+   end)
    
    GameListSection:Seperator()
    
@@ -6095,6 +6237,11 @@ if SettingsWevorn["Game Scripts"] and (PlaceId ~= 14236123211 and PlaceId ~= 151
    GameListSection:Button("Free UGC Obby (AFK or Game)", function()
       TeleportService:Teleport(14019433109, player)
       discord:Notification("Teleport...", "Teleport to Free UGC Obby (AFK or Game)", "Okay")
+   end)
+   
+   GameListSection:Button("Jump For UGC", function()
+      TeleportService:Teleport(100422722440654, player)
+      discord:Notification("Teleport...", "Teleport to Jump For UGC", "Okay")
    end)
    
    GameListSection:Label("More Games Added Soon...")
