@@ -320,7 +320,7 @@ pcall(function() -- Credit: Infinite Yeald (Dex Explorer)
 end)
 
 local discord = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
-local win = discord:Window("Wevorn v1.9.2 [ScriptHub v2] [Last Update: 29.07.2026]")
+local win = discord:Window("Wevorn v1.9.3 [ScriptHub v3] [Last Update: 30.07.2026]")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
 local SettingsSection = serv2:Channel("???")
@@ -329,11 +329,12 @@ SettingsSection:Label("Soon...")
 if SettingsWevorn["Change Log"] then
    local changelog = serv:Channel("Change Log")
    changelog:Label("Welcome to Wevorn! \nThis script was created by Games1799")
-   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.9!")
-   changelog:Label("Added Section For Slap Tower 2 Game")
-   changelog:Label("Added Section Titan Train Simulator Game")
-   changelog:Label("Added Section Jump For UGC Game")
-   changelog:Label("Added Cobalt [Working Saved Version] In Section Scripts")
+   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.9.3!")
+   changelog:Label("Added Section For Ninja Legends Game")
+   changelog:Label("Added Section For +1 Squat Per Click Game")
+   changelog:Label("Added Section For +1 Aura Per Click Game")
+   changelog:Label("Added Section For Gem Collectors X Game")
+   changelog:Label("Fixed Cobalt Script")
    changelog:Label("Bug Fixes")
    changelog:Seperator()
 end
@@ -567,11 +568,11 @@ if SettingsWevorn["Scripts"] then
       end
    end)
    
-   Scripts:Button("Cobalt [Working Saved Version]", function()
+   Scripts:Button("Cobalt", function()
       if not getgenv().Wevorn_CopyScriptToggle then
-         loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/Cobalt.lua"))()
+         loadstring(game:HttpGet("https://gitlab.com/upio/cobalt/-/releases/permalink/latest/downloads/Cobalt.luau"))()
       else
-         setclipboard('loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/Cobalt.lua"))()')
+         setclipboard('loadstring(game:HttpGet("https://gitlab.com/upio/cobalt/-/releases/permalink/latest/downloads/Cobalt.luau"))()')
       end
    end)
 
@@ -6153,6 +6154,226 @@ if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 100422722440654) t
    end)
 end
 
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 3956818381) then
+   local NinjaSection = serv:Channel("Ninja Legends")
+   
+   getgenv().Wevorn_AutoTrain = false
+   getgenv().Wevorn_AutoCoins = false
+   getgenv().Wevorn_AutoSale = false
+   getgenv().Wevorn_AutoChi = false
+   
+   NinjaSection:Toggle("Auto Train", false, function(state)
+      getgenv().Wevorn_AutoTrain = state
+      while getgenv().Wevorn_AutoTrain and task.wait(0.1) do
+         player.ninjaEvent:FireServer("swingKatana")
+      end
+   end)
+   
+   NinjaSection:Toggle("Auto Sale", false, function(state)
+      getgenv().Wevorn_AutoSale = state
+      while getgenv().Wevorn_AutoSale and task.wait(1) do
+         if not firetouchinterest then
+            discord:Notification("Error", "Function firetouchinterest Is Missing On Your Executor", "Okay")
+            return
+         end
+         local LabelText = player.PlayerGui.gameGui.currencyFrame.strengthFrame.amountLabel.shadow.Text
+         local a, b = LabelText:match("([^/]+)/([^/]+)")
+         if a == b then
+            local character = player.Character or player.CharacterAdded:Wait()
+            firetouchinterest(character.HumanoidRootPart, workspace.sellAreaCircles.sellAreaCircle.circleInner, 1)
+            firetouchinterest(character.HumanoidRootPart, workspace.sellAreaCircles.sellAreaCircle.circleInner, 0)
+         end
+      end
+   end)
+   
+   NinjaSection:Toggle("Auto Coins", false, function(state)
+      getgenv().Wevorn_AutoCoins = state
+      while getgenv().Wevorn_AutoCoins do
+         for _, v in ipairs(workspace.spawnedCoins.Valley:GetChildren()) do
+            if not getgenv().Wevorn_AutoCoins then
+               break
+            end
+            if string.find(v.Name:lower(), "coin") then
+               local character = player.Character or player.CharacterAdded:Wait()
+               character:PivotTo(v:GetPivot())
+            end
+            if not getgenv().Wevorn_AutoCoins then
+               break
+            end
+            task.wait(0.1)
+         end
+         task.wait(0.1)
+      end
+   end)
+   
+   NinjaSection:Toggle("Auto Chi", false, function(state)
+      getgenv().Wevorn_AutoChi = state
+      while getgenv().Wevorn_AutoChi do
+         for _, v in ipairs(workspace.spawnedCoins.Valley:GetChildren()) do
+            if not getgenv().Wevorn_AutoChi then
+               break
+            end
+            if string.find(v.Name:lower(), "chi") then
+               local character = player.Character or player.CharacterAdded:Wait()
+               character:PivotTo(v:GetPivot())
+            end
+            if not getgenv().Wevorn_AutoChi then
+               break
+            end
+            task.wait(0.1)
+         end
+         task.wait(0.1)
+      end
+   end)
+   
+   NinjaSection:Seperator()
+   NinjaSection:Label("The section was created at the suggestion of player Joaojpjs")
+end
+
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 111443342186554) then
+   local SquatPerClickSection = serv:Channel("+1 Squat Per Click")
+   
+   getgenv().Wevorn_AutoTrain = false
+   getgenv().Wevorn_AutoAttack = false
+   getgenv().Wevorn_AutoRebirth = false
+   
+   SquatPerClickSection:Toggle("Auto Train", false, function(state)
+      getgenv().Wevorn_AutoTrain = state
+      while getgenv().Wevorn_AutoTrain and task.wait() do
+         ReplicatedStorage.Remotes.Squat:FireServer()
+      end
+   end)
+   
+   SquatPerClickSection:Toggle("Auto Attack", false, function(state)
+      getgenv().Wevorn_AutoAttack = state
+      while getgenv().Wevorn_AutoAttack and task.wait() do
+         ReplicatedStorage.Remotes.DamageEnemy:FireServer()
+      end
+   end)
+   
+   SquatPerClickSection:Toggle("Auto Rebirth", false, function(state)
+      getgenv().Wevorn_AutoRebirth = state
+      while getgenv().Wevorn_AutoRebirth and task.wait(10) do
+         ReplicatedStorage.Remotes.Rebirth:FireServer()
+      end
+   end)
+   
+   SquatPerClickSection:Seperator()
+   SquatPerClickSection:Label("The section was created at the suggestion of player zaki654982")
+end
+
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 137377743665607) then
+   local GemCollectorXSection = serv:Channel("Gem Collectors X")
+   
+   getgenv().Wevorn_AutoClick = false
+   getgenv().Wevorn_AutoRebirth = false
+   getgenv().Wevorn_AutoGifts = false
+   getgenv().Wevorn_AutoSpin = false
+   
+   GemCollectorXSection:Toggle("Auto Click", false, function(state)
+      getgenv().Wevorn_AutoClick = state
+      while getgenv().Wevorn_AutoClick and task.wait() do
+         ReplicatedStorage.Events.Click:FireServer()
+      end
+   end)
+   
+   GemCollectorXSection:Toggle("Auto Gifts", false, function(state)
+      getgenv().Wevorn_AutoGifts = state
+      while getgenv().Wevorn_AutoRebirth and task.wait(10) do
+         for i = 1, 9 do
+            ReplicatedStorage.Events.CollectDailyReward:FireServer("Reward"..tostring(i))
+         end
+      end
+   end)
+   
+   GemCollectorXSection:Toggle("Auto Daily Gifts", false, function(state)
+      getgenv().Wevorn_AutoDailyGifts = state
+      while getgenv().Wevorn_AutoDailyGifts and task.wait(120) do
+         ReplicatedStorage.Events.DailyRewardClaimV2:FireServer()
+      end
+   end)
+   
+   GemCollectorXSection:Toggle("Auto Spin", false, function(state)
+      getgenv().Wevorn_AutoSpin = state
+      while getgenv().Wevorn_AutoSpin and task.wait(10) do
+         ReplicatedStorage.Functions.Spin:InvokeServer()
+      end
+   end)
+   
+   GemCollectorXSection:Seperator()
+   
+   local UpTable = {}
+   pcall(function()
+      for _, v in ipairs(player.PlayerGui.SpawnUpgrades.Frames.Upgrades.ScrollingFrame:GetChildren()) do
+         if v:IsA("Frame") and v:FindFirstChild("PurchaseButton") then
+            table.insert(UpTable, v.Name)
+         end
+      end
+      
+      for _, v in pairs(UpTable) do
+         getgenv()["Wevorn_"..v] = false 
+         GemCollectorXSection :Toggle("Auto Upgrade "..tostring(v), false, function(state)
+            getgenv()["Wevorn_"..v] = state
+            while getgenv()["Wevorn_"..v] and task.wait(1) do
+               ReplicatedStorage.Functions.PurchaseUpgrade:InvokeServer("Spawn", tostring(v))
+            end
+         end)
+      end
+   end)
+   
+   GemCollectorXSection:Seperator()
+   GemCollectorXSection:Label("The section was created at the suggestion of player wow_sos51")
+end
+
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 121956648506820 or PlaceId == 109509029034984 or PlaceId == 100807904956772 or PlaceId == 109148775424160) then
+   local AuraPerClickSection = serv:Channel("+1 Aura Per Click")
+   
+   getgenv().Wevorn_AutoTrain = false 
+   getgenv().Wevorn_AutoSpin = false 
+   getgenv().Wevorn_AutoWin = false
+   getgenv().Wevorn_AutoRebirth = false
+   
+   AuraPerClickSection:Toggle("Auto Train", false, function(state)
+      getgenv().Wevorn_AutoTrain = false
+      while getgenv().Wevorn_AutoTrain and task.wait() do
+         ReplicatedStorage.Remotes.AuraRunnerTrainClick:FireServer({})
+      end
+   end)
+   
+   AuraPerClickSection:Toggle("Auto Spin", false, function(state)
+      getgenv().Wevorn_AutoSpin = false
+      while getgenv().Wevorn_AutoSpin and task.wait(10) do
+         ReplicatedStorage.SpinWheel.ClaimReward:FireServer()
+      end
+   end)
+   
+   AuraPerClickSection:Toggle("Auto Win", false, function(state)
+      getgenv().Wevorn_AutoWin = state
+      while getgenv().Wevorn_AutoWin and task.wait() do
+         local Character = player.Character or player.CharacterAdded:Wait()
+         if PlaceId == 109509029034984 then
+            Character:PivotTo(CFrame.new(Vector3.new(-3484.230957, 52.376247, -18.979925)))
+         elseif PlaceId == 100807904956772 then
+            Character:PivotTo(CFrame.new(Vector3.new(-2873.106445, 23.034651, -1020.065857)))
+         elseif PlaceId == 121956648506820 then
+            Character:PivotTo(CFrame.new(Vector3.new(-2163.135498, 62.842934, -17.982378)))
+         elseif PlaceId == 10827562832 then
+            Character:PivotTo(CFrame.new(Vector3.new(-1466.491089, 52.344490, -18.288399)))
+         end
+      end
+   end)
+   
+   AuraPerClickSection:Toggle("Auto Rebirth", false, function(state)
+      getgenv().Wevorn_AutoRebirth = false
+      while getgenv().Wevorn_AutoRebirth and task.wait(1) do
+         ReplicatedStorage.Remotes.AuraRunnerRebirth:InvokeServer({})
+      end
+   end)
+   
+   AuraPerClickSection:Seperator()
+   AuraPerClickSection:Label("The section was created at the suggestion of player ardok0912")
+end
+
 local GameList = {
    [1] = 14236123211,
    [2] = 15108736400,
@@ -6167,6 +6388,13 @@ local GameList = {
    [11] = 79089892790758,
    [12] = 18213102218,
    [13] = 100422722440654,
+   [14] = 3956818381,
+   [15] = 111443342186554,
+   [16] = 137377743665607,
+   [17] = 109509029034984, -- Original  
+   [18] = 100807904956772, -- Sub 1
+   [19] = 121956648506820,-- Sub 2
+   [20] = 10827562832, -- Sub 3
 }
 
 if SettingsWevorn["Game Scripts"] and not table.find(GameList, PlaceId) then
@@ -6174,6 +6402,26 @@ if SettingsWevorn["Game Scripts"] and not table.find(GameList, PlaceId) then
    GameListSection:Label("Wevorn Also Supported Another Games.")
     
    GameListSection:Label("Scripts For Games")
+  
+  GameListSection:Button("+1 Aura Per Click", function()
+      TeleportService:Teleport(109509029034984, player)
+      discord:Notification("Teleport...", "Teleport to +1 Aura Per Click", "Okay")
+   end)
+   
+  GameListSection:Button("Gem Collectors X", function()
+      TeleportService:Teleport(137377743665607, player)
+      discord:Notification("Teleport...", "Teleport to Gem Collectors X", "Okay")
+   end)
+  
+   GameListSection:Button("+1 Squat Per Click", function()
+      TeleportService:Teleport(111443342186554, player)
+      discord:Notification("Teleport...", "Teleport to +1 Squat Per Click", "Okay")
+   end)
+   
+   GameListSection:Button("Ninja Legends", function()
+      TeleportService:Teleport(3956818381, player)
+      discord:Notification("Teleport...", "Teleport to Ninja Legends", "Okay")
+   end)
    
    GameListSection:Button("Slap Tower 2", function()
       TeleportService:Teleport(79089892790758, player)
