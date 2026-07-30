@@ -320,7 +320,7 @@ pcall(function() -- Credit: Infinite Yeald (Dex Explorer)
 end)
 
 local discord = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
-local win = discord:Window("Wevorn v1.9.3 [ScriptHub v3] [Last Update: 30.07.2026]")
+local win = discord:Window("Wevorn v1.9.3 [ScriptHub v4] [Last Update: 30.07.2026]")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
 local SettingsSection = serv2:Channel("???")
@@ -330,13 +330,15 @@ if SettingsWevorn["Change Log"] then
    local changelog = serv:Channel("Change Log")
    changelog:Label("Welcome to Wevorn! \nThis script was created by Games1799")
    changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.9.3!")
-   changelog:Label("Added Section For Ninja Legends Game")
-   changelog:Label("Added Section For +1 Squat Per Click Game")
-   changelog:Label("Added Section For +1 Aura Per Click Game")
-   changelog:Label("Added Section For Gem Collectors X Game")
    changelog:Label("Fixed Cobalt Script")
    changelog:Label("Bug Fixes")
    changelog:Seperator()
+   changelog:Label("Released! ScriptHub v4!")
+   changelog:Label("Added Section For Legends Of Speed Game")
+   changelog:Seperator()
+   changelog:Button("Wevorn Discord Server", function()
+      setclipboard("https://discord.gg/RkgueDdGJ")
+   end)
 end
 
 if SettingsWevorn["Home"] then
@@ -427,6 +429,10 @@ if SettingsWevorn["Home"] then
        else
           T_C:Disconnect()
        end
+    end)
+    Home:Seperator() 
+    Home:Button("Wevorn Discord Server", function()
+       setclipboard("https://discord.gg/RkgueDdGJ")
     end)
     Home:Seperator() 
 end
@@ -1930,18 +1936,18 @@ if SettingsWevorn["Games"] then
             _PlaceId = PlaceIds[index]
             if getgenv().Wevorn_GamesMethod == "Teleport" then
                TeleportNotification()
-               TeleportService:Teleport(_PlaceId,Players.LocalPlayer)
+               TeleportService:Teleport(_PlaceId, player)
             elseif getgenv().Wevorn_GamesMethod == "Copy Script" then 
-               setclipboard('game:GetService("TeleportService"):Teleport('.._PlaceId..',game.Players.LocalPlayer)')
+               setclipboard('game:GetService("TeleportService"):Teleport('.. _PlaceId.. ',game.Players.LocalPlayer)')
             elseif getgenv().Wevorn_GamesMethod == "Copy Script and Teleport" then
-               setclipboard('game:GetService("TeleportService"):Teleport('.._PlaceId..',game.Players.LocalPlayer)')
+               setclipboard('game:GetService("TeleportService"):Teleport('.. _PlaceId.. ',game.Players.LocalPlayer)')
                TeleportNotification()
                task.wait(0.3)
                TeleportService:Teleport(_PlaceId,Players.LocalPlayer)
            elseif getgenv().Wevorn_GamesMethod == "Copy Subplace Id" then 
                setclipboard(_PlaceId)
            elseif getgenv().Wevorn_GamesMethod == "Copy Game Link"  then
-              setclipboard("http://roblox.com/games/"..tostring(_PlaceId))
+              setclipboard("http://roblox.com/games/".. tostring(_PlaceId))
            elseif getgenv().Wevorn_GamesMethod == "Copy Game Description" then 
                local d_info = MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset)
                setclipboard(tostring(d_info.Description) or "nil")
@@ -1962,7 +1968,7 @@ if SettingsWevorn["Games"] then
             elseif getgenv().Wevorn_GamesMethod == "Copy Icon Id" then
                setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).IconImageAssetId)
             elseif getgenv().Wevorn_GamesMethod == "Copy Icon URL" then
-               setclipboard("https://www.roblox.com/asset/?id="..MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).IconImageAssetId)
+               setclipboard("https://www.roblox.com/asset/?id=" .. MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).IconImageAssetId)
             elseif getgenv().Wevorn_GamesMethod == "Copy Minimum Membership Level" then
                setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).MinimumMembershipLevel)
             elseif getgenv().Wevorn_GamesMethod == "Copy Game Genre" then
@@ -6374,6 +6380,80 @@ if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 121956648506820 or
    AuraPerClickSection:Label("The section was created at the suggestion of player ardok0912")
 end
 
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 3101667897 or PlaceId == 3276265788 or PlaceId == 3232996272) then
+   local LegengsSpeedSection = serv:Channel("Legends Of Speed")
+   
+   getgenv().Wevorn_AutoSpeed = false
+   getgenv().Wevorn_AutoGems = false
+   getgenv().Wevorn_AutoRace = false
+   getgenv().Wevorn_AutoGifts = false
+   
+   LegengsSpeedSection:Toggle("Auto Speed", false, function(state)
+      getgenv().Wevorn_AutoSpeed = state
+      while getgenv().Wevorn_AutoSpeed and task.wait() do
+         if PlaceId == 3101667897 then
+            ReplicatedStorage.rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+         elseif PlaceId == 3232996272 then
+            ReplicatedStorage.rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "Space")
+         elseif PlaceId == 3276265788 then
+            ReplicatedStorage.rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "Desert") 
+         end
+      end
+   end)
+   
+   LegengsSpeedSection:Toggle("Auto Gems", false, function(state)
+      getgenv().Wevorn_AutoGems = state
+      while getgenv().Wevorn_AutoGems and task.wait() do
+         if PlaceId == 3101667897 then
+            ReplicatedStorage.rEvents.orbEvent:FireServer("collectOrb", "Gem", "City")
+         elseif PlaceId == 3232996272 then
+            ReplicatedStorage.rEvents.orbEvent:FireServer("collectOrb", "Gem", "Space")
+         elseif PlaceId == 3276265788 then
+            ReplicatedStorage.rEvents.orbEvent:FireServer("collectOrb", "Gem", "Desert") 
+         end
+      end
+   end)
+   
+   LegengsSpeedSection:Toggle("Auto Race", false, function(state)
+      getgenv().Wevorn_AutoRace = state
+      while getgenv().Wevorn_AutoRace and task.wait(0.1) do
+         ReplicatedStorage.rEvents.raceEvent:FireServer("joinRace")
+         for _, v in ipairs(workspace.raceMaps:GetDescendants()) do
+            if string.find(v.Name:lower(), "finishpart") then
+               firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 1)
+               firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 0)
+            end
+         end
+      end
+   end)
+   
+   LegengsSpeedSection:Toggle("Auto Gifts", false, function(state)
+      getgenv().Wevorn_AutoGifts = state
+      while getgenv().Wevorn_AutoGifts and task.wait(20) do
+         for i = 1, 9 do
+            ReplicatedStorage.rEvents.freeGiftClaimRemote:InvokeServer("claimGift", i)
+         end
+      end
+   end)
+   
+   LegengsSpeedSection:Seperator()
+   
+   LegengsSpeedSection:Button("Teleport To City World", function()
+      TeleportService:Teleport(3101667897, game.Players.LocalPlayer)
+   end)
+   
+   LegengsSpeedSection:Button("Teleport To Space World", function()
+      TeleportService:Teleport(3232996272, game.Players.LocalPlayer)
+   end)
+   
+   LegengsSpeedSection:Button("Teleport To Desert World", function()
+      TeleportService:Teleport(3276265788, game.Players.LocalPlayer)
+   end)
+   
+   LegengsSpeedSection:Seperator()
+   LegengsSpeedSection:Label("The section was created at the suggestion of player bkbkbkkbkv")
+end
+
 local GameList = {
    [1] = 14236123211,
    [2] = 15108736400,
@@ -6391,10 +6471,13 @@ local GameList = {
    [14] = 3956818381,
    [15] = 111443342186554,
    [16] = 137377743665607,
-   [17] = 109509029034984, -- Original  
+   [17] = 109509029034984,  
    [18] = 100807904956772, -- Sub 1
    [19] = 121956648506820,-- Sub 2
    [20] = 10827562832, -- Sub 3
+   [21] = 3101667897,
+   [22] = 3232996272, -- Sub 4
+   [23] = 3276265788, -- Sub 5
 }
 
 if SettingsWevorn["Game Scripts"] and not table.find(GameList, PlaceId) then
@@ -6402,6 +6485,11 @@ if SettingsWevorn["Game Scripts"] and not table.find(GameList, PlaceId) then
    GameListSection:Label("Wevorn Also Supported Another Games.")
     
    GameListSection:Label("Scripts For Games")
+  
+  GameListSection:Button("Legends Of Speed", function()
+      TeleportService:Teleport(3101667897, player)
+      discord:Notification("Teleport...", "Teleport to Legends Of Speed", "Okay")
+   end)
   
   GameListSection:Button("+1 Aura Per Click", function()
       TeleportService:Teleport(109509029034984, player)
@@ -6517,6 +6605,10 @@ if SettingsWevorn["Game Scripts"] and not table.find(GameList, PlaceId) then
       if not getgenv().Wevorn_NotFoundRequestError and not getgenv().Wevorn_ToggleSpam then
          discord:Notification("Success", "You success send game offer", "Okay")
       end
+   end)
+   GameListSection:Seperator()
+   GameListSection:Button("Wevorn Discord Server", function()
+      setclipboard("https://discord.gg/RkgueDdGJ")
    end)
 end
 
