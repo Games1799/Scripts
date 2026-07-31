@@ -327,7 +327,7 @@ test("isnetworkowner")
 test("dumpbytecode")
 test("getloadedmodules")
 test("getsignalwhitelist")
-test("getconnections")
+test("getconnection")
 
 warn("Total Function In Test: ".. Total)
 warn("Passed Functions: " .. Passed)
