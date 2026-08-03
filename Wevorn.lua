@@ -344,12 +344,12 @@ end)
 local discord 
 if not getgenv().Wevorn_LibCache then
    discord = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/DiscordLubary.lua"))()
-   getgenv().Wevorn_LibCache = discord
+   getgenv().Wevorn_LibCache = discord 
 else
    discord = getgenv().Wevorn_LibCache
 end
 
-local win = discord:Window("Wevorn v1.9.3 [ScriptHub v5] [Last Update: 02.08.2026] [Day | Month | Year]")
+local win = discord:Window("Wevorn v1.9.3 [ScriptHub v6] [Last Update: 03.08.2026] [Day | Month | Year]")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local ScriptHub = win:Server("Script Hub", "http://www.roblox.com/asset/?id=117395004084347")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
@@ -363,11 +363,9 @@ if SettingsWevorn["Change Log"] then
    changelog:Label("Fixed Cobalt Script")
    changelog:Label("Bug Fixes")
    changelog:Seperator()
-   changelog:Label("Released! ScriptHub v5!")
-   changelog:Label("Added Section For +1 Powerful Ninja Game")
-   changelog:Label("Added Section For Fight In A School Game")
-   changelog:Label("Added Section For Unlimited Climbing Simulator 2 Game")
-   changelog:Label("Added Section For Super Hero Escape Game")
+   changelog:Label("Released! ScriptHub v6!")
+   changelog:Label("Added Section For Slap Tower On Equipment Game")
+   changelog:Label("Added Section For The Growing Snowball Race Game")
    changelog:Seperator()
    changelog:Button("Wevorn Discord Server", function()
       setclipboard("https://discord.gg/pcjAQpa2H")
@@ -6723,6 +6721,70 @@ if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 4225025295) then
    end)
 end
 
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 72845937010155) then
+   getgenv().Wevorn_AutoFarmWins = false
+   local SlapTowerEpqSection = ScriptHub:Channel("Slap Tower On Equipment")
+   SlapTowerEpqSection:Toggle("Auto Farm Wins", false, function(state)
+      getgenv().Wevorn_AutoFarmWins = state
+      while getgenv().Wevorn_AutoFarmWins and task.wait(1) do
+         ReplicatedStorage.RemoteEvents.mapManagerRemote:FireServer("claimCoins", "2.5kCoinsGiver")
+         ReplicatedStorage.RemoteEvents.mapManagerRemote:FireServer("claimCoins", "1.5kCoinsGiver")
+         ReplicatedStorage.RemoteEvents.mapManagerRemote:FireServer("claimCoins", "2kCoinsGiver")
+      end
+   end)
+end
+
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 99715891575923) then
+   local ScamSection1 = ScriptHub:Channel("Scam Game")
+   ScamSection1:Label("This Game Is Scam")
+end
+
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 13462073642) then
+   local SnowRaceSection = ScriptHub:Channel("Snowball Race")
+   
+   getgenv().Wevorn_AutoSpin = false
+   getgenv().Wevorn_AutoGifts = false
+   getgenv().Wevorn_AutoRebirth = false
+   
+   SnowRaceSection:Toggle("Auto Spin", false, function(state)
+      getgenv().Wevorn_AutoSpin = state
+      while getgenv().Wevorn_AutoSpin and task.wait(10) do
+         ReplicatedStorage.Functions.Spin:InvokeServer()
+      end
+   end)
+   
+   SnowRaceSection:Toggle("Auto Gifts", false, function(state)
+      getgenv().Wevorn_AutoGifts = state
+      while getgenv().Wevorn_AutoGifts and task.wait(10) do
+         for i = 1, 12 do
+            ReplicatedStorage.Functions.ClaimSession:InvokeServer(i)
+         end
+      end
+   end)
+   
+   SnowRaceSection:Toggle("Auto Rebirth", false, function(state)
+      getgenv().Wevorn_AutoRebirth = state
+      while getgenv().Wevorn_AutoRebirth and task.wait(10) do
+         ReplicatedStorage.Remotes.Rebirth:FireServer()
+      end
+   end)
+   
+   SnowRaceSection:Seperator()
+   for _, v in ipairs(workspace.Areas:GetChildren()) do
+      getgenv()["Wevorn_AutoFarm".. tostring(v.Name)] = false
+      SnowRaceSection:Toggle("Auto Farm In ".. tostring(v.Name), false, function(state)
+         getgenv()["Wevorn_AutoFarm".. tostring(v.Name)] = state
+         while getgenv()["Wevorn_AutoFarm".. tostring(v.Name)] and task.wait(0.5) do
+            for _, k in ipairs(v:FindFirstChild("Snow"):GetChildren()) do
+               task.spawn(function()
+                  ReplicatedStorage.Functions.RemoveSnow:InvokeServer(tostring(k.Name))
+               end)
+            end
+         end
+      end)
+   end
+end
+
 local GameList = {
    [1] = 14236123211,
    [2] = 15108736400,
@@ -6755,6 +6817,9 @@ local GameList = {
    [29] = 18248633989, -- Sub 8
    [30] = 73681888190275, -- Sub 9
    [31] = 4225025295,
+   [32] = 72845937010155,
+   [33] = 99715891575923, -- Scam Game 1
+   [34] = 13462073642,
 }
 
 if SettingsWevorn["Game Scripts"] then
@@ -6790,6 +6855,16 @@ if SettingsWevorn["Game Scripts"] then
    end)
     
    GameListSection:Label("Scripts For Games")
+ 
+   GameListSection:Button("The Growing Snowball Race", function()
+      TeleportService:Teleport(13462073642, player)
+      discord:Notification("Teleport...", "Teleport to The Growing Snowball Race", "Okay")
+   end)
+ 
+  GameListSection:Button("Slap Tower On Equipment", function()
+      TeleportService:Teleport(72845937010155, player)
+      discord:Notification("Teleport...", "Teleport to +1 Powerful Ninja", "Okay")
+   end)
   
   GameListSection:Button("+1 Powerful Ninja", function()
       TeleportService:Teleport(4225025295, player)
