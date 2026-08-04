@@ -349,7 +349,7 @@ else
    discord = getgenv().Wevorn_LibCache
 end
 
-local win = discord:Window("Wevorn v1.9.3 [ScriptHub v6] [Last Update: 03.08.2026] [Day | Month | Year]")
+local win = discord:Window("Wevorn v1.9.3 [ScriptHub v7] [Last Update: 04.08.2026] [Day | Month | Year]")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local ScriptHub = win:Server("Script Hub", "http://www.roblox.com/asset/?id=117395004084347")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
@@ -363,12 +363,11 @@ if SettingsWevorn["Change Log"] then
    changelog:Label("Fixed Cobalt Script")
    changelog:Label("Bug Fixes")
    changelog:Seperator()
-   changelog:Label("Released! ScriptHub v6!")
-   changelog:Label("Added Section For Slap Tower On Equipment Game")
-   changelog:Label("Added Section For The Growing Snowball Race Game")
+   changelog:Label("Released! ScriptHub v7!")
+   changelog:Label("Added Section For Murder Mistery 2 Game")
    changelog:Seperator()
    changelog:Button("Wevorn Discord Server", function()
-      setclipboard("https://discord.gg/pcjAQpa2H")
+      setclipboard("https://discord.gg/rncd8vMV39")
    end)
 end
 
@@ -463,7 +462,7 @@ if SettingsWevorn["Home"] then
     end)
     Home:Seperator() 
     Home:Button("Wevorn Discord Server", function()
-       setclipboard("https://discord.gg/pcjAQpa2H")
+       setclipboard("https://discord.gg/rncd8vMV39")
     end)
     Home:Seperator() 
 end
@@ -6785,6 +6784,207 @@ if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 13462073642) then
    end
 end
 
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 142823291) then
+   local MM2Section = ScriptHub:Channel("Murder Mistery 2")
+   
+   getgenv().Wevorn_EspMurder = false
+   getgenv().Wevorn_EspSheriff = false
+   getgenv().Wevorn_EspCrevmate = false
+   getgenv().Wevorn_AutoCoins = false
+   getgenv().Wevorn_Murders = {}
+   getgenv().Wevorn_Sheriffs = {}
+   getgenv().Wevorn_Crevmates = {}
+   getgenv().Wevorn_TargetMap = nil
+   
+   local function StartEsp(Toggle1, Toggle2, Toggle3)
+      for _, v in ipairs(Players:GetPlayers()) do
+         local Character = v.Character or nil
+         if not Character then continue end
+         if not Character:IsDescendantOf(workspace) then 
+            Character = v.Character or nil
+         end
+         local OldHighlight = Character:FindFirstChildOfClass("Highlight") 
+         local PlrBackPack = v:FindFirstChildOfClass("Backpack")
+         if not PlrBackPack then continue end
+         if Toggle1 and getgenv().Wevorn_EspMurder and (Character:FindFirstChild("Knife") or PlrBackPack:FindFirstChild("Knife")) and v ~= player then
+            if OldHighlight then 
+               getgenv().Wevorn_Murders[OldHighlight] = nil
+               OldHighlight:Destroy() 
+            end
+            local MurderHighlight = Instance.new("Highlight", Character)
+            getgenv().Wevorn_Murders[MurderHighlight] = true
+            MurderHighlight.FillColor = Color3.fromRGB(255, 0, 0)
+         end
+         if Toggle2 and getgenv().Wevorn_EspSheriff and (Character:FindFirstChild("Gun") or PlrBackPack:FindFirstChild("Gun")) and v ~= player then
+            if OldHighlight then 
+               getgenv().Wevorn_Sheriffs[OldHighlight] = nil
+               OldHighlight:Destroy() 
+            end
+            local SheriffHighlight = Instance.new("Highlight", Character)
+            getgenv().Wevorn_Sheriffs[SheriffHighlight] = true
+            SheriffHighlight.FillColor = Color3.fromRGB(0, 0, 255)
+         end
+         if Toggle3 and getgenv().Wevorn_EspCrevmate and not (Character:FindFirstChild("Gun") or PlrBackPack:FindFirstChild("Gun") or Character:FindFirstChild("Knife") or PlrBackPack:FindFirstChild("Knife")) and v ~= player then
+            if OldHighlight then 
+               getgenv().Wevorn_Crevmates[OldHighlight] = nil
+               OldHighlight:Destroy() 
+            end
+            local CrevmateHighlight = Instance.new("Highlight", Character)
+            getgenv().Wevorn_Crevmates[CrevmateHighlight] = true
+            CrevmateHighlight.FillColor = Color3.fromRGB(0, 255, 0)
+         end
+      end
+   end
+   
+   MM2Section:Seperator()
+   MM2Section:Toggle("Esp Murder", false, function(state)
+      getgenv().Wevorn_EspMurder = state
+      task.spawn(function()
+         while getgenv().Wevorn_EspMurder and task.wait(1) do
+            pcall(function()
+               StartEsp(true, false, false)
+            end)
+         end
+      end)
+      if not getgenv().Wevorn_EspMurder then
+         for v in pairs(getgenv().Wevorn_Murders) do
+            v:Destroy()
+            getgenv().Wevorn_Murders[v] = nil
+         end
+      end
+   end)
+   
+   MM2Section:Toggle("Esp Sheriff", false, function(state)
+      getgenv().Wevorn_EspSheriff = state
+      task.spawn(function()
+         while getgenv().Wevorn_EspSheriff and task.wait(1) do
+            pcall(function()
+               StartEsp(false, true, false)
+            end)
+         end
+      end)
+      if not getgenv().Wevorn_EspSheriff then
+         for v in pairs(getgenv().Wevorn_Sheriffs) do
+            v:Destroy()
+            getgenv().Wevorn_Sheriffs[v] = nil
+         end
+      end
+   end)
+   
+   MM2Section:Toggle("Esp Crewmate", false, function(state)
+      getgenv().Wevorn_EspCrevmate = state
+      task.spawn(function()
+         while getgenv().Wevorn_EspCrevmate and task.wait(1) do
+            pcall(function()
+               StartEsp(false, false, true)
+            end)
+         end
+      end)
+      if not getgenv().Wevorn_EspCrevmate then
+         for v in pairs(getgenv().Wevorn_Crevmates) do
+            v:Destroy()
+            getgenv().Wevorn_Crevmates[v] = nil
+         end
+      end
+   end)
+   MM2Section:Seperator()
+   
+   local MaxCoinDist = math.huge
+   local CoinSpeed = 0.5
+   local TargetCoin = nil
+   local CollectedCoins = {}
+   MM2Section:Toggle("Auto Collect Coins", false, function(state)
+      getgenv().Wevorn_AutoCoins = state
+      task.spawn(function()
+      while getgenv().Wevorn_AutoCoins do
+         if not getgenv().Wevorn_TargetMap or not getgenv().Wevorn_TargetMap:IsDescendantOf(workspace) then
+            for _, v in pairs(workspace:GetChildren()) do
+               if v:IsA("Model") and v:FindFirstChild("CoinContainer") then
+                  getgenv().Wevorn_TargetMap = v.CoinContainer
+               end
+            end
+         end
+         if getgenv().Wevorn_TargetMap then
+            local Character = player.Character or player.CharacterAdded:Wait()
+            if not Character:IsDescendantOf(workspace) then
+               Character = player.Character or player.CharacterAdded:Wait()
+            end
+            for _, v in ipairs(Character:GetDescendants()) do
+               if v:IsA("BasePart") then
+                  v.CanCollide = false
+               end
+            end
+            local HumanoidRootPart = Character:FindFirstChild("HumanoidRootPart")
+            if not HumanoidRootPart then
+               task.wait()
+               continue
+            end
+            for v, _ in pairs(CollectedCoins) do
+               if not v:IsDescendantOf(workspace) then
+                  CollectedCoins[v] = nil
+               end
+            end
+            MaxCoinDist = math.huge
+            TargetCoin = nil
+            if not getgenv().Wevorn_TargetMap:IsDescendantOf(workspace) then 
+               task.wait()
+               continue
+            end
+            for _, v in ipairs(getgenv().Wevorn_TargetMap:GetChildren()) do
+               if string.find(v.Name:lower(), "coin") and v:IsA("BasePart") and not CollectedCoins[v] then
+                  local Dist = (HumanoidRootPart.Position - v.Position).Magnitude
+                  if Dist < MaxCoinDist then
+                     MaxCoinDist = Dist
+                     TargetCoin = v
+                  end
+               end
+            end
+            if TargetCoin and TargetCoin:IsDescendantOf(workspace) then
+               local Direction = TargetCoin.Position - HumanoidRootPart.Position
+               local Distance = Direction.Magnitude
+               if Distance <= 1 then
+                  CollectedCoins[TargetCoin] = true
+                  TargetCoin = nil
+                  MaxCoinDist = math.huge
+                  task.wait()
+                  continue
+               end
+               local Step = math.min(CoinSpeed, Distance)
+               local Velocity = HumanoidRootPart.AssemblyLinearVelocity
+               HumanoidRootPart.CFrame += Direction.Unit * Step
+               HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(Velocity.X,0, Velocity.Z)
+               local NewDistance = (TargetCoin.Position - HumanoidRootPart.Position).Magnitude
+               if NewDistance <= 1 then
+                  CollectedCoins[TargetCoin] = true
+                 TargetCoin = nil
+                 MaxCoinDist = math.huge
+                 task.wait()
+                 continue
+              end
+           else
+              TargetCoin = nil
+              MaxCoinDist = math.huge
+            end
+         end
+         task.wait(0.01)
+      end
+      end)
+      if not getgenv().Wevorn_AutoCoins then
+         local Character = player.Character or player.CharacterAdded:Wait()
+         if not Character:IsDescendantOf(workspace) then
+            Character = player.Character or player.CharacterAdded:Wait()
+         end
+         for _, v in ipairs(Character:GetDescendants()) do
+            if v:IsA("BasePart") then
+               v.CanCollide = true
+            end
+         end
+      end
+   end)
+   MM2Section:Seperator()
+   MM2Section:Label("More Functions Tomorrow")
+end
+
 local GameList = {
    [1] = 14236123211,
    [2] = 15108736400,
@@ -6820,6 +7020,7 @@ local GameList = {
    [32] = 72845937010155,
    [33] = 99715891575923, -- Scam Game 1
    [34] = 13462073642,
+   [35] = 142823291,
 }
 
 if SettingsWevorn["Game Scripts"] then
@@ -6851,10 +7052,15 @@ if SettingsWevorn["Game Scripts"] then
       end
    end)
    GameListSection:Button("Wevorn Discord Server", function()
-      setclipboard("https://discord.gg/pcjAQpa2H")
+      setclipboard("https://discord.gg/rncd8vMV39")
    end)
     
    GameListSection:Label("Scripts For Games")
+ 
+   GameListSection:Button("Murder Mistery 2", function()
+      TeleportService:Teleport(142823291, player)
+      discord:Notification("Teleport...", "Teleport to Murder Mistery 2", "Okay")
+   end)
  
    GameListSection:Button("The Growing Snowball Race", function()
       TeleportService:Teleport(13462073642, player)
