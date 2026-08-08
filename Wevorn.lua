@@ -349,7 +349,7 @@ else
    discord = getgenv().Wevorn_LibCache
 end
 
-local win = discord:Window("Wevorn v1.9.3 [ScriptHub v7] [Last Update: 04.08.2026] [Day | Month | Year]")
+local win = discord:Window("Wevorn v1.9.3 [ScriptHub v8] [Last Update: 08.08.2026] [Day | Month | Year]")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local ScriptHub = win:Server("Script Hub", "http://www.roblox.com/asset/?id=117395004084347")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
@@ -363,8 +363,10 @@ if SettingsWevorn["Change Log"] then
    changelog:Label("Fixed Cobalt Script")
    changelog:Label("Bug Fixes")
    changelog:Seperator()
-   changelog:Label("Released! ScriptHub v7!")
-   changelog:Label("Added Section For Murder Mistery 2 Game")
+   changelog:Label("Released! ScriptHub v8!")
+   changelog:Label("Added Section For Case Simulator 2")
+   changelog:Label("Added Section For Ability Arena")
+   changelog:Label("Update Section For Murder Mistery 2 Game")
    changelog:Seperator()
    changelog:Button("Wevorn Discord Server", function()
       setclipboard("https://discord.gg/rncd8vMV39")
@@ -6795,6 +6797,7 @@ if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 142823291) then
    getgenv().Wevorn_Sheriffs = {}
    getgenv().Wevorn_Crevmates = {}
    getgenv().Wevorn_TargetMap = nil
+   getgenv().Wevorn_AutoGunPick = false
    
    local function StartEsp(Toggle1, Toggle2, Toggle3)
       for _, v in ipairs(Players:GetPlayers()) do
@@ -6982,7 +6985,150 @@ if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 142823291) then
       end
    end)
    MM2Section:Seperator()
-   MM2Section:Label("More Functions Tomorrow")
+   MM2Section:Toggle("Auto Pick Gun", false, function(state)
+      getgenv().Wevorn_AutoGunPick = state
+      while getgenv().Wevorn_AutoGunPick and task.wait(0.2) do
+         for _, v in ipairs(workspace:GetDescendants()) do
+            if v.Name == "GunDrop" then 
+               local Character = player.Character or player.CharacterAdded:Wait() 
+               local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+               if Character and HumanoidRootPart then
+                  local OldPos = HumanoidRootPart.Position
+                  Character:PivotTo(v:GetPivot()) 
+                  task.wait(0.1)
+                  HumanoidRootPart.Position = OldPos
+                  if firetouchinterest then
+                     firetouchinterest(HumanoidRootPart, v, 1)
+                     firetouchinterest(HumanoidRootPart, v, 0)
+                  end
+                  task.wait(5)
+               end
+            end
+         end
+      end
+   end)
+   
+   MM2Section:Seperator()
+   MM2Section:Label("More Functions Soon...")
+end
+
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 110175021189594 or PlaceId == 106986181033085) then
+   local AbilityArenaSection = ScriptHub:Channel("Ability Arena")
+   getgenv().Wevorn_AutoFarm = false
+   local Target, MaxDist = nil, math.huge
+   AbilityArenaSection:Toggle("easy farm (beta)", false, function(state)
+      getgenv().Wevorn_AutoFarm = state
+      task.spawn(function()
+         while getgenv().Wevorn_AutoFarm do
+            if not getgenv().Wevorn_AutoTarget or not getgenv().Wevorn_AutoTarget:IsDescendantOf(workspace) then
+               getgenv().Wevorn_AutoTarget = nil
+               Target = nil
+               MaxDist = math.huge
+               getgenv().Wevorn_AutoTarget = nil
+               for _, v in ipairs(Players:GetPlayers()) do
+                  if v == player or not v.Character then
+                     task.wait()
+                     continue
+                  end
+                  local Char = v.Character 
+                  local Character = player.Character or player.CharacterAdded:Wait()
+                  local TargetHumanoidRootPart = Char:FindFirstChild("HumanoidRootPart")
+                  local TargetHumanoid = Char:FindFirstChild("Humanoid")
+                  if not TargetHumanoid or TargetHumanoid.Health <= 0 then
+                     task.wait()
+                     continue
+                  end
+                  if not Character or not Character:IsDescendantOf(workspace) then
+                     task.wait()
+                     continue
+                  end
+                  local HumanoidRootPart = Character:FindFirstChild("HumanoidRootPart")
+                  if not TargetHumanoidRootPart or not TargetHumanoidRootPart:IsDescendantOf(workspace) or not HumanoidRootPart or not HumanoidRootPart:IsDescendantOf(workspace) then
+                     task.wait()
+                     continue
+                  end
+                  local Distance = (HumanoidRootPart.Position - TargetHumanoidRootPart.Position).Magnitude
+                  if Distance < MaxDist then
+                     MaxDist = Distance
+                     Target = Char
+                  end
+               end
+               getgenv().Wevorn_AutoTarget = Target
+               if not getgenv().Wevorn_AutoTarget then
+                  task.wait()
+                  continue
+               end
+            end
+            local TargetHum = getgenv().Wevorn_AutoTarget:FindFirstChild("HumanoidRootPart")
+            if not TargetHum or not TargetHum:IsDescendantOf(workspace) then 
+               task.wait()
+               continue
+            end
+            if TargetHum.Position.Y > 65 or TargetHum.Position.Y < -15 then
+               Target = nil
+               MaxDist = math.huge
+               getgenv().Wevorn_AutoTarget = nil
+               task.wait()
+               continue
+            end
+            local TargetHumanoid = getgenv().Wevorn_AutoTarget:FindFirstChild("Humanoid")
+            if TargetHumanoid.Health <= 0 then
+               Target = nil
+               MaxDist = math.huge
+               getgenv().Wevorn_AutoTarget = nil
+               task.wait()
+               continue
+            end
+            local Speed = 1
+            local Character = player.Character or player.CharacterAdded:Wait()
+            local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+            if HumanoidRootPart.Position.Y > 65 then
+               ReplicatedStorage.Files.Shared.Components.Jolt.Utils.Remotes.Jolt_Reliable:FireServer(buffer.fromstring("\006Deploy\129\017\000"), {})
+               task.wait()
+               continue
+            end
+            local Direction = (TargetHum.CFrame * CFrame.new(0, 0, 2)).Position - HumanoidRootPart.Position
+            local Velocity = HumanoidRootPart.AssemblyLinearVelocity
+            HumanoidRootPart.CFrame = HumanoidRootPart.CFrame + Direction.Unit * math.min(Speed, Direction.Magnitude)
+            HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(Velocity.X, 0, Velocity.Z)
+            task.wait()
+         end
+      end)
+      AbilityArenaSection:Seperator()
+   end)
+end
+--[[
+local args = {
+	CFrame.new(48.62375259399414, 361.7615051269531, 8944.6875, -0.5922031402587891, -0.6661423444747925, 0.45337602496147156, -1.8918109745413858e-08, 0.5626487731933594, 0.8266960382461548, -0.8057886958122253, 0.4895719885826111, -0.33320239186286926), -- player
+	CFrame.new(48.49217224121094, 291.7554626464844, 9120.62109375, 1, 0, 0, 0, 1, 0, 0, 0, 1) -- Murder
+}
+game:GetService("Players").LocalPlayer.Character:WaitForChild("Gun"):WaitForChild("Shoot"):FireServer(unpack(args))
+]]
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 10514822281) then
+   local PlayerGui = cloneref(player:FindFirstChildOfClass("PlayerGui"))
+   local CaseSim2Section = ScriptHub:Channel("Case Simulator 2")
+   getgenv().Wevorn_AutoSell = false
+   getgenv().Wevorn_AutoBuyFreeCase = false
+   CaseSim2Section:Toggle("Auto Sale", false, function(state)
+      getgenv().Wevorn_AutoSell = state
+      while getgenv().Wevorn_AutoSell and task.wait(1) do
+         for _, v in ipairs(PlayerGui:GetDescendants()) do
+            if v.Name == "Sell" and v.Parent.Name == "ButtonsFrame" and v.Parent.Parent.Name == "Unboxed" then
+               firesignal(v.Activated)
+            end
+         end
+      end
+   end)
+   CaseSim2Section:Toggle("Auto Buy Free Case", false, function(state)
+      getgenv().Wevorn_AutoBuyFreeCase = state
+      while getgenv().Wevorn_AutoBuyFreeCase and task.wait(1) do
+         for _, v in ipairs(PlayerGui:GetDescendants()) do
+            if v.Name == "Free Case" and v.Parent:IsA("ScrollingFrame") and v.Parent.Parent.Parent.Name == "Pages" and v.Parent.Parent:IsA("Frame") then
+               firesignal(v.Activated)
+            end
+         end
+      end
+   end)
 end
 
 local GameList = {
@@ -7021,6 +7167,9 @@ local GameList = {
    [33] = 99715891575923, -- Scam Game 1
    [34] = 13462073642,
    [35] = 142823291,
+   [36] = 110175021189594,
+   [37] = 106986181033085, -- Sub 10
+   [38] = 10514822281,
 }
 
 if SettingsWevorn["Game Scripts"] then
@@ -7056,6 +7205,11 @@ if SettingsWevorn["Game Scripts"] then
    end)
     
    GameListSection:Label("Scripts For Games")
+   
+   GameListSection:Button("Ability arena", function()
+      TeleportService:Teleport(110175021189594, player)
+      discord:Notification("Teleport...", "Teleport to Ability arena", "Okay")
+   end)
  
    GameListSection:Button("Murder Mistery 2", function()
       TeleportService:Teleport(142823291, player)
