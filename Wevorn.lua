@@ -7206,6 +7206,11 @@ if SettingsWevorn["Game Scripts"] then
     
    GameListSection:Label("Scripts For Games")
    
+   GameListSection:Button("Case Simulator 2", function()
+      TeleportService:Teleport(10514822281, player)
+      discord:Notification("Teleport...", "Teleport to Case Simulator 2", "Okay")
+   end)
+   
    GameListSection:Button("Ability arena", function()
       TeleportService:Teleport(110175021189594, player)
       discord:Notification("Teleport...", "Teleport to Ability arena", "Okay")
