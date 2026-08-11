@@ -349,7 +349,7 @@ else
    discord = getgenv().Wevorn_LibCache
 end
 
-local win = discord:Window("Wevorn v1.9.3 [ScriptHub v8] [Last Update: 08.08.2026] [Day | Month | Year]")
+local win = discord:Window("Wevorn v1.9.3 [ScriptHub v9] [Last Update: 12.08.2026] [Day | Month | Year]")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local ScriptHub = win:Server("Script Hub", "http://www.roblox.com/asset/?id=117395004084347")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
@@ -363,10 +363,11 @@ if SettingsWevorn["Change Log"] then
    changelog:Label("Fixed Cobalt Script")
    changelog:Label("Bug Fixes")
    changelog:Seperator()
-   changelog:Label("Released! ScriptHub v8!")
-   changelog:Label("Added Section For Case Simulator 2")
-   changelog:Label("Added Section For Ability Arena")
-   changelog:Label("Update Section For Murder Mistery 2 Game")
+   changelog:Label("Released! ScriptHub v9!")
+   changelog:Label("Added Fart Training")
+   changelog:Label("Added Break In 2")
+   changelog:Label("Added Break In 1")
+   changelog:Label("Update Case Simulator 2")
    changelog:Seperator()
    changelog:Button("Wevorn Discord Server", function()
       setclipboard("https://discord.gg/rncd8vMV39")
@@ -7109,6 +7110,7 @@ if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 10514822281) then
    local CaseSim2Section = ScriptHub:Channel("Case Simulator 2")
    getgenv().Wevorn_AutoSell = false
    getgenv().Wevorn_AutoBuyFreeCase = false
+   getgenv().Wevorn_AutoBuyFreeVipCase = false
    CaseSim2Section:Toggle("Auto Sale", false, function(state)
       getgenv().Wevorn_AutoSell = state
       while getgenv().Wevorn_AutoSell and task.wait(1) do
@@ -7126,6 +7128,198 @@ if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 10514822281) then
             if v.Name == "Free Case" and v.Parent:IsA("ScrollingFrame") and v.Parent.Parent.Parent.Name == "Pages" and v.Parent.Parent:IsA("Frame") then
                firesignal(v.Activated)
             end
+         end
+      end
+   end)
+   CaseSim2Section:Toggle("Auto Buy VIP Free Case", false, function(state)
+      getgenv().Wevorn_AutoBuyFreeVipCase = state
+      while getgenv().Wevorn_AutoBuyFreeVipCase and task.wait(1) do
+         for _, v in ipairs(PlayerGui:GetDescendants()) do
+            if v.Name == "VIP Free Case" and v.Parent:IsA("ScrollingFrame") and v.Parent.Parent.Parent.Name == "Pages" and v.Parent.Parent:IsA("Frame") then
+               firesignal(v.Activated)
+            end
+         end
+      end
+   end)
+end
+
+if SettingsWevorn["Game Scripts"] and (PlaceId and (PlaceId == 3851622790 or PlaceId == 4620170611)) then
+  local BreakIn1Section = ScriptHub:Channel("Break In 1")
+  if PlaceId == 3851622790 then
+     BreakIn1Section:Button("Change Role To Gun", function()
+        ReplicatedStorage.RemoteEvents.OutsideRole:FireServer("Gun", true)
+     end)
+     BreakIn1Section:Button("Change Role To Swat", function()
+        ReplicatedStorage.RemoteEvents.OutsideRole:FireServer("SwatGun", true)
+     end)
+  else
+     getgenv().Wevorn_Item = "Apple"
+     local ItemList = {
+        "Apple",
+        "Cookie",
+        "BloxyCola",
+        "Pizza1",
+        "Pizza2",
+        "Pizza3",
+        "EpicPizza",
+        "Cure",
+        "Chips",
+        "TeddyBloxpin",
+        "Key",
+        "ExpiredBloxyCola",
+        "Bat",
+        "Plank",
+        "Lollipop",
+        "LinkedSword",
+        "Hammer",
+     }
+     BreakIn1Section:Dropdown("Select Item...", ItemList, function(item)
+        getgenv().Wevorn_Item = item
+     end)
+     BreakIn1Section:Button("Get Item", function()
+        if getgenv().Wevorn_Item ~= "Hammer" then
+           ReplicatedStorage.RemoteEvents.GiveTool:FireServer(tostring(getgenv().Wevorn_Item))
+        else
+           ReplicatedStorage.RemoteEvents.BasementWeapon:FireServer(true, "Hammer")
+        end
+     end)
+     BreakIn1Section:Button("Clear BackPack", function()
+        local Backpack = player:FindFirstChildOfClass("Backpack")
+        for _, v in ipairs(Backpack:GetChildren()) do
+           if v:IsA("Tool") then
+              v:Destroy()
+           end
+        end
+     end)
+     BreakIn1Section:Seperator()
+     getgenv().Wevorn_AutoHealth = false
+     BreakIn1Section:Toggle("Auto Health", false, function(state)
+        getgenv().Wevorn_AutoHealth = state
+        while getgenv().Wevorn_AutoHealth and task.wait(0.1) do
+           ReplicatedStorage.RemoteEvents.GiveTool:FireServer("Apple")
+           ReplicatedStorage.RemoteEvents.Energy:FireServer(15, "Apple")
+        end
+     end)
+     BreakIn1Section:Button("Claim All Money", function()
+        for _, v in ipairs(workspace:GetChildren()) do
+           if v:IsA("BasePart") and string.find(v.Name:lower(), "money") then
+              if v:FindFirstChildOfClass("ClickDetector") then
+                 fireclickdetector(v:FindFirstChildOfClass("ClickDetector"))
+              end
+           end
+        end
+     end)
+  end
+end
+
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 18138682962) then
+   local FreezeForUGCSection = ScriptHub:Channel("Freeze For UGC")
+   FreezeForUGCSection:Label("Warn: This Game Is Scam!")
+end
+
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 13864661000 or PlaceId == 13864667823) then
+   local BreakIn2Section = ScriptHub:Channel("Break In 2")
+   getgenv().Wevorn_GodMode = false
+   if PlaceId == 13864661000 then
+      BreakIn2Section:Label("Free Roles Has Been Patched :/")
+   else
+      local Items = {
+         "Crowbar 1",
+	 	"Crowbar 2",
+ 		"Bat",
+ 		"Pitchfork",
+	 	"Hammer",
+ 		"Wrench",
+ 		"Broom",
+	 	"Armor",
+	 	"Med Kit",
+ 		"Key",
+ 		"Gold Key",
+ 		"Louise",
+ 		"Lollipop",
+ 		"Chips",
+ 		"Golden Apple",
+ 		"Pizza",
+ 		"Gold Pizza",
+ 		"Rainbow Pizza",
+ 		"Rainbow Pizza Box",
+ 		"Book",
+ 		"Phone",
+ 		"Cookie",
+ 		"Apple",
+ 		"Bloxy Cola",
+ 		"Expired Bloxy Cola",
+	 	"Bottle",
+ 		"Ladder",
+	 	"Battery"
+	   }
+	   BreakIn2Section:Dropdown("Select Item...", Items, function(item)
+	      getgenv().Wevorn_SelectedItem = item
+	   end)
+	   BreakIn2Section:Button("Give Item", function()
+	      local Item = getgenv().Wevorn_SelectedItem
+	      if Item == 'Book' or Item == 'Phone' then
+	         discord:Notification("Warn", "Work Only If You Have Gamepass", "Okay")
+	      end
+	      if Item == "Armor" then
+	         ReplicatedStorage.Events.Vending:FireServer(3, "Armor2", "Armor", tostring(player), 1)
+	      elseif Item == "Crowbar 1" or Item == "Crowbar 2" or Item == "Bat" or Item == "Pitchfork" or Item == "Hammer" or Item == "Wrench" or Item == "Broom" then
+	         ReplicatedStorage.Events.Vending:FireServer(3, tostring(Item:gsub(" ", "")), "Weapons", player.Name, 1)
+	      else
+	         ReplicatedStorage.Events.GiveTool:FireServer(tostring(Item:gsub(" ", "")))
+	      end
+	   end)
+   	BreakIn2Section:Button("Clear BackPack", function()
+        local Backpack = player:FindFirstChildOfClass("Backpack")
+        for _, v in ipairs(Backpack:GetChildren()) do
+           if v:IsA("Tool") then
+              v:Destroy()
+           end
+        end
+     end)
+     BreakIn2Section:Seperator()
+     BreakIn2Section:Button("Train Strength", function()
+        ReplicatedStorage.Events.RainbowWhatStat:FireServer("Strength")
+     end)
+     BreakIn2Section:Button("Train Speed", function()
+        ReplicatedStorage.Events.RainbowWhatStat:FireServer("Speed")
+     end)
+     BreakIn2Section:Seperator()
+     BreakIn2Section:Toggle("God Mode", false, function(state)
+        getgenv().Wevorn_GodMode = state
+        while getgenv().Wevorn_GodMode and task.wait(0.1) do
+           ReplicatedStorage.Events.GiveTool:FireServer("Apple")
+           ReplicatedStorage.Events.Energy:FireServer(15, "Apple")
+        end
+     end)
+   end
+end
+
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 81643004510026) then
+   local FartTrainingection = ScriptHub:Channel("Fart Training")
+   getgenv().Wevorn_AutoGifts = false
+   getgenv().Wevorn_AutoTrain = false
+   getgenv().Wevorn_AutoCoins = false
+   
+   FartTrainingection:Toggle("Auto Train", false, function(state)
+      getgenv().Wevorn_AutoTrain = state
+      while getgenv().Wevorn_AutoTrain and task.wait() do
+         ReplicatedStorage.Packages.Network.RemoteEventStorage.TrainingBoostClick:FireServer()
+      end
+   end)
+   
+   FartTrainingection:Toggle("Auto Collect Coins", false, function(state)
+      getgenv().Wevorn_AutoCoins = state
+      while getgenv().Wevorn_AutoCoins and task.wait(0.1) do
+         ReplicatedStorage.Packages.Network.RemoteEventStorage.ThrowReward:FireServer(0)
+      end
+   end)
+   
+   FartTrainingection:Toggle("Auto Claim Gifts", false, function(state)
+      getgenv().Wevorn_AutoGifts = state
+      while getgenv().Wevorn_AutoGifts and task.wait(10) do
+         for i = 1, 9 do
+            ReplicatedStorage.Packages.Network.RemoteEventStorage.ClaimGift:FireServer("Gift".. tostring(i))
          end
       end
    end)
@@ -7170,6 +7364,8 @@ local GameList = {
    [36] = 110175021189594,
    [37] = 106986181033085, -- Sub 10
    [38] = 10514822281,
+   [39] = 3851622790,
+   [40] = 4880500316,
 }
 
 if SettingsWevorn["Game Scripts"] then
@@ -7205,6 +7401,21 @@ if SettingsWevorn["Game Scripts"] then
    end)
     
    GameListSection:Label("Scripts For Games")
+   
+   GameListSection:Button("Fart Training", function()
+      TeleportService:Teleport(81643004510026, player)
+      discord:Notification("Teleport...", "Teleport to Fart Training", "Okay")
+   end)
+   
+   GameListSection:Button("Break In 2", function()
+      TeleportService:Teleport(13864661000, player)
+      discord:Notification("Teleport...", "Teleport to Break In 2", "Okay")
+   end)
+   
+   GameListSection:Button("Break In 1", function()
+      TeleportService:Teleport(3851622790, player)
+      discord:Notification("Teleport...", "Teleport to Break In 1", "Okay")
+   end)
    
    GameListSection:Button("Case Simulator 2", function()
       TeleportService:Teleport(10514822281, player)
