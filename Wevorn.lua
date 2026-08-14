@@ -123,6 +123,25 @@ local getgenv = getgenv or get_genv or GetGenv or Get_Genv or nil
 local getuserdatatag = getuserdatatag or get_user_data_tag or nil
 local setfflag = setfflag or set_fflag or setflag or set_flag or nil
 local getgc = getgc or get_gc or GetGC or Get_GC or nil
+ 
+local FakeSetStackHidden = false
+local setstackhidden = setstackhidden or set_stack_hidden or nil
+if not setstackhidden then
+   FakeSetStackHidden = true
+   setstackhidden = function(func: any, ishidden: boolean): any
+      return func
+   end
+end
+
+local FakeNewCClosure = false
+local newcclosure = newcclosure or new_c_closure or nil
+if not newcclosure then
+   FakeNewCClosure = true
+   type Closure = (...any) -> ...any
+   newcclosure = function(func: Closure): Closure
+      return func
+   end
+end
 
 local getcn = getconstants or get_constants or (debug and debug.getconstants) or (debug and debug.get_constants) or nil
 local getcon = (debug and debug.getconstant) or getconstant or get_constant or (debug and debug.get_constant) or nil
@@ -137,16 +156,14 @@ local appendfile = appendfile or append_file or AppendFile or Append_File or nil
 local readfile = readfile or read_file or ReadFile or Read_File or nil
 local isfile = isfile or is_file or IsFile or Is_File or nil
 
-local newcclosure = newcclosure or new_c_closure or function(func) 
-   return func
-end
-
 local getexecutorname = getexecutorname or get_executor_name or function() 
    return "Unknown"
 end
 
 if string.find(getexecutorname():lower(), "eclipse") then
-   newcclosure = function(func)
+   FakeNewCClosure = true
+   type Closure = (...any) -> ...any
+   newcclosure = function(func: Closure): Closure
       return func
    end
    hookmetamethod = function(tbl, method, func)
@@ -255,6 +272,13 @@ getgenv().Wevorn_NotificationRemotes = true
 getgenv().Wevorn_BulkStatus = "Success"
 getgenv().Wevorn_SignalDelay = 0.1 
 
+if not getgenv().Wevorn_NamecallMethods then
+   getgenv().Wevorn_NamecallMethods = {}
+end
+if not getgenv().Wevorn_NamecallHooks then
+   getgenv().Wevorn_NamecallHooks = 0
+end
+
 local defaultSettings = {
     ["Change Log"] = true,
     ["Home"] = true,
@@ -349,7 +373,7 @@ else
    discord = getgenv().Wevorn_LibCache
 end
 
-local win = discord:Window("Wevorn v1.9.3 [ScriptHub v9] [Last Update: 12.08.2026] [Day | Month | Year]")
+local win = discord:Window("Wevorn v1.9.4 [ScriptHub v9] [Last Update: 14.08.2026] [Day | Month | Year]")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local ScriptHub = win:Server("Script Hub", "http://www.roblox.com/asset/?id=117395004084347")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
@@ -359,8 +383,8 @@ SettingsSection:Label("Soon...")
 if SettingsWevorn["Change Log"] then
    local changelog = serv:Channel("Change Log")
    changelog:Label("Welcome to Wevorn! \nThis script was created by Games1799")
-   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.9.3!")
-   changelog:Label("Fixed Cobalt Script")
+   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.9.4!")
+   changelog:Label("improved hooks by 10 times")
    changelog:Label("Bug Fixes")
    changelog:Seperator()
    changelog:Label("Released! ScriptHub v9!")
@@ -441,16 +465,75 @@ if SettingsWevorn["Home"] then
     end)
     
     Home:Toggle("Anti Kick (Client)", false, function(state)
-    getgenv().Wevorn_AntiKick = state
-    if state then
-        local oldKc
-        oldKc = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
-            if getgenv().Wevorn_AntiKick and getnamecallmethod() == "Kick" then
-                return
-            end
-            return oldKc(self, ...)
-        end))
-    end
+       getgenv().Wevorn_AntiKick = state
+       if getgenv().Wevorn_AntiKick then
+          if not getrawmetatable then
+             discord:Notification("Error", "Function getrawmetatable Is Missing", "Okay")
+             return 
+          end
+          if not setreadonly then
+             discord:Notification("Error", "Function setreadonly Is Missing", "Okay")
+             return 
+          end
+          if not getnamecallmethod then
+             discord:Notification("Error", "Function getnamecallmethod Is Missing", "Okay")
+             return 
+          end
+          if not newcclosure or FakeNewCClosure then
+             discord:Notification("Warn!", "Function newcclosure Is Missing\n(Detection Risk)", "Okay") 
+          end
+          if not setstackhidden or FakeSetStackHidden then
+             discord:Notification("Warn!", "Function setstackhidden Is Missing\n(Detection Risk)", "Okay")
+          end
+       end
+       local mt = getrawmetatable(game)
+       if not getgenv().Wevorn_OldNameCall then
+          getgenv().Wevorn_OldNameCall = mt.__namecall
+       end
+       setreadonly(mt, false)
+       local NewNameCall
+       if getgenv().Wevorn_AntiKick then
+          local IsHookedKick = false 
+          for _, v in pairs(getgenv().Wevorn_NamecallMethods) do
+             if v.Method == "Kick" then
+                IsHookedKick = true
+                break
+             end
+          end
+          if not IsHookedKick then
+             getgenv().Wevorn_NamecallHooks += 1
+             table.insert(getgenv().Wevorn_NamecallMethods, {Method = "Kick", Class = "Player", ReturnValue = nil})
+          end
+          NewNameCall = newcclosure(function(self, ...)
+             local method = getnamecallmethod()
+             for i, v in pairs(getgenv().Wevorn_NamecallMethods) do
+                if v.Method == method and v.Class == self.ClassName then
+                   return v.ReturnValue
+                end
+             end
+             return getgenv().Wevorn_OldNameCall(self, ...)
+          end)
+       end
+       if NewNameCall then
+          pcall(function()
+             setstackhidden(NewNameCall, true)
+          end)
+          mt.__namecall = NewNameCall
+       end
+       if not getgenv().Wevorn_AntiKick then
+          if not getgenv().Wevorn_AntiKick and getgenv().Wevorn_OldNameCall then
+             for i, v in pairs(getgenv().Wevorn_NamecallMethods) do
+                if v.Method == "Kick" then
+                   getgenv().Wevorn_NamecallHooks -= 1
+                   table.remove(getgenv().Wevorn_NamecallMethods, i)
+                   break
+                end
+             end
+             if getgenv().Wevorn_OldNameCall and getgenv().Wevorn_NamecallHooks == 0 then
+                mt.__namecall = getgenv().Wevorn_OldNameCall
+             end
+          end
+       end
     end)
     
     Home:Toggle("Load Script Wevorn After Teleport", false, function(state)
@@ -1564,27 +1647,81 @@ Remotes:Seperator()
 
 Remotes:Label("\nThis will block client communication with the server.\nUseful for bypassing clientsided anticheats!\n")
 
+getgenv().Wevorn_BlockRemotes = false
 Remotes:Toggle("Block All Remotes Called",false,function(state)
-if state then
-local mt = getrawmetatable(game)
-setreadonly(mt,false)
-local old = mt.__namecall
-mt.__namecall = newcclosure(function(self,...)
-local method = getnamecallmethod()
-local class = self.ClassName
-if (class == "RemoteEvent" and method == "FireServer") or
-(class == "RemoteFunction" and method == "InvokeServer") or
-(class == "BindableEvent" and method == "Fire") or
-(class == "BindableFunction" and method == "Invoke") or
-(class == "UnstableRemoteEvent" and method == "FireServer") then
-return nil
-end
-return old(self,...)
-end)
-else 
-mt.__namecall = old
-end
-setreadonly(mt,true)
+    getgenv().Wevorn_BlockRemotes = state
+    if getgenv().Wevorn_BlockRemotes then
+       if not getrawmetatable then
+          discord:Notification("Error", "Function getrawmetatable Is Missing", "Okay")
+          return 
+       end
+       if not setreadonly then
+          discord:Notification("Error", "Function setreadonly Is Missing", "Okay")
+          return 
+       end
+       if not getnamecallmethod then
+          discord:Notification("Error", "Function getnamecallmethod Is Missing", "Okay")
+          return 
+       end
+       if not newcclosure or FakeNewCClosure then
+          discord:Notification("Warn!", "Function newcclosure Is Missing\n(Detection Risk)", "Okay") 
+       end
+       if not setstackhidden or FakeSetStackHidden then
+          discord:Notification("Warn!", "Function setstackhidden Is Missing\n(Detection Risk)", "Okay")
+       end
+    end
+    local mt = getrawmetatable(game)
+    if not getgenv().Wevorn_OldNameCall then
+       getgenv().Wevorn_OldNameCall = mt.__namecall
+    end
+    setreadonly(mt, false)
+    local NewNameCall
+    if getgenv().Wevorn_BlockRemotes then
+       local IsHookedRem = false 
+       for _, v in pairs(getgenv().Wevorn_NamecallMethods) do
+          if v.Method == "FireServer" or v.Method == "InvokeServer" or v.Method == "Invoke" or v.Method == "Fire" then
+             IsHookedRem = true
+             break
+          end
+       end
+       if not IsHookedRem then
+          getgenv().Wevorn_NamecallHooks += 5
+          table.insert(getgenv().Wevorn_NamecallMethods, {Method = "FireServer", Class = "RemoteEvent", ReturnValue = nil})
+          table.insert(getgenv().Wevorn_NamecallMethods, {Method = "InvokeServer", Class = "RemoteFunction", ReturnValue = nil})
+          table.insert(getgenv().Wevorn_NamecallMethods, {Method = "Fire", Class = "BindableEvent", ReturnValue = nil})
+          table.insert(getgenv().Wevorn_NamecallMethods, {Method = "Invoke", Class = "BindableFunction", ReturnValue = nil})
+          table.insert(getgenv().Wevorn_NamecallMethods, {Method = "FireServer", Class = "UnreliableRemoteEvent", ReturnValue = nil})
+       end
+       NewNameCall = newcclosure(function(self, ...)
+          local method = getnamecallmethod()
+          for i, v in pairs(getgenv().Wevorn_NamecallMethods) do
+             if v.Method == method and v.Class == self.ClassName then
+                return v.ReturnValue
+             end
+          end
+          return getgenv().Wevorn_OldNameCall(self, ...)
+       end)
+    end
+    if NewNameCall then
+       pcall(function()
+          setstackhidden(NewNameCall, true)
+       end)
+       mt.__namecall = NewNameCall
+    end
+    if not getgenv().Wevorn_BlockRemotes then
+       if not getgenv().Wevorn_BlockRemotes and getgenv().Wevorn_OldNameCall then
+          for i = #getgenv().Wevorn_NamecallMethods, 1, -1 do
+             local v = getgenv().Wevorn_NamecallMethods[i]
+             if v.Method == "FireServer" or v.Method == "InvokeServer" or v.Method == "Invoke" or v.Method == "Fire" then
+                getgenv().Wevorn_NamecallHooks -= 1
+                table.remove(getgenv().Wevorn_NamecallMethods, i)
+             end
+          end
+          if getgenv().Wevorn_OldNameCall and getgenv().Wevorn_NamecallHooks == 0 then
+             mt.__namecall = getgenv().Wevorn_OldNameCall
+          end
+       end
+    end
 end)
 
 pcall(function()
@@ -1891,25 +2028,76 @@ if SettingsWevorn["Games"] then
    local Games = serv:Channel("Games")
 
    Games:Toggle("Anti Kick on Teleport",false,function(state)
-      local mt = getrawmetatable(game)
-      setreadonly(mt,false)
-      if state then
-         if old_namecall == nil then
-            old_namecall = mt.__namecall
-         end
-         mt.__namecall = newcclosure(function(self,...)
-            local method = getnamecallmethod()
-            if self.ClassName == "TeleportService" and (method == "Teleport" or method == "TeleportToPlaceInstance") then
-               return nil
-            end
-            return old_namecall(self,...)
-         end)
-      else
-         if old_namecall then
-            mt.__namecall = old_namecall
-         end
-      end
-      setreadonly(mt,true)
+      getgenv().Wevorn_AntiKickTeleport = state
+       if getgenv().Wevorn_AntiKickTeleport then
+          if not getrawmetatable then
+             discord:Notification("Error", "Function getrawmetatable Is Missing", "Okay")
+             return 
+          end
+          if not setreadonly then
+             discord:Notification("Error", "Function setreadonly Is Missing", "Okay")
+             return 
+          end
+          if not getnamecallmethod then
+             discord:Notification("Error", "Function getnamecallmethod Is Missing", "Okay")
+             return 
+          end
+          if not newcclosure or FakeNewCClosure then
+             discord:Notification("Warn!", "Function newcclosure Is Missing\n(Detection Risk)", "Okay") 
+          end
+          if not setstackhidden or FakeSetStackHidden then
+             discord:Notification("Warn!", "Function setstackhidden Is Missing\n(Detection Risk)", "Okay")
+          end
+       end
+       local mt = getrawmetatable(game)
+       if not getgenv().Wevorn_OldNameCall then
+          getgenv().Wevorn_OldNameCall = mt.__namecall
+       end
+       setreadonly(mt, false)
+       local NewNameCall
+       if getgenv().Wevorn_AntiKickTeleport then
+          local IsHookedKickTP = false 
+          for _, v in pairs(getgenv().Wevorn_NamecallMethods) do
+             if v.Method == "Teleport" or v.Method == "TeleportToPlaceInstance" then
+                IsHookedKickTP = true
+                break
+             end
+          end
+          if not IsHookedKickTP then
+             getgenv().Wevorn_NamecallHooks += 2
+             table.insert(getgenv().Wevorn_NamecallMethods, {Method = "Teleport", Class = "TeleportService", ReturnValue = nil})
+             table.insert(getgenv().Wevorn_NamecallMethods, {Method = "TeleportToPlaceInstance", Class = "TeleportService", ReturnValue = nil})
+          end
+          NewNameCall = newcclosure(function(self, ...)
+             local method = getnamecallmethod()
+             for i, v in pairs(getgenv().Wevorn_NamecallMethods) do
+                if v.Method == method and v.Class == self.ClassName then
+                   return v.ReturnValue
+                end
+             end
+             return getgenv().Wevorn_OldNameCall(self, ...)
+          end)
+       end
+       if NewNameCall then
+          pcall(function()
+             setstackhidden(NewNameCall, true)
+          end)
+          mt.__namecall = NewNameCall
+       end
+       if not getgenv().Wevorn_AntiKickTeleport then
+          if not getgenv().Wevorn_AntiKickTeleport and getgenv().Wevorn_OldNameCall then
+             for i = #getgenv().Wevorn_NamecallMethods, 1, -1 do
+                local v = getgenv().Wevorn_NamecallMethods[i]
+                if v.Method == "Teleport" or v.Method == "TeleportToPlaceInstance" then
+                   getgenv().Wevorn_NamecallHooks -= 1
+                   table.remove(getgenv().Wevorn_NamecallMethods, i)
+                end
+             end
+             if getgenv().Wevorn_OldNameCall and getgenv().Wevorn_NamecallHooks == 0 then
+                mt.__namecall = getgenv().Wevorn_OldNameCall
+             end
+          end
+       end
    end)
 
    getgenv().Wevorn_GamesMethod = "Teleport"
@@ -4859,31 +5047,149 @@ local PurchaseExploits = serv:Channel("Purchase Exploits")
 PurchaseExploits:Label("Fake Purchaser!\nThis tricks server that you bought a Game Pass!")
 PurchaseExploits:Label("Only works in some games...")
 
+getgenv().Wevorn_UserOwnsGamePassAsyncHook = false
 PurchaseExploits:Toggle("All UserOwnsGamePassAsync functions return true (Client)",false,function(state)
-local mt = getrawmetatable(game)
-setreadonly(mt,false)
-local Original = mt.__namecall
-mt.__namecall = newcclosure(function(self,...)
-if state and getnamecallmethod() == "UserOwnsGamePassAsync" then
-return true
-end
-return Original(self,...)
-end)
-setreadonly(mt,true)
+    getgenv().Wevorn_UserOwnsGamePassAsyncHook = state
+    if getgenv().Wevorn_UserOwnsGamePassAsyncHook then
+       if not getrawmetatable then
+          discord:Notification("Error", "Function getrawmetatable Is Missing", "Okay")
+          return 
+       end
+       if not setreadonly then
+          discord:Notification("Error", "Function setreadonly Is Missing", "Okay")
+          return 
+       end
+       if not getnamecallmethod then
+          discord:Notification("Error", "Function getnamecallmethod Is Missing", "Okay")
+          return 
+       end
+       if not newcclosure or FakeNewCClosure then
+          discord:Notification("Warn!", "Function newcclosure Is Missing\n(Detection Risk)", "Okay") 
+       end
+       if not setstackhidden or FakeSetStackHidden then
+          discord:Notification("Warn!", "Function setstackhidden Is Missing\n(Detection Risk)", "Okay")
+       end
+    end
+    local mt = getrawmetatable(game)
+    if not getgenv().Wevorn_OldNameCall then
+       getgenv().Wevorn_OldNameCall = mt.__namecall
+    end
+    setreadonly(mt, false)
+    local NewNameCall    
+    if getgenv().Wevorn_UserOwnsGamePassAsyncHook then
+       local IsHookedUserOwnsGamePassAsync = false 
+       for _, v in pairs(getgenv().Wevorn_NamecallMethods) do
+          if v.Method == "UserOwnsGamePassAsync" then
+             IsHookedUserOwnsGamePassAsync = true
+             break
+          end
+       end
+       if not IsHookedUserOwnsGamePassAsync then
+          getgenv().Wevorn_NamecallHooks += 1
+          table.insert(getgenv().Wevorn_NamecallMethods, {Method = "UserOwnsGamePassAsync", Class = "MarketplaceService", ReturnValue = true})
+       end
+       NewNameCall = newcclosure(function(self, ...)
+          local method = getnamecallmethod()
+          for i, v in pairs(getgenv().Wevorn_NamecallMethods) do
+             if v.Method == method and v.Class == self.ClassName then
+                return v.ReturnValue
+             end
+          end
+          return getgenv().Wevorn_OldNameCall(self, ...)
+       end)
+    end
+    if NewNameCall then
+       pcall(function()
+          setstackhidden(NewNameCall, true)
+       end)
+       mt.__namecall = NewNameCall
+    end
+    if not getgenv().Wevorn_UserOwnsGamePassAsyncHook then
+       if not getgenv().Wevorn_UserOwnsGamePassAsyncHook and getgenv().Wevorn_OldNameCall then
+          for i, v in pairs(getgenv().Wevorn_NamecallMethods) do
+             if v.Method == "UserOwnsGamePassAsync" then
+                getgenv().Wevorn_NamecallHooks -= 1
+                table.remove(getgenv().Wevorn_NamecallMethods, i)
+                break
+             end
+          end
+          if getgenv().Wevorn_OldNameCall and getgenv().Wevorn_NamecallHooks == 0 then
+             mt.__namecall = getgenv().Wevorn_OldNameCall
+          end
+       end
+    end
 end)
 
 PurchaseExploits:Toggle("All PlayerOwnsAsset functions return true (Client)",false,function(state)
-getgenv().Wevorn_AllPlayerOwnsAssetReturnTrue = state
-local mt = getrawmetatable(game)
-setreadonly(mt,false)
-local Original = mt.__namecall
-mt.__namecall = newcclosure(function(self,...)
-if getgenv().Wevorn_AllPlayerOwnsAssetReturnTrue and getnamecallmethod() == "PlayerOwnsAsset" then
-return true
-end
-return Original(self,...)
-end)
-setreadonly(mt,true)
+    getgenv().Wevorn_AllPlayerOwnsAssetReturnTrue = state
+    if getgenv().Wevorn_AllPlayerOwnsAssetReturnTrue then
+       if not getrawmetatable then
+          discord:Notification("Error", "Function getrawmetatable Is Missing", "Okay")
+          return 
+       end
+       if not setreadonly then
+          discord:Notification("Error", "Function setreadonly Is Missing", "Okay")
+          return 
+       end
+       if not getnamecallmethod then
+          discord:Notification("Error", "Function getnamecallmethod Is Missing", "Okay")
+          return 
+       end
+       if not newcclosure or FakeNewCClosure then
+          discord:Notification("Warn!", "Function newcclosure Is Missing\n(Detection Risk)", "Okay") 
+       end
+       if not setstackhidden or FakeSetStackHidden then
+          discord:Notification("Warn!", "Function setstackhidden Is Missing\n(Detection Risk)", "Okay")
+       end
+    end
+    local mt = getrawmetatable(game)
+    if not getgenv().Wevorn_OldNameCall then
+       getgenv().Wevorn_OldNameCall = mt.__namecall
+    end
+    setreadonly(mt, false)
+    local NewNameCall
+    if getgenv().Wevorn_AllPlayerOwnsAssetReturnTrue then
+       local IsHookedPlayerOwnsAsset = false 
+       for _, v in pairs(getgenv().Wevorn_NamecallMethods) do
+          if v.Method == "PlayerOwnsAsset" then
+             IsHookedPlayerOwnsAsset = true
+             break
+          end
+       end
+       if not IsHookedPlayerOwnsAsset then
+          getgenv().Wevorn_NamecallHooks += 1
+          table.insert(getgenv().Wevorn_NamecallMethods, {Method = "PlayerOwnsAsset", Class = "MarketplaceService", ReturnValue = true})
+       end
+       NewNameCall = newcclosure(function(self, ...)
+          local method = getnamecallmethod()
+          for i, v in pairs(getgenv().Wevorn_NamecallMethods) do
+             if v.Method == method and v.Class == self.ClassName then
+                return v.ReturnValue
+             end
+          end
+          return getgenv().Wevorn_OldNameCall(self, ...)
+       end)
+    end
+    if NewNameCall then
+       pcall(function()
+          setstackhidden(NewNameCall, true)
+       end)
+       mt.__namecall = NewNameCall
+    end
+    if not getgenv().Wevorn_AllPlayerOwnsAssetReturnTrue then
+       if not getgenv().Wevorn_AllPlayerOwnsAssetReturnTrue and getgenv().Wevorn_OldNameCall then
+          for i, v in pairs(getgenv().Wevorn_NamecallMethods) do
+             if v.Method == "PlayerOwnsAsset" then
+                getgenv().Wevorn_NamecallHooks -= 1
+                table.remove(getgenv().Wevorn_NamecallMethods, i)
+                break
+             end
+          end
+          if getgenv().Wevorn_OldNameCall and getgenv().Wevorn_NamecallHooks == 0 then
+             mt.__namecall = getgenv().Wevorn_OldNameCall
+          end
+       end
+   end
 end)
 
 getgenv().Wevorn_oldIsInGroup = nil
@@ -4895,14 +5201,13 @@ PurchaseExploits:Toggle("All Player.IsInGroup return true", false, function(stat
    getgenv().Wevorn_HookToggleGroup = state
    if not getgenv().Wevorn_OriginalIsInGroup then
       getgenv().Wevorn_OriginalIsInGroup = player.IsInGroup
-   end
-   hookfunction(player.IsInGroup, function(self, ...)
-      if getgenv().Wevorn_HookToggleGroup then
-         return true
-      else
+      hookfunction(player.IsInGroup, function(self, ...)
+         if getgenv().Wevorn_HookToggleGroup then
+            return true
+         end
          return getgenv().Wevorn_OriginalIsInGroup(self, ...)
-      end
-   end)
+      end)
+   end
 end)
 
 if not getgenv().Wevorn_CachePasses1 and not getgenv().Wevorn_CachePasses1 then
@@ -5213,26 +5518,77 @@ PurchaseExploits:Button("Claim Badge list In This Game", function()
    end
    PurchaseExploits:Seperator()
    
+   getgenv().Wevorn_UserHasBadgeAsyncHook = false
    PurchaseExploits:Toggle("All UserHasBadgeAsync Return True",false,function(state)
-      local mt = getrawmetatable(game)
-      setreadonly(mt,false)
-      if state then
-         if old_namecall == nil then
-            old_namecall = mt.__namecall
-         end
-         mt.__namecall = function(self,...)
-            local method = getnamecallmethod()
-            if self.ClassName == "BadgeService" and method == "UserHasBadgeAsync" then
-               return true
-            end
-            return old_namecall(self,...)
-         end
-      else
-         if old_namecall then
-            mt.__namecall = old_namecall
-         end
-      end
-      setreadonly(mt,true)
+      getgenv().Wevorn_UserHasBadgeAsyncHook = state
+       if getgenv().Wevorn_UserHasBadgeAsyncHook then
+          if not getrawmetatable then
+             discord:Notification("Error", "Function getrawmetatable Is Missing", "Okay")
+             return 
+          end
+          if not setreadonly then
+             discord:Notification("Error", "Function setreadonly Is Missing", "Okay")
+             return 
+          end
+          if not getnamecallmethod then
+             discord:Notification("Error", "Function getnamecallmethod Is Missing", "Okay")
+             return 
+          end
+          if not newcclosure or FakeNewCClosure then
+             discord:Notification("Warn!", "Function newcclosure Is Missing\n(Detection Risk)", "Okay") 
+          end
+          if not setstackhidden or FakeSetStackHidden then
+             discord:Notification("Warn!", "Function setstackhidden Is Missing\n(Detection Risk)", "Okay")
+          end
+       end
+       local mt = getrawmetatable(game)
+       if not getgenv().Wevorn_OldNameCall then
+          getgenv().Wevorn_OldNameCall = mt.__namecall
+       end
+       setreadonly(mt, false)
+       local NewNameCall
+       if getgenv().Wevorn_UserHasBadgeAsyncHook then
+          local IsHookedUserHasBadgeAsync = false 
+          for _, v in pairs(getgenv().Wevorn_NamecallMethods) do
+             if v.Method == "UserHasBadgeAsync" then
+                IsHookedUserHasBadgeAsync = true
+                break
+             end
+          end
+          if not IsHookedUserHasBadgeAsync then
+             getgenv().Wevorn_NamecallHooks += 1
+             table.insert(getgenv().Wevorn_NamecallMethods, {Method = "UserHasBadgeAsync", Class = "BadgeService", ReturnValue = true})
+          end
+          NewNameCall = newcclosure(function(self, ...)
+             local method = getnamecallmethod()
+             for i, v in pairs(getgenv().Wevorn_NamecallMethods) do
+                if v.Method == method and v.Class == self.ClassName then
+                   return v.ReturnValue
+                end
+             end
+             return getgenv().Wevorn_OldNameCall(self, ...)
+          end)
+       end
+       if NewNameCall then
+          pcall(function()
+             setstackhidden(NewNameCall, true)
+          end)
+          mt.__namecall = NewNameCall
+       end
+       if not getgenv().Wevorn_UserHasBadgeAsyncHook then
+          if not getgenv().Wevorn_UserHasBadgeAsyncHook and getgenv().Wevorn_OldNameCall then
+             for i, v in pairs(getgenv().Wevorn_NamecallMethods) do
+                if v.Method == "UserHasBadgeAsync" then
+                   getgenv().Wevorn_NamecallHooks -= 1
+                   table.remove(getgenv().Wevorn_NamecallMethods, i)
+                   break
+                end
+             end
+             if getgenv().Wevorn_OldNameCall and getgenv().Wevorn_NamecallHooks == 0 then
+                mt.__namecall = getgenv().Wevorn_OldNameCall
+             end
+          end
+       end
    end)
     
    PurchaseExploits:Dropdown("Select Your Badge...", BadgeNames, function(BD)
@@ -7325,6 +7681,11 @@ if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 81643004510026) th
    end)
 end
 
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 99715891575923) then
+   local ScamGame2Section = ScriptHub:Channel("Pop For Free")
+   ScamGame2Section:Labe("Warn: This Game Is Scam!")
+end
+
 local GameList = {
    [1] = 14236123211,
    [2] = 15108736400,
@@ -7555,7 +7916,6 @@ if SettingsWevorn["Game Scripts"] then
       TeleportService:Teleport(100422722440654, player)
       discord:Notification("Teleport...", "Teleport to Jump For UGC", "Okay")
    end)
-   
    GameListSection:Label("More Games Added Soon...")
 end
 
