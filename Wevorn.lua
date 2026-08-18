@@ -373,7 +373,7 @@ else
    discord = getgenv().Wevorn_LibCache
 end
 
-local win = discord:Window("Wevorn v1.9.4 [ScriptHub v9] [Last Update: 14.08.2026] [Day | Month | Year]")
+local win = discord:Window("Wevorn v1.9.5 [ScriptHub v10] [Last Update: 19.08.2026] [Day | Month | Year]")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local ScriptHub = win:Server("Script Hub", "http://www.roblox.com/asset/?id=117395004084347")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
@@ -383,15 +383,16 @@ SettingsSection:Label("Soon...")
 if SettingsWevorn["Change Log"] then
    local changelog = serv:Channel("Change Log")
    changelog:Label("Welcome to Wevorn! \nThis script was created by Games1799")
-   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.9.4!")
+   changelog:Label("---------------------------------------------------------------------\nReleased! Update v1.9.5!")
    changelog:Label("improved hooks by 10 times")
    changelog:Label("Bug Fixes")
    changelog:Seperator()
-   changelog:Label("Released! ScriptHub v9!")
-   changelog:Label("Added Fart Training")
-   changelog:Label("Added Break In 2")
-   changelog:Label("Added Break In 1")
-   changelog:Label("Update Case Simulator 2")
+   changelog:Label("Released! ScriptHub v10!")
+   changelog:Label("Added The troll can't destroy the second tower.")
+   changelog:Label("Added Create a drilling farm")
+   changelog:Label("Added Crush your friends")
+   changelog:Label("Added Anime Slap Tower")
+   changelog:Label("Added +1 Cut Grass Adventure")
    changelog:Seperator()
    changelog:Button("Wevorn Discord Server", function()
       setclipboard("https://discord.gg/rncd8vMV39")
@@ -748,7 +749,7 @@ if SettingsWevorn["UGC Limiteds"] then
    end)
 
    UGCLimiteds:Button("Game detected VirtualInputManager? You can try bypass it!",function()
-       loadstring(Game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/BypassVirtualInputManagerDetections.lua"))()
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/BypassVirtualInputManagerDetections.lua"))()
        discord:Notification("Bypass ending!","You can check it!","Okay")
    end)
 
@@ -1107,27 +1108,27 @@ if SettingsWevorn["UGC Limiteds"] then
        end)
 
        UGCLimiteds:Toggle("Auto Purchaser V4 (Only BULK)",false,function(state)
-               if state then
-                      discord:Notification("Waiting","Waiting for any free UGC item to be prompted...","Okay!")
-                      local ___con = MarketplaceService.PromptBulkPurchaseRequested:Connect(function(...)
-                      local w = {...}
-                      local PurchaseOrderQuest = w[3] or {}
-                      local PurchasOptions = w[6] or {}
-                      print("PurchaseOrderQuest — "..PurchaseOrderQuest)
-                      print("PurchasOptions — "..PurchasOptions)
-                      warn("ITEM TO PURCHASE!")
-                      if getgenv().Wevorn_OpenConsole then 
-                               local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
-                               VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
-                               task.wait(0.01)
-                               VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
-                       end
-                               setthreadidentity(7)
-                               MarketplaceService:PerformBulkPurchase(PurchaseOrderQuest,PurchasOptions)
-                       end)
-               else
-                       ___con:Disconnect()
-               end
+          if state then
+             discord:Notification("Waiting","Waiting for any free UGC item to be prompted...","Okay!")
+             local ___con = MarketplaceService.PromptBulkPurchaseRequested:Connect(function(...)
+                local w = {...}
+                local PurchaseOrderQuest = w[3] or {}
+                local PurchasOptions = w[6] or {}
+                print("PurchaseOrderQuest — "..PurchaseOrderQuest)
+                print("PurchasOptions — "..PurchasOptions)
+                warn("ITEM TO PURCHASE!")
+                if getgenv().Wevorn_OpenConsole then 
+                   local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
+                   VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
+                   task.wait(0.01)
+                    VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
+                 end
+                 setthreadidentity(7)
+                 MarketplaceService:PerformBulkPurchase(PurchaseOrderQuest,PurchasOptions)
+              end)
+           else
+               ___con:Disconnect()
+           end
        end)
        
        UGCLimiteds:Seperator()
@@ -1550,25 +1551,24 @@ if SettingsWevorn["Remotes"] then
        end)
     end)
 
-if not BindableRemoteEventToggle then
-Remotes:Toggle("Enable BindableRemoteEvent",false,function(state)
-if state then 
-BindableRemoteEventToggle = true 
-else
-BindableRemoteEventToggle = false
-end
-end)
-end
-
-if not BindableFunctionToggle then
-Remotes:Toggle("Enable BindableFunction",false,function(state)
-if state then
-BindableFunctionToggle = true
-else 
-BindableFunctionToggle = false
-end
-end)
-end
+   if not BindableRemoteEventToggle then
+      Remotes:Toggle("Enable BindableRemoteEvent",false,function(state)
+         if state then 
+            BindableRemoteEventToggle = true 
+         else
+            BindableRemoteEventToggle = false
+         end
+      end)
+   end
+   if not BindableFunctionToggle then
+      Remotes:Toggle("Enable BindableFunction",false,function(state)
+        if state then
+           BindableFunctionToggle = true
+        else 
+           BindableFunctionToggle = false
+        end
+     end)
+  end
 
 Remotes:Toggle("Loop Fire All Remotes",false,function(state)
 if state then
@@ -1879,113 +1879,124 @@ end
 end)
 
 Remotes:Button("Print All Remotes (Includes Path)",function()
-for i, v in ipairs(game:GetDescendants()) do
-if v:IsA("RemoteEvent") then
-print(i.." — RemoteEvent "..v:GetFullName())
-elseif v:IsA("RemoteFunction") then
-print(i.." — RemoteFunction "..v:GetFullName())
-elseif v:IsA("UnreliableRemoteEvent") then
-print(i.." — UnreliableRemoteEvent "..v:GetFullName())
-elseif v:IsA("BindableEvent") then
-print(i.." — BindableEvent "..v:GetFullName())
-elseif v:IsA("BindableFunction") then
-print(i.." — BindableFunction "..v:GetFullName())
-end
-end
-local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
-VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
-task.wait(0.01)
-VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
+   for i, v in ipairs(game:GetDescendants()) do
+      if v:IsA("RemoteEvent") then
+         print(i.." — RemoteEvent "..v:GetFullName())
+      elseif v:IsA("RemoteFunction") then
+         print(i.." — RemoteFunction "..v:GetFullName())
+      elseif v:IsA("UnreliableRemoteEvent") then
+         print(i.." — UnreliableRemoteEvent "..v:GetFullName())
+      elseif v:IsA("BindableEvent") then
+         print(i.." — BindableEvent "..v:GetFullName())
+      elseif v:IsA("BindableFunction") then
+        print(i.." — BindableFunction "..v:GetFullName())
+      end
+   end
+   local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
+   VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
+   task.wait(0.01)
+   VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
 end)
 
 Remotes:Button("Show Number Remotes",function()
-if not getgenv().Wevorn_EnableNumber then
-getgenv().Wevorn_EnableNumber = true
-Number1 = 0
-Number2 = 0
-Number3 = 0
-Number4 = 0
-Number5 = 0
-Number6 = 0
-for _, v in ipairs(game:GetDescendants()) do
-if v:IsA("RemoteEvent") then Number1 = Number1 + 1
-elseif v:IsA("RemoteFunction") then Number2 = Number2 + 1
-elseif v:IsA("UnreliableRemoteEvent") then Number3 = Number3 + 1
-elseif v:IsA("BindableEvent") then Number4 = Number4 + 1
-elseif v:IsA("BindableFunction") then Number5 = Number5 + 1
-end
-end
-Number6 = Number1 + Number2 + Number3 + Number4 + Number5
-Remotes:Label("There are "..Number1.." RemoteEvents in this game")
-Remotes:Label("There are "..Number2.." RemoteFunctions in this game")
-Remotes:Label("There are "..Number3.." UnreliableRemoteEvents in this game")
-Remotes:Label("There are "..Number4.." BindableEvents in this game")
-Remotes:Label("There are "..Number5.." BindableFunctions in this game")
-Remotes:Label("There are "..Number6.." Remotes in this game")
-Remotes:Button("Copy Number RemoteEvents",function() setclipboard(Number1) end)
-Remotes:Button("Copy Number RemoteFunctions",function() setclipboard(Number2) end)
-Remotes:Button("Copy Number UnreliableRemoteEvents",function() setclipboard(Number3) end)
-Remotes:Button("Copy Number BindableEvents",function() setclipboard(Number4) end)
-Remotes:Button("Copy Number BindableFunctions",function() setclipboard(Number5) end)
-Remotes:Button("Copy Number Remotes",function() setclipboard(Number6) end)
-discord:Notification("Success","Remotes Counted!","Okay!")
-else
-discord:Notification("Failed","Remotes Already Counted!","Okay!")
-end 
+   if not getgenv().Wevorn_EnableNumber then
+      getgenv().Wevorn_EnableNumber = true
+      Number1, Number2, Number3, Number4, Number5, Number6 = 0,0,0,0,0,0
+      for _, v in ipairs(game:GetDescendants()) do
+        if v:IsA("RemoteEvent") then 
+           Number1 = Number1 + 1
+        elseif v:IsA("RemoteFunction") then 
+           Number2 = Number2 + 1
+        elseif v:IsA("UnreliableRemoteEvent") then 
+           Number3 = Number3 + 1
+        elseif v:IsA("BindableEvent") then 
+           Number4 = Number4 + 1
+        elseif v:IsA("BindableFunction") then
+           Number5 = Number5 + 1
+        end
+     end
+     Number6 = Number1 + Number2 + Number3 + Number4 + Number5
+     Remotes:Label("There are "..Number1.." RemoteEvents in this game")
+     Remotes:Label("There are "..Number2.." RemoteFunctions in this game")
+     Remotes:Label("There are "..Number3.." UnreliableRemoteEvents in this game")
+     Remotes:Label("There are "..Number4.." BindableEvents in this game")
+     Remotes:Label("There are "..Number5.." BindableFunctions in this game")
+     Remotes:Label("There are "..Number6.." Remotes in this game")
+     Remotes:Button("Copy Number RemoteEvents",function() setclipboard(Number1) end)
+     Remotes:Button("Copy Number RemoteFunctions",function() setclipboard(Number2) end)
+     Remotes:Button("Copy Number UnreliableRemoteEvents",function() setclipboard(Number3) end)
+     Remotes:Button("Copy Number BindableEvents",function() setclipboard(Number4) end)
+     Remotes:Button("Copy Number BindableFunctions",function() setclipboard(Number5) end)
+     Remotes:Button("Copy Number Remotes",function() setclipboard(Number6) end)
+     discord:Notification("Success","Remotes Counted!","Okay!")
+  else
+      discord:Notification("Failed","Remotes Already Counted!","Okay!")
+  end 
 end)
 
 Remotes:Seperator()
 
 Remotes:Textbox("Do you want use your fire remotes method?","Enter your method",false, function(YourMethod)
-getgenv().Wevorn_YourFireRemotesMethod = YourMethod 
+   local ArgsFunc = loadstring("return " .. YourMethod)
+   local Res = table.pack(pcall(ArgsFunc))
+   if Res[1] then
+       local Results = table.pack(table.unpack(Res, 2, Res.n))
+       getgenv().Wevorn_YourFireRemotesMethod = Results
+   end
 end)
 
 Remotes:Toggle("I want use table in my method",false,function(state)
-getgenv().Wevorn_UseTableInMyFireRemotesMethod = state
+   getgenv().Wevorn_UseTableInMyFireRemotesMethod = state
 end)
 
 Remotes:Button("Fire All Remotes On My Method",function()
-if not getgenv().Wevorn_UseTableInMyFireRemotesMethod then
-FireRemotes(tostring(getgenv().Wevorn_YourFireRemotesMethod))
-else
-_FireRemotes(tostring(getgenv().Wevorn_YourFireRemotesMethod))
-end
+   if not getgenv().Wevorn_UseTableInMyFireRemotesMethod then
+      FireRemotes(getgenv().Wevorn_YourFireRemotesMethod)
+   else
+      _FireRemotes(getgenv().Wevorn_YourFireRemotesMethod)
+   end
 end)
 
 Remotes:Button("Fire selected remote on my method",function()
-if not getgenv().Wevorn_SelectRemote then discord:Notification("Edror","Select Remote!","Okay!") return end
-if not getgenv().Wevorn_UseTableInMyFireRemotesMethod then
-__FireRemotes(getgenv().Wevorn_SelectRemote,tostring(getgenv().Wevorn_YourFireRemotesMethod))
-else
-___FireRemotes(getgenv().Wevorn_SelectRemote,tostring(getgenv().Wevorn_YourFireRemotesMethod))
-end
+   if not getgenv().Wevorn_SelectRemote then 
+      discord:Notification("Error","Select Remote!","Okay!") 
+      return 
+   end
+   local Args = getgenv().Wevorn_YourFireRemotesMethod
+   if not getgenv().Wevorn_UseTableInMyFireRemotesMethod then
+      __FireRemotes(getgenv().Wevorn_SelectRemote, table.unpack(Args, 1, Args.n))
+   else
+      ___FireRemotes(getgenv().Wevorn_SelectRemote, table.unpack(Args, 1, Args.n))
+   end
 end)
-
+-- Доделать тут
 Remotes:Toggle("Loop Fire All Remotes on your method",false,function(state)
-getgenv().Wevorn_LoopFireAllRemotesOnYourMethod = state
-if state then
-getgenv().Wevorn_NotificationRemotes = false
-while getgenv().Wevorn_LoopFireAllRemotesOnYourMethod and task.wait() do
-if not getgenv().Wevorn_UseTableInMyFireRemotesMethod then
-FireRemotes(tostring(getgenv().Wevorn_YourFireRemotesMethod))
-else
-_FireRemotes(tostring(getgenv().Wevorn_YourFireRemotesMethod))
-end
-end
-else
-getgenv().Wevorn_NotificationRemotes = true
-end
+   getgenv().Wevorn_LoopFireAllRemotesOnYourMethod = state
+   if state then
+      getgenv().Wevorn_NotificationRemotes = false
+      while getgenv().Wevorn_LoopFireAllRemotesOnYourMethod and task.wait() do
+         local Args = getgenv().Wevorn_YourFireRemotesMethod
+         if not getgenv().Wevorn_UseTableInMyFireRemotesMethod then
+            FireRemotes(table.unpack(Args, 1, Args.n))
+         else
+            _FireRemotes(table.unpack(Args, 1, Args.n))
+         end
+      end
+   else
+      getgenv().Wevorn_NotificationRemotes = true
+   end
 end)
 
 Remotes:Toggle("Loop Fire Selected Remote on your method",false,function(state)
-getgenv().Wevorn_LoopFireRemoteOnYourMethod = state
-while getgenv().Wevorn_LoopFireRemoteOnYourMethod and task.wait() do
-if not getgenv().Wevorn_UseTableInMyFireRemotesMethod then
-__FireRemotes(getgenv().Wevorn_SelectRemote,tostring(getgenv().Wevorn_YourFireRemotesMethod))
-else
-___FireRemotes(getgenv().Wevorn_SelectRemote,tostring(getgenv().Wevorn_YourFireRemotesMethod))
-end
-end
+   getgenv().Wevorn_LoopFireRemoteOnYourMethod = state
+   while getgenv().Wevorn_LoopFireRemoteOnYourMethod and task.wait() do
+      local Args = getgenv().Wevorn_YourFireRemotesMethod
+      if not getgenv().Wevorn_UseTableInMyFireRemotesMethod then
+         __FireRemotes(getgenv().Wevorn_SelectRemote, table.unpack(Args, 1, Args.n))
+      else
+         ___FireRemotes(getgenv().Wevorn_SelectRemote, table.unpack(Args, 1, Args.n))
+      end
+   end
 end)
 
 --[[ 
@@ -2154,64 +2165,61 @@ if SettingsWevorn["Games"] then
       PlaceIds = getgenv().Wevorn_PlaceCache2 
    end
    local Select 
-   
-      Games:Dropdown("Subplaces/Hidden Games List",Places,function(x)
-         local index = nil
-         Select = x
-         for i, v in ipairs(Places) do
-            if v == x then
-               index = i 
-               task.wait()
-               break
-            end
+   Games:Dropdown("Subplaces/Hidden Games List",Places,function(x)
+      local index = nil
+      Select = x
+      for i, v in ipairs(Places) do
+         if v == x then
+            index = i 
+            task.wait()
+            break
          end
-
-         local function TeleportNotification()
-            discord:Notification("Teleporting","Teleporting to...\n" .. x .. "\nGame ID: " .. _PlaceId,"Okay!")
+      end
+      local function TeleportNotification()
+         discord:Notification("Teleporting","Teleporting to...\n" .. x .. "\nGame ID: " .. _PlaceId,"Okay!")
+      end
+      if index then
+         _PlaceId = PlaceIds[index]
+         if getgenv().Wevorn_GamesMethod == "Teleport" then
+            TeleportNotification()
+            TeleportService:Teleport(_PlaceId, player)
+         elseif getgenv().Wevorn_GamesMethod == "Copy Script" then 
+            setclipboard('game:GetService("TeleportService"):Teleport('.. _PlaceId.. ',game.Players.LocalPlayer)')
+         elseif getgenv().Wevorn_GamesMethod == "Copy Script and Teleport" then
+            setclipboard('game:GetService("TeleportService"):Teleport('.. _PlaceId.. ',game.Players.LocalPlayer)')
+            TeleportNotification()
+            task.wait(0.3)
+            TeleportService:Teleport(_PlaceId,Players.LocalPlayer)
+        elseif getgenv().Wevorn_GamesMethod == "Copy Subplace Id" then 
+            setclipboard(_PlaceId)
+        elseif getgenv().Wevorn_GamesMethod == "Copy Game Link"  then
+           setclipboard("http://roblox.com/games/".. tostring(_PlaceId))
+        elseif getgenv().Wevorn_GamesMethod == "Copy Game Description" then 
+            local d_info = MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset)
+            setclipboard(tostring(d_info.Description) or "nil")
+         elseif getgenv().Wevorn_GamesMethod == "Copy Time Create" then
+            setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).Created:gsub("T"," "):gsub("Z",""):gsub("%.%d+","").." UTC")
+         elseif getgenv().Wevorn_GamesMethod == "Copy Last Time Update" then
+            setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).Updated:gsub("T"," "):gsub("Z",""):gsub("%.%d+","").." UTC")
+         elseif getgenv().Wevorn_GamesMethod == "Copy Creator Name" then
+            setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).Creator.Name)
+         elseif getgenv().Wevorn_GamesMethod == "Copy Creator Id" then
+            setclipboard((MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).Creator or {}).Id or "N/A")
+         elseif getgenv().Wevorn_GamesMethod == "Copy Creator CreatorType" then
+            setclipboard((MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).Creator or {}).CreatorType or "N/A")
+         elseif getgenv().Wevorn_GamesMethod == "Copy Content Rating" then
+            setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).ContentRating or "N/A")
+         elseif getgenv().Wevorn_GamesMethod == "Copy Place Name" then
+            setclipboard(tostring(Select))
+         elseif getgenv().Wevorn_GamesMethod == "Copy Icon Id" then
+            setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).IconImageAssetId)
+         elseif getgenv().Wevorn_GamesMethod == "Copy Icon URL" then
+            setclipboard("https://www.roblox.com/asset/?id=" .. MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).IconImageAssetId)
+         elseif getgenv().Wevorn_GamesMethod == "Copy Minimum Membership Level" then
+            setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).MinimumMembershipLevel)
+         elseif getgenv().Wevorn_GamesMethod == "Copy Game Genre" then
+            setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).Genre or "N/A")
          end
-
-         if index then
-            _PlaceId = PlaceIds[index]
-            if getgenv().Wevorn_GamesMethod == "Teleport" then
-               TeleportNotification()
-               TeleportService:Teleport(_PlaceId, player)
-            elseif getgenv().Wevorn_GamesMethod == "Copy Script" then 
-               setclipboard('game:GetService("TeleportService"):Teleport('.. _PlaceId.. ',game.Players.LocalPlayer)')
-            elseif getgenv().Wevorn_GamesMethod == "Copy Script and Teleport" then
-               setclipboard('game:GetService("TeleportService"):Teleport('.. _PlaceId.. ',game.Players.LocalPlayer)')
-               TeleportNotification()
-               task.wait(0.3)
-               TeleportService:Teleport(_PlaceId,Players.LocalPlayer)
-           elseif getgenv().Wevorn_GamesMethod == "Copy Subplace Id" then 
-               setclipboard(_PlaceId)
-           elseif getgenv().Wevorn_GamesMethod == "Copy Game Link"  then
-              setclipboard("http://roblox.com/games/".. tostring(_PlaceId))
-           elseif getgenv().Wevorn_GamesMethod == "Copy Game Description" then 
-               local d_info = MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset)
-               setclipboard(tostring(d_info.Description) or "nil")
-            elseif getgenv().Wevorn_GamesMethod == "Copy Time Create" then
-               setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).Created:gsub("T"," "):gsub("Z",""):gsub("%.%d+","").." UTC")
-            elseif getgenv().Wevorn_GamesMethod == "Copy Last Time Update" then
-               setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).Updated:gsub("T"," "):gsub("Z",""):gsub("%.%d+","").." UTC")
-            elseif getgenv().Wevorn_GamesMethod == "Copy Creator Name" then
-               setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).Creator.Name)
-            elseif getgenv().Wevorn_GamesMethod == "Copy Creator Id" then
-               setclipboard((MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).Creator or {}).Id or "N/A")
-            elseif getgenv().Wevorn_GamesMethod == "Copy Creator CreatorType" then
-               setclipboard((MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).Creator or {}).CreatorType or "N/A")
-            elseif getgenv().Wevorn_GamesMethod == "Copy Content Rating" then
-               setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).ContentRating or "N/A")
-            elseif getgenv().Wevorn_GamesMethod == "Copy Place Name" then
-               setclipboard(tostring(Select))
-            elseif getgenv().Wevorn_GamesMethod == "Copy Icon Id" then
-               setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).IconImageAssetId)
-            elseif getgenv().Wevorn_GamesMethod == "Copy Icon URL" then
-               setclipboard("https://www.roblox.com/asset/?id=" .. MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).IconImageAssetId)
-            elseif getgenv().Wevorn_GamesMethod == "Copy Minimum Membership Level" then
-               setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).MinimumMembershipLevel)
-            elseif getgenv().Wevorn_GamesMethod == "Copy Game Genre" then
-               setclipboard(MarketplaceService:GetProductInfo(_PlaceId, Enum.InfoType.Asset).Genre or "N/A")
-            end
       end
       task.wait()
    end)
@@ -2315,32 +2323,34 @@ if SettingsWevorn["Games"] then
       end
    end)
 
-Games:Button("Teleport To Smaller Server",function()
-local server = "https://games.roblox.com/v1/games/"..PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
-local SmallerServer, Next
-repeat 
-local url = server
-if Next then url = url.."&cursor="..Next end
-local Servers = game:HttpGet(url,true)
-local _Servers = HttpService:JSONDecode(Servers)
-if _Servers.data and #_Servers.data > 0 then
-for _, v in ipairs(_Servers.data) do
-if v.playing < v.maxPlayers then 
-if not SmallerServer or v.playing < SmallerServer.playing then
-SmallerServer = v
-end
-end
-end
-end
-Next = _Servers.nextPageCursor
-until not Next
-if SmallerServer then
-discord:Notification("Teleporting","Teleporting to...\n"..PlaceId.."\nJob ID: "..SmallerServer.id,"Okay!")
-TeleportService:TeleportToPlaceInstance(PlaceId,SmallerServer.id,game.Players.LocalPlayer)
-else
-discord:Notification("Error","Server Not Found","Okay...")
-end
-end)
+   Games:Button("Teleport To Smaller Server",function()
+      local server = "https://games.roblox.com/v1/games/"..PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
+      local SmallerServer, Next
+      repeat 
+         local url = server
+         if Next then 
+            url = url.."&cursor="..Next 
+         end
+         local Servers = game:HttpGet(url,true)
+         local _Servers = HttpService:JSONDecode(Servers)
+         if _Servers.data and #_Servers.data > 0 then
+            for _, v in ipairs(_Servers.data) do
+               if v.playing < v.maxPlayers then 
+                  if not SmallerServer or v.playing < SmallerServer.playing then
+                     SmallerServer = v
+                   end
+                end
+             end
+          end
+          Next = _Servers.nextPageCursor
+       until not Next
+       if SmallerServer then
+          discord:Notification("Teleporting","Teleporting to...\n"..PlaceId.."\nJob ID: "..SmallerServer.id,"Okay!")
+          TeleportService:TeleportToPlaceInstance(PlaceId,SmallerServer.id,game.Players.LocalPlayer)
+       else
+          discord:Notification("Error","Server Not Found","Okay...")
+       end
+   end)
 
    Games:Button("Teleport To Largest Server",function()
       local server = "https://games.roblox.com/v1/games/"..PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
@@ -4211,7 +4221,7 @@ if SettingsWevorn["Player"] then
    PlayerSection:Seperator()
 
    PlayerSection:Label("Current UserId:\n" .. LocalUserId)
-   PlayerSection:Label("Current Account Age:\n" .. LocalAge .. " days")
+   PlayerSection:Label("Current Account Age:\n" .. LocalAge .. (LocalAge == 1 and " day" or " days"))
 
    pcall(function()
       PlayerSection:Label("Current Roblox Hwid:\n" .. cloneref(game:GetService("RbxAnalyticsService")):GetClientId())
@@ -7686,6 +7696,166 @@ if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 99715891575923) th
    ScamGame2Section:Labe("Warn: This Game Is Scam!")
 end
 
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 83312952548612) then
+   local TCDTSection = ScriptHub:Channel("Troll can't destroy tower")
+   TCDTSection:Button("Teleport To The end", function()
+      game.Players.LocalPlayer.Character:PivotTo(CFrame.new(Vector3.new(276.694000, 347.146271, -33.240269)))
+   end)
+end
+
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 79315121100812) then
+   local CreateBFSection = ScriptHub:Channel("Create a drilling farm")
+   getgenv().Wevorn_AutoMiner = false
+   getgenv().Wevorn_AutoCollectOrder = false
+   getgenv().Wevorn_AutoUpLuckSpin = false
+   getgenv().Wevorn_AutoUpOresPerHit = false
+   getgenv().Wevorn_AutoUpLuckOre = false
+   getgenv().Wevorn_AutoUpSlots = false
+   CreateBFSection:Toggle("Auto Miner", false, function(state)
+      getgenv().Wevorn_AutoMiner = state
+      while getgenv().Wevorn_AutoMiner and task.wait(0.2) do
+         fireproximityprompt(workspace.Map.Bases:FindFirstChild("Player_".. tostring(player.UserId)).Minecart.Main.CollectPromptAttach.CollectOresPrompt)
+      end
+   end)
+   CreateBFSection:Toggle("Auto Collect Order", false, function(state)
+      getgenv().Wevorn_AutoCollectOrder = state
+      while getgenv().Wevorn_AutoCollectOrder and task.wait(0.2) do
+         for _, v in ipairs(workspace.Map.Bases:FindFirstChild("Player_".. tostring(player.UserId)).Miner:GetDescendants()) do
+            if v:IsA("ProximityPrompt") and v.Name == "DepositOresPrompt" and v.Parent.Name == "Attachment" then
+               fireproximityprompt(v)
+            end
+         end
+      end
+   end)
+   CreateBFSection:Toggle("Auto Upgrade Spots", false, function(state)
+      getgenv().Wevorn_AutoUpSlots = state
+      while getgenv().Wevorn_AutoUpLuckOre and task.wait(1) do
+         ReplicatedStorage.Source.Packages["_Index"]["sleitnick_knit@1.5.1"].knit.Services.SpinDrillService.RF.UpgradeSpots:InvokeServer()
+      end
+   end)
+   CreateBFSection:Toggle("Auto Upgrade Spin Luck", false, function(state)
+      getgenv().Wevorn_AutoUpLuckSpin = state
+      while getgenv().Wevorn_AutoUpLuckSpin and task.wait(1) do
+         ReplicatedStorage.Source.Packages["_Index"]["sleitnick_knit@1.5.1"].knit.Services.PlotService.RF.UpgradeMinerLuck:InvokeServer()
+      end
+   end)
+   CreateBFSection:Toggle("Auto Upgrade Ore Luck", false, function(state)
+      getgenv().Wevorn_AutoUpLuckOre = state
+      while getgenv().Wevorn_AutoUpLuckOre and task.wait(1) do
+         ReplicatedStorage.Source.Packages["_Index"]["sleitnick_knit@1.5.1"].knit.Services.SpinDrillService.RF.UpgradeLuck:InvokeServer()
+      end
+   end)
+   CreateBFSection:Toggle("Auto Upgrade Ores Per Hit", false, function(state)
+      getgenv().Wevorn_AutoUpOresPerHit = state
+      while getgenv().Wevorn_AutoUpOresPerHit and task.wait(1) do
+         ReplicatedStorage.Source.Packages["_Index"]["sleitnick_knit@1.5.1"].knit.Services.PlotService.RF.UpgradeOresPerHit:InvokeServer()
+      end
+   end)
+end
+
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 126881587516442) then
+   local CrushFriendsSection = ScriptHub:Channel("Crush your friends")
+   getgenv().Wevorn_AutoCoins = false
+   CreateBFSection:Toggle("Auto Coins (OP)", false, function(state)
+      getgenv().Wevorn_AutoCoins = state
+      while getgenv().Wevorn_AutoCoins and task.wait(1) do
+         ReplicatedStorage.Remotes.FinishedRagdoll:FireServer(9e9)
+      end
+   end)
+end
+
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 93665675606483) then
+   local UGCLimitedObbySection = ScriptHub:Channel("UGC Limited Obby")
+   local TableNMS = {"EasyWin", "MediumWin", "HardWin", "ImpossibleWin"}
+   for _, v in pairs(TableNMS) do
+      UGCLimitedObbySection:Button("Complete ".. tostring(string.sub(v, 1, #v - 3)), function()
+         firetouchinterest(player.Character.HumanoidRootPart, workspace:FindFirstChild(tostring(v)), 1)
+         firetouchinterest(player.Character.HumanoidRootPart, workspace:FindFirstChild(tostring(v)), 0)
+      end)
+   end
+end
+
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 100055483398966) then
+   local AnimeSlapTowerSection = ScriptHub:Channel("Anime Slap Tower")
+   AnimeSlapTowerSection:Button("Teleport To The End", function()
+      player.Character:PivotTo(workspace.Fin:GetPivot())
+   end)
+   getgenv().Wevorn_AutoTpToTheEnd = false
+   AnimeSlapTowerSection:Toggle("Auto Teleport To The End", false, function(state)
+      getgenv().Wevorn_AutoTpToTheEnd = state
+      while getgenv().Wevorn_AutoTpToTheEnd and task.wait() do
+         local Character = player.Character or player.Characteraded:Wait()
+         if Character and Character:IsDescendantOf(workspace) then
+            Character:PivotTo(workspace.Fin:GetPivot())
+         end
+      end
+   end)
+end
+
+-- Pets Go
+-- Auto Collect Fruits
+--[[
+if workspace and workspace:FindFirstChild("__THINGS") and workspace.__THINGS:FindFirstChild("Breakables") then
+   for _, v in ipairs(workspace.__THINGS.Breakables:GetChildren()) do
+      if v:FindFirstChild("base") and v.base:FindFirstChild("Hitbox") and v:IsA("Model") then
+         v:PivotTo(game.Players.LocalPlayer.Character:GetPivot())
+         task.wait()
+         fireclickdetector(v.base.Hitbox.ClickDetector)
+      end
+   end
+end
+]]
+
+if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 90086669327265) then
+   local CutGrassSection = ScriptHub:Channel("+1 Cut Grass Adventure")
+   getgenv().Wevorn_AutoClick = false
+   getgenv().Wevorn_AutoRebirth = false
+   getgenv().Wevorn_AutoSell = false
+   getgenv().Wevorn_AutoNoclip = false
+   CutGrassSection:Toggle("Auto Click", false, function(state)
+      getgenv().Wevorn_AutoClick = state
+      while getgenv().Wevorn_AutoClick and task.wait() do
+         ReplicatedStorage.Packages["_Index"]["acecateer_knit@1.7.2"].knit.Services.StrengthService.RE.ClickRequested:FireServer()
+      end
+   end)
+   CutGrassSection:Toggle("Auto Rebirth", false, function(state)
+      getgenv().Wevorn_AutoRebirth = state
+      while getgenv().Wevorn_AutoRebirth and task.wait(1) do
+         ReplicatedStorage.Packages["_Index"]["acecateer_knit@1.7.2"].knit.Services.RebirtService.RE.RebirthButtonClicked:FireServer()
+      end
+   end)
+   CutGrassSection:Toggle("Auto Attack", false, function(state)
+      getgenv().Wevorn_AutoAttack = state
+      while getgenv().Wevorn_AutoAttack and task.wait() do
+         ReplicatedStorage.Packages["_Index"]["acecateer_knit@1.7.2"].knit.Services.AttackService.RE.AttackRequested:FireServer()
+      end
+   end)
+   CutGrassSection:Toggle("Auto Sell", false, function(state)
+      getgenv().Wevorn_AutoSell = state
+      while getgenv().Wevorn_AutoSell and task.wait(1) do
+         ReplicatedStorage.Packages["_Index"]["acecateer_knit@1.7.2"].knit.Services.DataService.RF.SellAllBackpackLoot:InvokeServer()
+      end
+   end)
+   CutGrassSection:Toggle("Noclip", false, function(state)
+      getgenv().Wevorn_AutoNoclip = state
+      if getgenv().Wevorn_AutoNoclip then
+         local Character = player.Character or player.Characteraded:Wait()
+         for _, v in ipairs(Character:GetChildren()) do
+            if v:IsA("BasePart") then
+               v.CanCollide = false
+            end
+         end
+      else
+         local Character = player.Character or player.Characteraded:Wait()
+         for _, v in ipairs(Character:GetChildren()) do
+            if v:IsA("BasePart") then
+               v.CanCollide = true
+            end
+         end
+      end
+   end)
+end
+
 local GameList = {
    [1] = 14236123211,
    [2] = 15108736400,
@@ -7733,7 +7903,7 @@ if SettingsWevorn["Game Scripts"] then
    local GameListSection = ScriptHub:Channel("Game Scripts")
    GameListSection:Label("Wevorn Also Supported Another Games.")
     
-    GameListSection:Seperator()
+   GameListSection:Seperator()
 
    GameListSection:Textbox("Do you want to offer a game? Write it here and submit or join In\ndiscord server and suggest games there in unlimited quantity", "Enter Game Name Here...", false, function(IdkGame)
       getgenv().Wevorn_Feedback = tostring(IdkGame)
@@ -7762,6 +7932,31 @@ if SettingsWevorn["Game Scripts"] then
    end)
     
    GameListSection:Label("Scripts For Games")
+   
+   GameListSection:Button("+1 Cut Grass Adventure", function()
+      TeleportService:Teleport(90086669327265, player)
+      discord:Notification("Teleport...", "Teleport to +1 Cut Grass Adventure", "Okay")
+   end)
+   
+   GameListSection:Button("Anime Slap Tower", function()
+      TeleportService:Teleport(100055483398966, player)
+      discord:Notification("Teleport...", "Teleport to Anime Slap Tower", "Okay")
+   end)
+   
+   GameListSection:Button("Crush your friends", function()
+      TeleportService:Teleport(126881587516442, player)
+      discord:Notification("Teleport...", "Teleport to Crush your friends", "Okay")
+   end)
+   
+   GameListSection:Button("Create a drilling farm", function()
+      TeleportService:Teleport(79315121100812, player)
+      discord:Notification("Teleport...", "Teleport to Create a drilling farm", "Okay")
+   end)
+   
+   GameListSection:Button("The troll can't destroy the second tower.", function()
+      TeleportService:Teleport(83312952548612, player)
+      discord:Notification("Teleport...", "Teleport to The troll can't destroy the second tower.", "Okay")
+   end)
    
    GameListSection:Button("Fart Training", function()
       TeleportService:Teleport(81643004510026, player)
@@ -7915,6 +8110,11 @@ if SettingsWevorn["Game Scripts"] then
    GameListSection:Button("Jump For UGC", function()
       TeleportService:Teleport(100422722440654, player)
       discord:Notification("Teleport...", "Teleport to Jump For UGC", "Okay")
+   end)
+   
+   GameListSection:Button("UGC Limited Obby", function()
+      TeleportService:Teleport(93665675606483, player)
+      discord:Notification("Teleport...", "Teleport to UGC Limited Obby", "Okay")
    end)
    GameListSection:Label("More Games Added Soon...")
 end
