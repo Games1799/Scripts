@@ -31,7 +31,7 @@ if not isexecutorclosure then
    end
 end
 local tbl = {}
-local function checkmt(mt: table, name: string)
+local function checkmt(mt: table, name: string?): nil
    for i, v in pairs(mt) do
       if type(v) == "table" then
          if metamethods[i] then
