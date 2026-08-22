@@ -30,27 +30,32 @@ if not isexecutorclosure then
       return false
    end
 end
-local tbl, visited = {}, {}
-local function func(table2: table, name: string?): nil
-   if visited[table2] then
-      return 
-   end
-   visited[table2] = true
-   for i, v in pairs(table2) do
+local tbl = {}
+local function checkmt(mt: table, name: string)
+   for i, v in pairs(mt) do
       if type(v) == "table" then
          if metamethods[i] then
-            func(v, name)
+            checkmt(v, name)
          else
-            func(v, name .. tostring(i) .. ".")
+            checkmt(v, name .. tostring(i) .. ".")
          end
+      elseif type(v) == "function" and isexecutorclosure(v) then
+         table.insert(tbl, name .. tostring(i))
+      end
+   end
+end
+local function func(table2: table, name: string?): nil
+   for i, v in pairs(table2) do
+      if type(v) == "table" then
+         func(v, name .. tostring(i) .. ".")
       elseif type(v) == "function" then
          table.insert(tbl, name .. tostring(i))
       end
    end
-   if getrawmetatable then 
+   if getrawmetatable then
       local mt = getrawmetatable(table2)
       if mt then
-         func(mt, name)
+         checkmt(mt, name)
       end
    end
 end
