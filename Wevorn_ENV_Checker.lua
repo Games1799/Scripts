@@ -5,7 +5,7 @@
 ██║░░╚██╗██╔══██║██║╚██╔╝██║██╔══╝░░░╚═══██╗
 ╚██████╔╝██║░░██║██║░╚═╝░██║███████╗██████╔╝
  ░╚═════╝░╚═╝░░╚═╝╚═╝░░░░░╚═╝╚══════╝╚═════╝░
-]]-- Wevorn ENV Checker V1
+]]-- Wevorn ENV Checker V2
 
 if type(workspace) ~= "userdata" then while true do end end
 if type(game) ~= "userdata" then while true do end end
