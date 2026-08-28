@@ -373,7 +373,7 @@ else
    discord = getgenv().Wevorn_LibCache
 end
 
-local win = discord:Window("Wevorn v1.9.5 [ScriptHub v10] [Last Update: 19.08.2026] [Day | Month | Year]")
+local win = discord:Window("Wevorn v1.9.5 [ScriptHub v11] [Last Update: 28.08.2026] [Day | Month | Year]")
 local serv = win:Server("Wevorn", "http://www.roblox.com/asset/?id=6031075938")
 local ScriptHub = win:Server("Script Hub", "http://www.roblox.com/asset/?id=117395004084347")
 local serv2 = win:Server("Settings", "http://www.roblox.com/asset/?id=4492476121")
@@ -387,12 +387,10 @@ if SettingsWevorn["Change Log"] then
    changelog:Label("improved hooks by 10 times")
    changelog:Label("Bug Fixes")
    changelog:Seperator()
-   changelog:Label("Released! ScriptHub v10!")
-   changelog:Label("Added The troll can't destroy the second tower.")
-   changelog:Label("Added Create a drilling farm")
-   changelog:Label("Added Crush your friends")
-   changelog:Label("Added Anime Slap Tower")
-   changelog:Label("Added +1 Cut Grass Adventure")
+   changelog:Label("Released! ScriptHub v11!")
+   changelog:Label("Added Tap Simulator")
+   changelog:Label("Added $1,000,000 Glass Bridge")
+   changelog:Label("Added Tapper Simulator")
    changelog:Seperator()
    changelog:Button("Wevorn Discord Server", function()
       setclipboard("https://discord.gg/rncd8vMV39")
@@ -748,9 +746,9 @@ if SettingsWevorn["UGC Limiteds"] then
       TeleportService:Teleport(14056754882, game.Players.LocalPlayer)
    end)
 
-   UGCLimiteds:Button("Game detected VirtualInputManager? You can try bypass it!",function()
-       loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/BypassVirtualInputManagerDetections.lua"))()
-       discord:Notification("Bypass ending!","You can check it!","Okay")
+   UGCLimiteds:Button("Bypass VirtualInputManager Detections",function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/BypassVirtualInputManagerDetections.lua"))()
+      discord:Notification("Bypass ending!","You can check it!","Okay")
    end)
 
    UGCLimiteds:Seperator()
@@ -771,7 +769,7 @@ if SettingsWevorn["UGC Limiteds"] then
    UGCLimiteds:Seperator()
    
    UGCLimiteds:Toggle("Enable Auto Click Purchase (PromptGui v4)",false,function(state)
-      local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
+      local VirtualInputManager = cloneref(Instance.new("VirtualInputManager"))
       local CoreGui = cloneref(game:GetService("CoreGui"))
       local GuiService = cloneref(game:GetService("GuiService"))
       getgenv().Wevorn_New_AutoClickerPurchase = state
@@ -790,7 +788,7 @@ if SettingsWevorn["UGC Limiteds"] then
    end)
    
    UGCLimiteds:Toggle("Enable Auto Click Close Error (PromptGui v4)",false,function(state)
-      local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
+      local VirtualInputManager = cloneref(Instance.new("VirtualInputManager"))
       local CoreGui = cloneref(game:GetService("CoreGui"))
       local GuiService = cloneref(game:GetService("GuiService"))
       getgenv().Wevorn_New_AutoClickerCloseErors = state
@@ -985,10 +983,11 @@ if SettingsWevorn["UGC Limiteds"] then
                              warn("———————————————————————————————")
                              warn("FIRST PURCHASE ITEM!")
                              if getgenv().Wevorn_OpenConsole then 
-                                   local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
+                                    local VirtualInputManager = cloneref(Instance.new("VirtualInputManager"))
                                     VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
                                     task.wait(0.01)
                                     VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
+                                    VirtualInputManager:Destroy()
                              end 
                              local sus,eror = pcall(function()
                                       setthreadidentity(7)
@@ -1039,10 +1038,11 @@ if SettingsWevorn["UGC Limiteds"] then
                                              print("Purchase success!") 
                                       end
                                       if getgenv().Wevorn_OpenConsole then 
-                                            local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
-                                            VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
+                                             local VirtualInputManager = cloneref(Instance.new("VirtualInputManager"))
+                                             VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
                                              task.wait(0.01)
                                              VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
+                                             
                                       end
                                       setthreadidentity(7)
                                       MarketplaceService:PerformPurchaseV2(InfoType,ProductId,Price,RequestId,IsRbxPurchase,collectiblesProductDetails)
@@ -1084,10 +1084,11 @@ if SettingsWevorn["UGC Limiteds"] then
                               local _Ye,_No
                               if PurchaseLink then
                                        if getgenv().Wevorn_OpenConsole then 
-                                               local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
+                                               local VirtualInputManager = cloneref(Instance.new("VirtualInputManager"))
                                                VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
                                                task.wait(0.01)
                                                VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
+                                               VirtualInputManager:Destroy()
                                         end
                                         _Ye,_No = pcall(function()
                                                 setthreadidentity(7)
@@ -1118,10 +1119,11 @@ if SettingsWevorn["UGC Limiteds"] then
                 print("PurchasOptions — "..PurchasOptions)
                 warn("ITEM TO PURCHASE!")
                 if getgenv().Wevorn_OpenConsole then 
-                   local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
+                   local VirtualInputManager = cloneref(Instance.new("VirtualInputManager"))
                    VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
                    task.wait(0.01)
                     VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
+                    VirtualInputManager:Destroy()
                  end
                  setthreadidentity(7)
                  MarketplaceService:PerformBulkPurchase(PurchaseOrderQuest,PurchasOptions)
@@ -1208,10 +1210,11 @@ if SettingsWevorn["UGC Limiteds"] then
                            end
                            local V5_S = httprequest({Url = tostring(V5_LINK), Method = "POST", Headers = {["Cookie"] = ".ROBLOSECURITY="..ROBS_Token..";", ["Content-Type"] = "application/json", ["X-CSRF-TOKEN"] = V5_2T}, Body = V5_Body})
                            if getgenv().Wevorn_OpenConsole then 
-                               local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
+                               local VirtualInputManager = cloneref(Instance.new("VirtualInputManager"))
                                VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
                                task.wait(0.01)
                                VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
+                               VirtualInputManager:Destroy()
                            end
                            if (not V5_S or V5_S.StatusCode ~= 200) then 
                                discord:Notification("Error", "Http Error [3]\nError Code: "..V5_S.StatusCode.."\nError: "..V5_S.Body, "Okay")
@@ -1410,7 +1413,7 @@ if SettingsWevorn["Remotes"] then
        if Remote2:IsA("RemoteEvent") or Remote2:IsA("UnreliableRemoteEvent") then
            task.spawn(function()
                 pcall(function()
-                      Remote2:FireServer(table.unpack(___args))
+                     Remote2:FireServer(table.unpack(___args))
                 end)
            end)
 
@@ -1892,10 +1895,11 @@ Remotes:Button("Print All Remotes (Includes Path)",function()
         print(i.." — BindableFunction "..v:GetFullName())
       end
    end
-   local VirtualInputManager = cloneref(game:GetService("VirtualInputManager"))
+   local VirtualInputManager = cloneref(Instance.new("VirtualInputManager"))
    VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F9, false, nil)
    task.wait(0.01)
    VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F9, false, nil)
+   VirtualInputManager:Destroy()
 end)
 
 Remotes:Button("Show Number Remotes",function()
@@ -2519,7 +2523,7 @@ if SettingsWevorn["Games"] then
          discord:Notification("Error","Enter a Place Id","Okay") 
          return
       end 
-     TeleportService:Teleport(GamesId,game.Players.LocalPlayer)
+     TeleportService:Teleport(GamesId, game.Players.LocalPlayer)
    end)
 end
 
@@ -4218,6 +4222,34 @@ if SettingsWevorn["Player"] then
       end)
    end)
 
+   PlayerSection:Seperator()
+   getgenv().Wevorn_NoclipToggle = false
+   getgenv().Wevorn_NoclipConnection = nil
+   PlayerSection:Toggle("Noclip", false, function(state)
+      getgenv().Wevorn_NoclipToggle = state
+      if getgenv().Wevorn_NoclipToggle then
+         getgenv().Wevorn_NoclipConnection = RunService.Stepped:Connect(function()
+            local Character = player.Character or player.CharacterAdded:Wait()
+            for _, v in ipairs(Character:GetChildren()) do
+               if v:IsA("BasePart") then
+                  v.CanCollide = false
+               end
+            end
+         end)
+      else
+         if getgenv().Wevorn_NoclipConnection then
+            getgenv().Wevorn_NoclipConnection:Disconnect()
+            getgenv().Wevorn_NoclipConnection = nil
+         end
+         local Character = player.Character or player.CharacterAdded:Wait()
+         for _, v in ipairs(Character:GetChildren()) do
+            if v:IsA("BasePart") then
+               v.CanCollide = true
+            end
+         end
+      end
+   end)
+   
    PlayerSection:Seperator()
 
    PlayerSection:Label("Current UserId:\n" .. LocalUserId)
@@ -7507,6 +7539,17 @@ if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 10514822281) then
          end
       end
    end)
+   getgenv().Wevorn_AntiAfkG = false
+   CaseSim2Section:Toggle("Anti Afk (Auto Click Button)", false, function(state)
+      getgenv().Wevorn_AntiAfkG = state
+      while getgenv().Wevorn_AntiAfkG and task.wait(1) do
+         for _, v in ipairs(PlayerGui:GetDescendants()) do
+            if (v.Name == "C250" or v.Name == "C150") and v:IsA("GuiButton") then
+               firesignal(v.Activated)
+            end
+         end
+      end
+   end)
 end
 
 if SettingsWevorn["Game Scripts"] and (PlaceId and (PlaceId == 3851622790 or PlaceId == 4620170611)) then
@@ -7836,17 +7879,25 @@ if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 90086669327265) th
          ReplicatedStorage.Packages["_Index"]["acecateer_knit@1.7.2"].knit.Services.DataService.RF.SellAllBackpackLoot:InvokeServer()
       end
    end)
+   getgenv().Wevorn_NoclipToggleA = false
+   getgenv().Wevorn_NoclipConnectionA = nil
    CutGrassSection:Toggle("Noclip", false, function(state)
-      getgenv().Wevorn_AutoNoclip = state
-      if getgenv().Wevorn_AutoNoclip then
-         local Character = player.Character or player.Characteraded:Wait()
-         for _, v in ipairs(Character:GetChildren()) do
-            if v:IsA("BasePart") then
-               v.CanCollide = false
+      getgenv().Wevorn_NoclipToggleA = state
+      if getgenv().Wevorn_NoclipToggleA then
+         getgenv().Wevorn_NoclipConnectionA = RunService.Stepped:Connect(function()
+            local Character = player.Character or player.CharacterAdded:Wait()
+            for _, v in ipairs(Character:GetChildren()) do
+               if v:IsA("BasePart") then
+                  v.CanCollide = false
+               end
             end
-         end
+         end)
       else
-         local Character = player.Character or player.Characteraded:Wait()
+         if getgenv().Wevorn_NoclipConnectionA then
+            getgenv().Wevorn_NoclipConnectionA:Disconnect()
+            getgenv().Wevorn_NoclipConnectionA = nil
+         end
+         local Character = player.Character or player.CharacterAdded:Wait()
          for _, v in ipairs(Character:GetChildren()) do
             if v:IsA("BasePart") then
                v.CanCollide = true
@@ -7854,6 +7905,168 @@ if SettingsWevorn["Game Scripts"] and (PlaceId and PlaceId == 90086669327265) th
          end
       end
    end)
+end
+
+if SettingsWevorn["Game Scripts"] and (PlaceId and (PlaceId == 111187356770616 or PlaceId == 124342049154699 or PlaceId == 95383978784657 or PlaceId == 75992362647444)) then
+   local TapSimSection = ScriptHub:Channel("Tap Simulator")
+   getgenv().Wevorn_AutoClick = false
+   getgenv().Wevorn_AutoRebirth = false
+   TapSimSection:Toggle("Auto Clicker", false, function(state)
+      getgenv().Wevorn_AutoClick = state
+      if getgenv().Wevorn_AutoClick and not firesignal then
+         discord:Notification("Error", "Your Executor Doesn't Support firesignal Function", "Okay")
+         return
+      end
+      while getgenv().Wevorn_AutoClick and task.wait() do
+         firesignal(player.PlayerGui.Game.Bottom.Tap.Button.MouseButton1Down)
+      end
+   end)
+   TapSimSection:Toggle("Auto Rebirth", false, function(state)
+      getgenv().Wevorn_AutoRebirth = state
+      while getgenv().Wevorn_AutoRebirth and task.wait(0.5) do
+         local RNum = 0
+         for _, v in ipairs(player.PlayerGui.RightHud.Main.RightUI.Rebirths.List:GetChildren()) do
+            if v:IsA("Frame") and tonumber(v.Name) then
+              RNum += 1
+            end
+         end
+         local OriginalRNum = RNum
+         if OriginalRNum >= 6 then
+            RNum -= 2
+         end
+         if OriginalRNum >= 10 then
+            RNum -= 2
+         end
+         if OriginalRNum >= 15 then
+            RNum -= 1
+         end
+         if OriginalRNum >= 21 then
+            RNum -= 1
+         end
+         if OriginalRNum >= 25 then
+            RNum -= 1
+         end
+         if OriginalRNum >= 30 then
+            RNum -= 1
+         end
+         for _, v in ipairs(ReplicatedStorage:GetDescendants()) do
+            if v:IsA("RemoteFunction") and v.Name == "Rebirth" and v.Parent.Name == "Functions" then
+               v:InvokeServer(tonumber(RNum))
+               break
+            end
+         end
+      end
+   end)
+   TapSimSection:Button("Auto Dig Game", function(state)
+      for i = 1, 10 do
+         for _, v in ipairs(ReplicatedStorage:GetDescendants()) do
+            if v:IsA("RemoteFunction") and v.Name == "StartMinigame" then
+               v:InvokeServer("DigGame")
+            end
+         end
+         for _, v in ipairs(ReplicatedStorage:GetDescendants()) do
+            if v:IsA("RemoteFunction") and v.Name == "FinishMinigame" then
+               v:InvokeServer("DigGame")
+            end
+         end
+         task.wait(0.5)
+      end
+   end)
+end
+
+if SettingsWevorn["Game Scripts"] and PlaceId and (PlaceId == 87854376962069) then
+   local GlassBridgeSection = ScriptHub:Channel("$1,000,000 Glass Bridge")
+   GlassBridgeSection:Button("Delete All Fake Glass", function()
+      local Wrong = workspace.Glasses:FindFirstChild("Wrong")
+      if Wrong then
+      Wrong:Destroy()
+      end
+   end)
+   getgenv().Wevorn_AutoCoins = false
+   GlassBridgeSection:Toggle("Auto Win", false, function(state)
+      getgenv().Wevorn_AutoCoins = state
+      while getgenv().Wevorn_AutoCoins and task.wait() do
+         ReplicatedStorage.Loader_Trophy:FireServer(player)
+      end
+   end)
+end
+
+if SettingsWevorn["Game Scripts"] and PlaceId and PlaceId == 81761154923786 then
+   local TapSimSection = ScriptHub:Channel("Tapper Simulator")
+   getgenv().Wevorn_AutoClick = false
+   getgenv().Wevorn_AutoGifts = false
+   getgenv().Wevorn_AutoSpin = false
+   TapSimSection:Toggle("Auto Click", false, function(state)
+      getgenv().Wevorn_AutoClick = state
+      while getgenv().Wevorn_AutoClick and task.wait() do
+         ReplicatedStorage.Events.Click:FireServer()
+      end
+   end)
+   TapSimSection:Toggle("Auto Claim Gifts", false, function(state)
+      getgenv().Wevorn_AutoGifts = state
+      while getgenv().Wevorn_AutoGifts and task.wait() do
+         for i = 1, 12 do
+            ReplicatedStorage.Events.RewardsClaim:FireServer("Playtime", "Gift" .. tostring(i))
+         end
+      end
+   end)
+   TapSimSection:Toggle("Auto Spin", false, function(state)
+      getgenv().Wevorn_AutoSpin = state
+      while getgenv().Wevorn_AutoSpin and task.wait(5) do
+         ReplicatedStorage.Events.SpinWheel:FireServer("Spin", false)
+      end
+   end)
+   TapSimSection:Seperator()
+   local TableUPSpawn = {"ClickMulti", "GemMulti", "RebirthButtons", "LuckMulti", "EggHatch", "CriticalChance", "PetEquip", "ChestAutoCollect", "WalkSpeed", "MoreStorage"}
+   local TableUpSnowy = {"ClickMulti", "GemMulti", "LuckMulti", "MoreStorage"}
+   local TableUpValentine = {"HeartMulti", "ClickMulti", "LuckMulti", "MoreStorage"}
+   local TableUp25K = {"BalloonMulti", "ClickMulti", "LuckMulti", "MoreStorage", "ShinyChance"}
+   local TableUpBreakable = {"CoinMulti", "HitSpeed", "UnlockIsland", "LuckMulti", "DamageMulti"}
+   for _, v in pairs(TableUPSpawn) do
+      getgenv()[`Wevorn_AutoUp {v} Spawn`] = false
+      TapSimSection:Toggle(`Auto Upgrade {v} Spawn`, false, function(state)
+         getgenv()[`Wevorn_AutoUp {v} Spawn`] = state
+         while getgenv()[`Wevorn_AutoUp {v} Spawn`] and task.wait(1) do
+            ReplicatedStorage.Functions.PurchaseUpgrade:InvokeServer("Spawn", tostring(v))
+         end
+      end)
+   end
+   for _, v in pairs(TableUpSnowy) do
+      getgenv()[`Wevorn_AutoUp {v} Snowy`] = false
+      TapSimSection:Toggle(`Auto Upgrade {v} Snowy`, false, function(state)
+         getgenv()[`Wevorn_AutoUp {v} Snowy`] = state
+         while getgenv()[`Wevorn_AutoUp {v} Snowy`] and task.wait(1) do
+            ReplicatedStorage.Functions.PurchaseUpgrade:InvokeServer("Snowy", tostring(v))
+         end
+      end)
+   end
+   for _, v in pairs(TableUpValentine) do
+      getgenv()[`Wevorn_AutoUp {v} Valentine`] = false
+      TapSimSection:Toggle(`Auto Upgrade {v} Valentine`, false, function(state)
+         getgenv()[`Wevorn_AutoUp {v} Valentine`] = state
+         while getgenv()[`Wevorn_AutoUp {v} Valentine`] and task.wait(1) do
+            ReplicatedStorage.Functions.PurchaseUpgrade:InvokeServer("Valentine", tostring(v))
+         end
+      end)
+   end
+   for _, v in pairs(TableUp25K) do
+      getgenv()[`Wevorn_AutoUp {v} 25K`] = false
+      TapSimSection:Toggle(`Auto Upgrade {v} 25K`, false, function(state)
+         getgenv()[`Wevorn_AutoUp {v} 25K`] = state
+         while getgenv()[`Wevorn_AutoUp {v} 25K`] and task.wait(1) do
+            ReplicatedStorage.Functions.PurchaseUpgrade:InvokeServer("25K", tostring(v))
+         end
+      end)
+   end
+   for _, v in pairs(TableUpBreakable) do
+      getgenv()[`Wevorn_AutoUp {v} Breakable`] = false
+      TapSimSection:Toggle(`Auto Upgrade {v} Breakable`, false, function(state)
+         getgenv()[`Wevorn_AutoUp {v} Breakable`] = state
+         while getgenv()[`Wevorn_AutoUp {v} Breakable`] and task.wait(1) do
+            ReplicatedStorage.Functions.PurchaseUpgrade:InvokeServer("Breakable", tostring(v))
+         end
+      end)
+   end
 end
 
 local GameList = {
@@ -7906,7 +8119,7 @@ if SettingsWevorn["Game Scripts"] then
    GameListSection:Seperator()
 
    GameListSection:Textbox("Do you want to offer a game? Write it here and submit or join In\ndiscord server and suggest games there in unlimited quantity", "Enter Game Name Here...", false, function(IdkGame)
-      getgenv().Wevorn_Feedback = tostring(IdkGame)
+      getgenv().Wevorn_Feedback = IdkGame .. "\nExecutor: ".. getexecutorname()
    end)
    
    GameListSection:Button("Send Game offer", function()
@@ -7932,6 +8145,21 @@ if SettingsWevorn["Game Scripts"] then
    end)
     
    GameListSection:Label("Scripts For Games")
+   
+   GameListSection:Button("Tapper Simulator", function()
+      TeleportService:Teleport(81761154923786, player)
+      discord:Notification("Teleport...", "Teleport to Tapper Simulator", "Okay")
+   end)
+   
+   GameListSection:Button("$1,000,000 Glass Bridge", function()
+      TeleportService:Teleport(87854376962069, player)
+      discord:Notification("Teleport...", "Teleport to $1,000,000 Glass Bridge", "Okay")
+   end)
+   
+   GameListSection:Button("Tap Simulator", function()
+      TeleportService:Teleport(111187356770616, player)
+      discord:Notification("Teleport...", "Teleport to Tap Simulator", "Okay")
+   end)
    
    GameListSection:Button("+1 Cut Grass Adventure", function()
       TeleportService:Teleport(90086669327265, player)
