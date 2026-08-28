@@ -4211,7 +4211,7 @@ local EnumItemMap = {}
 local EnumMap = {}
 local EnumItemCount = 0
 for _, v in pairs(Enums) do
-	EnumMap[tostring(v)] = true
+   EnumMap[tostring(v)] = true
 end
 for _, v in pairs(EnumItems) do
    if typeof(v) ~= "EnumItem" then
