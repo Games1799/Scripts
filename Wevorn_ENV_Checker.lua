@@ -5,7 +5,8 @@
 ██║░░╚██╗██╔══██║██║╚██╔╝██║██╔══╝░░░╚═══██╗
 ╚██████╔╝██║░░██║██║░╚═╝░██║███████╗██████╔╝
  ░╚═════╝░╚═╝░░╚═╝╚═╝░░░░░╚═╝╚══════╝╚═════╝░
-]]-- Wevorn ENV Checker V2
+]]-- Wevorn ENV Checker V3 
+-- https://discord.gg/DUuADBq2Z
 
 if type(workspace) ~= "userdata" then while true do end end
 if type(game) ~= "userdata" then while true do end end
@@ -1147,8 +1148,27 @@ for i, v in pairs(Enums) do
    if type(i) ~= "number" or typeof(v) ~= "Enum" then
       while true do end
    end
-   for _, k in pairs(v:GetEnumItems()) do
+   if type(v.GetEnumItems) ~= "function" or typeof(v.GetEnumItems) ~= "function" then
+      while true do end
+   end
+   local items = v:GetEnumItems()
+   if type(items) ~= "table" or typeof(items) ~= "table" or #items == 0 then
+      while true do end
+   end
+   for _, k in pairs(items) do
       if typeof(k) ~= "EnumItem" then
+         while true do end
+      end
+      if type(k.Name) ~= "string" or typeof(k.Name) ~= "string" then
+         while true do end
+      end
+      if type(k.Value) ~= "number" or typeof(k.Value) ~= "number" then
+         while true do end
+      end
+      if type(k.EnumType) ~= "userdata" or typeof(k.EnumType) ~= "Enum" then
+         while true do end
+      end
+      if k.EnumType ~= v then
          while true do end
       end
    end
