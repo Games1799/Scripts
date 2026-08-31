@@ -87,7 +87,7 @@ if Lubary then
                            sus, eror = nil, nil
                            sus, eror = pcall(function()
                               set(7)
-                              MarketplaceService.PerformPurchase(MarketplaceService, Type, ProductId, Price, RequestId, IsRobloxPurchase, CollectibleItemId, CollectibleProductId, IdempotencyKey, PurchaseAuthToken, TimedOptionsDays)
+                              MarketplaceService.PerformPurchase(MarketplaceService, Type, ProductId, Price, RequestId, IsRobloxPurchase, CollectibleItemId, CollectibleProductId, IdempotencyKey, PurchaseAuthToken)
                            end)
                            Cache = CreateGUID()
                         end
