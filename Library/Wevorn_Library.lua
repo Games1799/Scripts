@@ -7,10 +7,10 @@
  ░╚═════╝░╚═╝░░╚═╝╚═╝░░░░░╚═╝╚══════╝╚═════╝░
 ]]--
 
--- Wevorn Libary V1.0
+-- Wevorn Library V1.0
 --[[
    Methods:
-   – Libary.Window(Name: string): table
+   – Library.Window(Name: string): table
       |
       –> Window.Notification(titletext: string, desctext: string, btntext: string): table
             |
