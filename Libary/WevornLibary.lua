@@ -7,10 +7,11 @@
  ░╚═════╝░╚═╝░░╚═╝╚═╝░░░░░╚═╝╚══════╝╚═════╝░
 ]]--
 
--- Wevorn Library V1.0
+-- Wevorn Libary V1.0
+-- https://discord.gg/rncd8vMV39
 --[[
    Methods:
-   – Library.Window(Name: string): table
+   – Libary.Window(Name: string): table
       |
       –> Window.Notification(titletext: string, desctext: string, btntext: string): table
             |
@@ -830,6 +831,8 @@ Libary.Window = function(Name: string): table
         
         function SectionAPI:Select()
            if ServerAPI.CurrentSection == SectionAPI then
+              SectionAPI.Selected = true
+              SectionAPI.Content.Visible = CurrentServer == ServerAPI and not Minimized
               return
            end
            ServerAPI.CurrentSection = SectionAPI
@@ -2143,10 +2146,9 @@ Libary.Window = function(Name: string): table
                 if v.ButtonObject then
                    v.ButtonObject.Visible = false
                 end
-                if vContent then
+                if v.Content then
                    v.Content.Visible = false
                 end
-                v.Selected = false
              end
           end
           CurrentServer = self
@@ -2157,6 +2159,15 @@ Libary.Window = function(Name: string): table
                 v.ButtonObject.Visible = true
              end
           end
+          
+          for _, v in ipairs(self.Sections) do
+            v.Content.Visible = v.Selected
+          end
+
+          if self.CurrentSection then
+             self.CurrentSection:Select()
+          end
+          
           local Tween_4 = TweenService:Create(self.Button, TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),{BackgroundColor3 = Color3.fromRGB(35, 37, 44)})
           Tween_4:Play()
           Tween_4.Completed:Once(function()
