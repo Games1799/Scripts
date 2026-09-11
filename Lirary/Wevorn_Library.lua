@@ -88,7 +88,7 @@ local TweenService = cloneref(game:GetService("TweenService"))
 local CoreGui = cloneref(game:GetService("CoreGui"))
 local Players = cloneref(game:GetService("Players"))
 local Player = Players.LocalPlayer
-local PlayerGui = Player:FindFirstChildOfClass("PlayedGui")
+local PlayerGui = Player:FindFirstChildOfClass("PlayerGui")
 local GetHUI = gethui or gethiddenui or get_hidden_ui 
 local ProtectGui = protectgui or protect_gui or (syn and syn.protect_gui)
 
