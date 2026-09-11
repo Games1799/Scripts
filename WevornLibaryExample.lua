@@ -37,7 +37,7 @@ MainSection:Dropdown("Test Dropdown 2", {"Test 1", "Test 2"}, function(Value)
 end)
 
 MainSection:Dropdown("Test Dropdown 3", {"Test 1"}, function(Value)
-   print("Выбрано:", Value)
+   print(Value)
 end)
 
 MainSection:Label("Test TextLabel")
