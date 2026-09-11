@@ -1,5 +1,5 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Games1799/Scripts/refs/heads/main/Libary/WevornLibary.lua"))()
-local Window = Library:Window("Wevorn Library")
+local Window = Library:Window("Wevorn Libary")
 local Main = Window:Server("Main", "http://www.roblox.com/asset/?id=6031075938")
 local Settings = Window:Server("Settings", "http://www.roblox.com/asset/?id=117395004084347")
 local MainSection = Main:Section("Test")
