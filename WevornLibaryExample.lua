@@ -9,7 +9,7 @@ MainSection:Button("Hi", function()
    print("Hi")
 end)
 
-MainSection:Toggle("Test", function(state)
+MainSection:Toggle("Test", false, function(state)
    print(state)
 end)
 
