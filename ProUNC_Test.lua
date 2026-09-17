@@ -357,6 +357,8 @@ test("getidentity")
 test("make_writeable")
 test("disassemble")
 test("setstackhidden")
+test("islclosure")
+test("newlclosure")
 
 warn("Total Function In Test: ".. Total)
 warn("Passed Functions: " .. Passed)
