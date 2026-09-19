@@ -14,6 +14,35 @@ local function test(name)
     end
 end
 
+if not isexecutorclosure then
+   if not iscclosure then
+      iscclosure = function(func)
+         return debug.info(func, "s") == "[C]"
+      end
+   end
+   isexecutorclosure = function(func)
+      local a = iscclosure(func)
+      if a == true then
+         return false
+      else
+         return true
+      end
+   end
+end
+
+local function test2(name)
+    Total += 1
+    local sus, res = pcall(function()
+        return loadstring("return " .. tostring(name))()
+    end)
+    if sus and type(res) == "function" and isexecutorclosure(name) then
+        Passed += 1
+        print(name .. " ✅")
+    else
+        print(name .. " ⛔")
+    end
+end
+
 test("fireproximityprompt")
 test("fireclickdetector")
 test("firetouchinterest")
@@ -28,6 +57,10 @@ test("firesignal")
 test("replicatesignal")
 test("getfflag")
 test("setfflag")
+test2("game.HttpGet")
+test2("game.HttpPost")
+test2("game.HttpPostAsync")
+test2("game.HttpGetAsync")
 test("cloneref")
 test("clonereference")
 test("clonefunction")
@@ -40,14 +73,20 @@ test("getrenv")
 test("gettenv")
 test("request")
 test("getthreadidentity")
+test("get_thread_identify")
 test("getthreadcontext")
+test("get_thread_context")
 test("setthreadidentity")
+test("set_thread_identify")
 test("setthreadcontext")
+test("set_thread_context")
+test("is_c_closure")
 test("iscclosure")
 test("replacefunction")
 test("replacefunc")
 test("getexecutorname")
 test("gethiddenproperties")
+test("get_hidden_properties")
 test("setclipboard")
 test("toclipboard")
 test("setrbxclipboard")
@@ -357,8 +396,6 @@ test("getidentity")
 test("make_writeable")
 test("disassemble")
 test("setstackhidden")
-test("islclosure")
-test("newlclosure")
 
 warn("Total Function In Test: ".. Total)
 warn("Passed Functions: " .. Passed)
