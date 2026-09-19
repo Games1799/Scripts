@@ -21,26 +21,25 @@ if not isexecutorclosure then
       end
    end
    isexecutorclosure = function(func)
-      local a = iscclosure(func)
-      if a == true then
+      local sus, res = pcall(iscclosure, func)
+      if not sus then
          return false
-      else
-         return true
       end
+      return not res
    end
 end
 
 local function test2(name)
-    Total += 1
-    local sus, res = pcall(function()
-        return loadstring("return " .. tostring(name))()
-    end)
-    if sus and type(res) == "function" and isexecutorclosure(name) then
-        Passed += 1
-        print(name .. " ✅")
-    else
-        print(name .. " ⛔")
-    end
+   Total += 1
+   local sus, res = pcall(function()
+      return isexecutorclosure(loadstring("return " .. tostring(name))())
+   end)
+   if sus and res == true then
+      Passed += 1
+      print(name .. " ✅")
+   else
+      print(name .. " ⛔")
+   end
 end
 
 test("fireproximityprompt")
@@ -57,10 +56,10 @@ test("firesignal")
 test("replicatesignal")
 test("getfflag")
 test("setfflag")
-test("game.HttpGet")
-test("game.HttpPost")
-test("game.HttpPostAsync")
-test("game.HttpGetAsync")
+test2("game.HttpGet")
+test2("game.HttpPost")
+test2("game.HttpPostAsync")
+test2("game.HttpGetAsync")
 test("cloneref")
 test("clonereference")
 test("clonefunction")
@@ -396,6 +395,7 @@ test("getidentity")
 test("make_writeable")
 test("disassemble")
 test("setstackhidden")
+test("run_on_thread")
 
 warn("Total Function In Test: ".. Total)
 warn("Passed Functions: " .. Passed)
