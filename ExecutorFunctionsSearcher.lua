@@ -30,8 +30,12 @@ if not isexecutorclosure then
       return false
    end
 end
-local tbl = {}
+local tbl, tbl2 = {}, {}
 local function checkmt(mt: table, name: string?): nil
+   if tbl2[mt] then
+      return
+   end
+   tbl2[mt] = true
    for i, v in pairs(mt) do
       if type(v) == "table" then
          if metamethods[i] then
@@ -43,8 +47,13 @@ local function checkmt(mt: table, name: string?): nil
          table.insert(tbl, name .. tostring(i))
       end
    end
+   tbl2[mt] = nil
 end
 local function func(table2: table, name: string?): nil
+   if tbl2[table2] then
+      return
+   end
+   tbl2[table2] = true
    for i, v in pairs(table2) do
       if type(v) == "table" then
          func(v, name .. tostring(i) .. ".")
@@ -58,6 +67,7 @@ local function func(table2: table, name: string?): nil
          checkmt(mt, name)
       end
    end
+   tbl2[table2] = nil
 end
 func(getgenv(), "")
 local Methods = {"HttpGet", "HttpGetAsync", "HttpPost", "HttpPostAsync"}
