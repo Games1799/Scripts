@@ -1531,78 +1531,49 @@ if SettingsWevorn["Remotes"] then
                _FireRemotes({[1] = {[1] = {Id = getgenv().Wevorn_UgcId,Type = Enum.MarketplaceProductType.AvatarAsset}},[2] = {Id = 137525346725198,Type = Enum.MarketplaceProductType.AvatarAsset},[3] = {Id = 77554705161930,Type = Enum.MarketplaceProductType.AvatarAsset} })
          end
    end)
-
-    Remotes:Button("Fire All Remotes on All Methods", function()
+   
+   Remotes:Button("Fire All Remotes on All Methods",function()
        getgenv().Wevorn_NotificationRemotes = false
        task.spawn(function()
          pcall(function()
             if not getgenv().Wevorn_UgcId then 
-               discord:Notification("Error", "Enter a ugc id", "Okay")
+               discord:Notification("Error","Enter a ugc id","Okay")
                return
-            end
-            local Old1, Old2
-            if type(FireRemotes) == "function" then
-               Old1 = FireRemotes
-            end
-            if type(_FireRemotes) == "function" then
-               Old2 = _FireRemotes
-            end
-            local function FireRemotes(...: any)
-               local Args = {...}
-               task.spawn(function()
-                  pcall(function()
-                     if Old1 then
-                        Old1(table.unpack(Args))
-                     end
-                  end)
-               end)
-            end
-            local function _FireRemotes(...: any)
-               local Args = {...}
-               task.spawn(function()
-                  pcall(function()
-                     if Old2 then
-                        Old2(table.unpack(Args))
-                     end
-                  end)
-               end)
             end
             FireRemotes()
             FireRemotes(game.Players.LocalPlayer)
             FireRemotes(tostring(game.Players.LocalPlayer))
             FireRemotes(game.Players.LocalPlayer.UserId)
             FireRemotes(getgenv().Wevorn_UgcId)
-            FireRemotes(getgenv().Wevorn_UgcId, game.Players.LocalPlayer)
-            FireRemotes(game.Players.LocalPlayer, getgenv().Wevorn_UgcId)
+            FireRemotes(getgenv().Wevorn_UgcId,game.Players.LocalPlayer)
+            FireRemotes(game.Players.LocalPlayer,getgenv().Wevorn_UgcId)
             FireRemotes("UGC")
-            FireRemotes("PromptPurchase", getgenv().Wevorn_UgcId)
-            FireRemotes("PromptAssetPurchase", getgenv().Wevorn_UgcId)
-            FireRemotes(getgenv().Wevorn_UgcId, true)
-            FireRemotes(getgenv().Wevorn_UgcId, false)
-            FireRemotes(getgenv().Wevorn_UgcId, game.Players.LocalPlayer.UserId)
+            FireRemotes("PromptPurchase",getgenv().Wevorn_UgcId)
+            FireRemotes("PromptAssetPurchase",getgenv().Wevorn_UgcId)
+            FireRemotes(getgenv().Wevorn_UgcId,true)
+            FireRemotes(getgenv().Wevorn_UgcId,false)
+            FireRemotes(getgenv().Wevorn_UgcId,game.Players.LocalPlayer.UserId)
             FireRemotes(true)
             FireRemotes(false)
-            FireRemotes(getgenv().Wevorn_UgcId, Enum.MarketplaceProductType.AvatarAsset)
-            FireRemotes(Enum.MarketplaceProductType.AvatarAsset, getgenv().Wevorn_UgcId)
-            FireRemotes(getgenv().Wevorn_UgcId, Enum.InfoType.Asset)
-            FireRemotes(Enum.InfoType.Asset, getgenv().Wevorn_UgcId)
-            FireRemotes(getgenv().Wevorn_UgcId, 0)
-            FireRemotes(getgenv().Wevorn_UgcId, -9999999999999999)
+            FireRemotes(getgenv().Wevorn_UgcId,Enum.MarketplaceProductType.AvatarAsset)
+            FireRemotes(Enum.MarketplaceProductType.AvatarAsset,getgenv().Wevorn_UgcId)
+            FireRemotes(getgenv().Wevorn_UgcId,Enum.InfoType.Asset)
+            FireRemotes(Enum.InfoType.Asset,getgenv().Wevorn_UgcId)
+            FireRemotes(getgenv().Wevorn_UgcId,0)
+            FireRemotes(getgenv().Wevorn_UgcId,-9999999999999999)
             FireRemotes(9999999999999999)
             FireRemotes(-9999999999999999)
-            _FireRemotes({[1] = {[1] = {Id = tostring(getgenv().Wevorn_UgcId), Type = Enum.MarketplaceProductType.AvatarAsset}}, [2] = {} })
-            _FireRemotes({[1] = {[1] = {Id = getgenv().Wevorn_UgcId, Type = Enum.MarketplaceProductType.AvatarAsset}}, [2] = {Id = nil, Type = Enum.MarketplaceProductType.AvatarAsset}, [3] = {Id = nil, Type = Enum.MarketplaceProductType.AvatarAsset} })
-            _FireRemotes({[1] = {[1] = {Id = getgenv().Wevorn_UgcId, Type = Enum.MarketplaceProductType.AvatarAsset}}, [2] = {Id = 137525346725198, Type = Enum.MarketplaceProductType.AvatarAsset}, [3] = {Id = 77554705161930, Type = Enum.MarketplaceProductType.AvatarAsset} })
-            FireRemotes("loadstring('game:GetService(\"MarketplaceService\"):PromptPurchase(game.Players." .. LocalName .. "," .. getgenv().Wevorn_UgcId .. ")')()")
-            FireRemotes('game:GetService("MarketplaceService"):PromptPurchase(game.Players.' .. LocalName .. ',' .. getgenv().Wevorn_UgcId .. ')')
+            _FireRemotes({[1] = {[1] = {Id = tostring(getgenv().Wevorn_UgcId),Type = Enum.MarketplaceProductType.AvatarAsset}},[2] = {} })
+            _FireRemotes({[1] = {[1] = {Id = getgenv().Wevorn_UgcId,Type = Enum.MarketplaceProductType.AvatarAsset}},[2] = {Id = nil,Type = Enum.MarketplaceProductType.AvatarAsset},[3] = {Id = nil,Type = Enum.MarketplaceProductType.AvatarAsset} })
+            _FireRemotes({[1] = {[1] = {Id = getgenv().Wevorn_UgcId,Type = Enum.MarketplaceProductType.AvatarAsset}},[2] = {Id = 137525346725198,Type = Enum.MarketplaceProductType.AvatarAsset},[3] = {Id = 77554705161930,Type = Enum.MarketplaceProductType.AvatarAsset} })
+            FireRemotes("loadstring('game:GetService(\"MarketplaceService\"):PromptPurchase(game.Players."..LocalName..","..getgenv().Wevorn_UgcId..")')()")
+            FireRemotes('game:GetService("MarketplaceService"):PromptPurchase(game.Players.'..LocalName..','..getgenv().Wevorn_UgcId..')') -- 26
          end)
-         if getgenv().Wevorn_UgcId then 
-            discord:Notification("Success", "Fired All Remotes On All Methods", "Okay!")
-         end
+         discord:Notification("Success","Fired All Remotes On All Methods","Okay!")
          getgenv().Wevorn_NotificationRemotes = true
        end)
     end)
-
+    
    if not BindableRemoteEventToggle then
       Remotes:Toggle("Enable BindableRemoteEvent",false,function(state)
          if state then 
