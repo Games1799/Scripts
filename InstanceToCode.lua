@@ -1,5 +1,5 @@
 --!optimize 2
--- Instance To Script v1.2
+-- Instance To Script v1.3
 -- https://discord.gg/rncd8vMV39
 
 local Code = table.create(300000)
@@ -10,14 +10,16 @@ local CodeIndex = 0
 end
 local InstanceCount = 0
 local InstanceNames = {}
-local cloneref = cloneref or clonereference or clone_reference or clone_ref or (cache and cache.cloneref) or function(...) return ... end
+local InstanceVariables = {}
+local DeferredProperties = {}
+local cloneref = cloneref or clonereference or clone_reference or clone_ref or (cache and cache.cloneref) or function(...) return (...) end
 local CollectionService = cloneref(game:GetService("CollectionService"))
 local ReflectionService = cloneref(game:GetService("ReflectionService"))
 local First = false
 local UseCollectionService = false
 @native const function SaveInstance(Object: Instance, Parent: string?): string
    if typeof(Object) ~= "Instance" then 
-      warn("[Error] – Invalid Argument #1 By Function Saveinstance, Instance Expected")
+      warn("[Error] – Invalid Argument #1 By Function SaveInstance, Instance Expected")
       return ""
    end
    local PropertyCache = {}
@@ -86,6 +88,7 @@ local UseCollectionService = false
    end
    
    InstanceNames[CurrentInstance] = true
+   InstanceVariables[Object] = CurrentInstance
    if Check(Object, "ClassName") then 
       if First == true then 
          AddCode("\n" .. 'local ' .. CurrentInstance .. ' = Instance.new("' .. Object.ClassName .. '")')
@@ -103,11 +106,20 @@ local UseCollectionService = false
    if Check(Object, "Position") and typeof(Object.Position) == "UDim2" then
       AddCode("\n" .. CurrentInstance .. ".Position = UDim2.new(" .. Object.Position.X.Scale .. ", " .. Object.Position.X.Offset .. ", " .. Object.Position.Y.Scale .. ", " .. Object.Position.Y.Offset .. ")")
    end
+   if Check(Object, "Position") and typeof(Object.Position) == "Vector2" then
+      AddCode("\n" .. CurrentInstance .. ".Position = Vector2.new(" .. Object.Position.X .. ", " .. Object.Position.Y .. ")")
+   end
    if Check(Object, "Size") and typeof(Object.Size) == "Vector3" then
       AddCode("\n" .. CurrentInstance .. ".Size = Vector3.new(" .. Object.Size.X .. ", " .. Object.Size.Y .. ", " .. Object.Size.Z .. ")")
    end
    if Check(Object, "Size") and typeof(Object.Size) == "UDim2" then
       AddCode("\n" .. CurrentInstance .. ".Size = UDim2.new(" .. Object.Size.X.Scale .. ", " .. Object.Size.X.Offset .. ", " .. Object.Size.Y.Scale .. ", " .. Object.Size.Y.Offset .. ")")
+   end
+   if Check(Object, "Size") and typeof(Object.Size) == "number" then
+      AddCode("\n" .. CurrentInstance .. ".Size = " .. tostring(Object.Size))
+   end
+   if Check(Object, "Size") and typeof(Object.Size) == "Vector2" then
+      AddCode("\n" .. CurrentInstance .. ".Size = Vector2.new(" .. Object.Size.X .. ", " .. Object.Size.Y .. ")")
    end
    if Check(Object, "Color") and typeof(Object.Color) == "Color3" then
       AddCode("\n" .. CurrentInstance .. ".Color = Color3.new(" .. Object.Color.R .. ", " .. Object.Color.G .. ", " .. Object.Color.B .. ")")
@@ -151,31 +163,31 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".Massless = " .. tostring(Object.Massless))
    end
    if Check(Object, "Material") and typeof(Object.Material) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".Material = Enum.Material." .. Object.Material.Name)
+       AddCode("\n" .. CurrentInstance .. ".Material = Enum." .. tostring(Object.Material.EnumType) .. "." .. Object.Material.Name)
    end
-   if Object:IsA("BasePart") and Check(Object, "Shape") and typeof(Object.Shape) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".Shape = Enum.PartType." .. Object.Shape.Name)
+   if Check(Object, "Shape") and typeof(Object.Shape) == "EnumItem" then
+      AddCode("\n" .. CurrentInstance .. ".Shape = Enum." .. tostring(Object.Shape.EnumType) .. "." .. Object.Shape.Name)
    end
    if Object:IsA("ParticleEmitter") and Check(Object, "Shape") and typeof(Object.Shape) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".Shape = Enum.ParticleEmitterShape." .. Object.Shape.Name)
+      AddCode("\n" .. CurrentInstance .. ".Shape = Enum." .. tostring(Object.Shape.EnumType) .. "." .. Object.Shape.Name)
    end
    if Check(Object, "TopSurface") and typeof(Object.TopSurface) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".TopSurface = Enum.SurfaceType." .. Object.TopSurface.Name)
+      AddCode("\n" .. CurrentInstance .. ".TopSurface = Enum." .. tostring(Object.TopSurface.EnumType) .. "." .. Object.TopSurface.Name)
    end
    if Check(Object, "BottomSurface") and typeof(Object.BottomSurface) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".BottomSurface = Enum.SurfaceType." .. Object.BottomSurface.Name)
+      AddCode("\n" .. CurrentInstance .. ".BottomSurface = Enum." .. tostring(Object.BottomSurface.EnumType) .. "." .. Object.BottomSurface.Name)
    end
    if Check(Object, "LeftSurface") and typeof(Object.LeftSurface) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".LeftSurface = Enum.SurfaceType." .. Object.LeftSurface.Name)
+      AddCode("\n" .. CurrentInstance .. ".LeftSurface = Enum." .. tostring(Object.LeftSurface.EnumType) .. "." .. Object.LeftSurface.Name)
    end
    if Check(Object, "RightSurface") and typeof(Object.RightSurface) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".RightSurface = Enum.SurfaceType." .. Object.RightSurface.Name)
+      AddCode("\n" .. CurrentInstance .. ".RightSurface = Enum." .. tostring(Object.RightSurface.EnumType) .. "." .. Object.RightSurface.Name)
    end
    if Check(Object, "FrontSurface") and typeof(Object.FrontSurface) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".FrontSurface = Enum.SurfaceType." .. Object.FrontSurface.Name)
+      AddCode("\n" .. CurrentInstance .. ".FrontSurface = Enum." .. tostring(Object.FrontSurface.EnumType) .. "." .. Object.FrontSurface.Name)
    end
    if Check(Object, "BackSurface") and typeof(Object.BackSurface) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".BackSurface = Enum.SurfaceType." .. Object.BackSurface.Name)
+      AddCode("\n" .. CurrentInstance .. ".BackSurface = Enum." .. tostring(Object.BackSurface.EnumType) .. "." .. Object.BackSurface.Name)
    end
    if Check(Object, "Locked") then
       AddCode("\n" .. CurrentInstance .. ".Locked = " .. tostring(Object.Locked))
@@ -207,7 +219,7 @@ local UseCollectionService = false
    if Check(Object, "RotVelocity") and typeof(Object.RotVelocity) == "Vector3" then
       AddCode("\n" .. CurrentInstance .. ".RotVelocity = Vector3.new(" .. Object.RotVelocity.X .. ", " .. Object.RotVelocity.Y .. ", " .. Object.RotVelocity.Z .. ")")
    end
-   if Check(Object, "CustomPhysicalProperties") and Object.CustomPhysicalProperties then
+   if Check(Object, "CustomPhysicalProperties") and Object.CustomPhysicalProperties and Object.CustomPhysicalProperties.Uri then
       AddCode("\n" .. CurrentInstance .. ".CustomPhysicalProperties = PhysicalProperties.new(" .. Object.CustomPhysicalProperties.Density .. ", " .. Object.CustomPhysicalProperties.Friction .. ", " .. Object.CustomPhysicalProperties.Elasticity .. ", " .. Object.CustomPhysicalProperties.FrictionWeight .. ", " .. Object.CustomPhysicalProperties.ElasticityWeight .. ")")
    end
    if Check(Object, "MaxForce") then
@@ -331,10 +343,10 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".TextStrokeColor3 = Color3.new(" .. Object.TextStrokeColor3.R .. ", " .. Object.TextStrokeColor3.G .. ", " .. Object.TextStrokeColor3.B .. ")")
    end
    if Check(Object, "TextXAlignment") and typeof(Object.TextXAlignment) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".TextXAlignment = Enum.TextXAlignment." .. Object.TextXAlignment.Name)
+      AddCode("\n" .. CurrentInstance .. ".TextXAlignment = Enum." .. tostring(Object.TextXAlignment.EnumType) .. "." .. Object.TextXAlignment.Name)
    end
    if Check(Object, "TextYAlignment") and typeof(Object.TextYAlignment) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".TextYAlignment = Enum.TextYAlignment." .. Object.TextYAlignment.Name)
+      AddCode("\n" .. CurrentInstance .. ".TextYAlignment = Enum." .. tostring(Object.TextYAlignment.EnumType) .. "." .. Object.TextYAlignment.Name)
    end
    if Check(Object, "ClipsDescendants") then
       AddCode("\n" .. CurrentInstance .. ".ClipsDescendants = " .. tostring(Object.ClipsDescendants))
@@ -358,7 +370,7 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".ImageTransparency = " .. Object.ImageTransparency)
    end
    if Check(Object, "ScaleType") and typeof(Object.ScaleType) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".ScaleType = Enum.ScaleType." .. Object.ScaleType.Name)
+      AddCode("\n" .. CurrentInstance .. ".ScaleType = Enum." .. tostring(Object.ScaleType.EnumType) .. "." .. Object.ScaleType.Name)
    end
    if Check(Object, "CanvasSize") and typeof(Object.CanvasSize) == "UDim2" then
       AddCode("\n" .. CurrentInstance .. ".CanvasSize = UDim2.new(" .. Object.CanvasSize.X.Scale .. ", " .. Object.CanvasSize.X.Offset .. ", " .. Object.CanvasSize.Y.Scale .. ", " .. Object.CanvasSize.Y.Offset .. ")")
@@ -373,10 +385,10 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".AnchorPoint = Vector2.new(" .. Object.AnchorPoint.X .. ", " .. Object.AnchorPoint.Y .. ")")
    end
    if Check(Object, "AutomaticSize") and typeof(Object.AutomaticSize) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".AutomaticSize = Enum.AutomaticSize." .. Object.AutomaticSize.Name)
+      AddCode("\n" .. CurrentInstance .. ".AutomaticSize = Enum." .. tostring(Object.AutomaticSize.EnumType) .. "." .. Object.AutomaticSize.Name)
    end
    if Check(Object, "BorderMode") and typeof(Object.BorderMode) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".BorderMode = Enum.BorderMode." .. Object.BorderMode.Name)
+      AddCode("\n" .. CurrentInstance .. ".BorderMode = Enum." .. tostring(Object.BorderMode.EnumType) .. "." .. Object.BorderMode.Name)
    end
    if Check(Object, "BorderTransparency") and typeof(Object.BorderTransparency) == "number" then
       AddCode("\n" .. CurrentInstance .. ".BorderTransparency = " .. Object.BorderTransparency)
@@ -391,7 +403,7 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. '.TextureID = "' .. Object.TextureID .. '"')
    end
    if Check(Object, "RenderFidelity") and typeof(Object.RenderFidelity) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".RenderFidelity = Enum.RenderFidelity." .. Object.RenderFidelity.Name)
+      AddCode("\n" .. CurrentInstance .. ".RenderFidelity = Enum." .. tostring(Object.RenderFidelity.EnumType) .. "." .. Object.RenderFidelity.Name)
    end
    if Check(Object, "DoubleSided") and typeof(Object.DoubleSided) == "boolean" then
       AddCode("\n" .. CurrentInstance .. ".DoubleSided = " .. tostring(Object.DoubleSided))
@@ -415,7 +427,7 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".OutlineTransparency = " .. Object.OutlineTransparency)
    end
    if Check(Object, "DepthMode") and typeof(Object.DepthMode) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".DepthMode = Enum.HighlightDepthMode." .. Object.DepthMode.Name)
+      AddCode("\n" .. CurrentInstance .. ".DepthMode = Enum." .. tostring(Object.DepthMode.EnumType) .. "." .. Object.DepthMode.Name)
    end
    if Check(Object, "Thickness") and typeof(Object.Thickness) == "number" then
       AddCode("\n" .. CurrentInstance .. ".Thickness = " .. Object.Thickness)
@@ -466,7 +478,7 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".TextureLength = " .. Object.TextureLength)
    end
    if Check(Object, "TextureMode") and typeof(Object.TextureMode) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".TextureMode = Enum.TextureMode." .. Object.TextureMode.Name)
+      AddCode("\n" .. CurrentInstance .. ".TextureMode = Enum." .. tostring(Object.TextureMode.EnumType) .. "." .. Object.TextureMode.Name)
    end
    if Check(Object, "LightEmission") and typeof(Object.LightEmission) == "number" then
       AddCode("\n" .. CurrentInstance .. ".LightEmission = " .. Object.LightEmission)
@@ -493,10 +505,10 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".HoldDuration = " .. Object.HoldDuration)
    end
    if Check(Object, "KeyboardKeyCode") and typeof(Object.KeyboardKeyCode) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".KeyboardKeyCode = Enum.KeyCode." .. Object.KeyboardKeyCode.Name)
+      AddCode("\n" .. CurrentInstance .. ".KeyboardKeyCode = Enum." .. tostring(Object.KeyboardKeyCode.EnumType) .. "." .. Object.KeyboardKeyCode.Name)
    end
    if Check(Object, "GamepadKeyCode") and typeof(Object.GamepadKeyCode) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".GamepadKeyCode = Enum.KeyCode." .. Object.GamepadKeyCode.Name)
+      AddCode("\n" .. CurrentInstance .. ".GamepadKeyCode = Enum." .. tostring(Object.GamepadKeyCode.EnumType) .. "." .. Object.GamepadKeyCode.Name)
    end
    if Check(Object, "MaxVisibleGuis") and typeof(Object.MaxVisibleGuis) == "number" then
       AddCode("\n" .. CurrentInstance .. ".MaxVisibleGuis = " .. Object.MaxVisibleGuis)
@@ -526,7 +538,7 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".AspectRatio = " .. Object.AspectRatio)
    end
    if Check(Object, "DominantAxis") and typeof(Object.DominantAxis) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".DominantAxis = Enum.DominantAxis." .. Object.DominantAxis.Name)
+      AddCode("\n" .. CurrentInstance .. ".DominantAxis = Enum." .. tostring(Object.DominantAxis.EnumType) .. "." .. Object.DominantAxis.Name)
    end
    if Check(Object, "PrimaryAxis") and typeof(Object.PrimaryAxis) == "Vector3" then
       AddCode("\n" .. CurrentInstance .. ".PrimaryAxis = Vector3.new(" .. Object.PrimaryAxis.X .. ", " .. Object.PrimaryAxis.Y .. ", " .. Object.PrimaryAxis.Z .. ")")
@@ -553,10 +565,10 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".LineHeight = " .. Object.LineHeight)
    end
    if Check(Object, "TextDirection") and typeof(Object.TextDirection) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".TextDirection = Enum.TextDirection." .. Object.TextDirection.Name)
+      AddCode("\n" .. CurrentInstance .. ".TextDirection = Enum." .. tostring(Object.TextDirection.EnumType) .. "." .. Object.TextDirection.Name)
    end
    if Check(Object, "TextTruncate") and typeof(Object.TextTruncate) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".TextTruncate = Enum.TextTruncate." .. Object.TextTruncate.Name)
+      AddCode("\n" .. CurrentInstance .. ".TextTruncate = Enum." .. tostring(Object.TextTruncate.EnumType) .. "." .. Object.TextTruncate.Name)
    end
    if Check(Object, "MaxVisibleGraphemes") and typeof(Object.MaxVisibleGraphemes) == "number" then
       AddCode("\n" .. CurrentInstance .. ".MaxVisibleGraphemes = " .. Object.MaxVisibleGraphemes)
@@ -583,13 +595,13 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".ScrollBarImageTransparency = " .. Object.ScrollBarImageTransparency)
    end
    if Check(Object, "ScrollingDirection") and typeof(Object.ScrollingDirection) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".ScrollingDirection = Enum.ScrollingDirection." .. Object.ScrollingDirection.Name)
+      AddCode("\n" .. CurrentInstance .. ".ScrollingDirection = Enum." .. tostring(Object.ScrollingDirection.EnumType) .. "." .. Object.ScrollingDirection.Name)
    end
    if Check(Object, "ScrollingEnabled") and typeof(Object.ScrollingEnabled) == "boolean" then
       AddCode("\n" .. CurrentInstance .. ".ScrollingEnabled = " .. tostring(Object.ScrollingEnabled))
    end
    if Check(Object, "ElasticBehavior") and typeof(Object.ElasticBehavior) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".ElasticBehavior = Enum.ElasticBehavior." .. Object.ElasticBehavior.Name)
+      AddCode("\n" .. CurrentInstance .. ".ElasticBehavior = Enum." .. tostring(Object.ElasticBehavior.EnumType) .. "." .. Object.ElasticBehavior.Name)
    end
    if Check(Object, "AlwaysOnTop") and typeof(Object.AlwaysOnTop) == "boolean" then
       AddCode("\n" .. CurrentInstance .. ".AlwaysOnTop = " .. tostring(Object.AlwaysOnTop))
@@ -601,7 +613,7 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".PixelsPerStud = " .. Object.PixelsPerStud)
    end
    if Check(Object, "SizingMode") and typeof(Object.SizingMode) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".SizingMode = Enum.SurfaceGuiSizingMode." .. Object.SizingMode.Name)
+      AddCode("\n" .. CurrentInstance .. ".SizingMode = Enum." .. tostring(Object.SizingMode.EnumType) .. "." .. Object.SizingMode.Name)
    end
    if Check(Object, "ZOffset") and typeof(Object.ZOffset) == "number" then
       AddCode("\n" .. CurrentInstance .. ".ZOffset = " .. Object.ZOffset)
@@ -625,10 +637,10 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".ClickablePrompt = " .. tostring(Object.ClickablePrompt))
    end
    if Check(Object, "Exclusivity") and typeof(Object.Exclusivity) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".Exclusivity = Enum.ProximityPromptExclusivity." .. Object.Exclusivity.Name)
+      AddCode("\n" .. CurrentInstance .. ".Exclusivity = Enum." .. tostring(Object.Exclusivity.EnumType) .. "." .. Object.Exclusivity.Name)
    end
-   if Check(Object, "Style") and typeof(Object.Style) == "EnumItem" and v:IsA("ProximityPrompt") then
-      AddCode("\n" .. CurrentInstance .. ".Style = " .. tostring(Object.Style.EnumType) .. "." .. Object.Style.Name)
+   if Check(Object, "Style") and typeof(Object.Style) == "EnumItem" then
+      AddCode("\n" .. CurrentInstance .. ".Style = Enum." .. tostring(Object.Style.EnumType) .. "." .. Object.Style.Name)
    end
    if Check(Object, "MaxIndicatorDistance") and typeof(Object.MaxIndicatorDistance) == "number" then
       AddCode("\n" .. CurrentInstance .. ".MaxIndicatorDistance = " .. Object.MaxIndicatorDistance)
@@ -643,25 +655,25 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".Drag = " .. Object.Drag)
    end
    if Check(Object, "EmissionDirection") and typeof(Object.EmissionDirection) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".EmissionDirection = Enum.NormalId." .. Object.EmissionDirection.Name)
+      AddCode("\n" .. CurrentInstance .. ".EmissionDirection = Enum." .. tostring(Object.EmissionDirection.EnumType) .. "." .. Object.EmissionDirection.Name)
    end
    if Check(Object, "LockedToPart") and typeof(Object.LockedToPart) == "boolean" then
       AddCode("\n" .. CurrentInstance .. ".LockedToPart = " .. tostring(Object.LockedToPart))
    end
    if Check(Object, "Orientation") and typeof(Object.Orientation) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".Orientation = Enum.ParticleOrientation." .. Object.Orientation.Name)
+      AddCode("\n" .. CurrentInstance .. ".Orientation = Enum." .. tostring(Object.Orientation.EnumType) .. "." .. Object.Orientation.Name)
    end
    if Check(Object, "RotSpeed") and typeof(Object.RotSpeed) == "NumberRange" then
       AddCode("\n" .. CurrentInstance .. ".RotSpeed = NumberRange.new(" .. Object.RotSpeed.Min .. ", " .. Object.RotSpeed.Max .. ")")
    end
    if Check(Object, "ShapeInOut") and typeof(Object.ShapeInOut) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".ShapeInOut = Enum.ParticleEmitterShapeInOut." .. Object.ShapeInOut.Name)
+      AddCode("\n" .. CurrentInstance .. ".ShapeInOut = Enum." .. tostring(Object.ShapeInOut.EnumType) .. "." .. Object.ShapeInOut.Name)
    end
    if Check(Object, "ShapePartial") and typeof(Object.ShapePartial) == "number" then
       AddCode("\n" .. CurrentInstance .. ".ShapePartial = " .. Object.ShapePartial)
    end
    if Check(Object, "ShapeStyle") and typeof(Object.ShapeStyle) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".ShapeStyle = Enum.ParticleEmitterShapeStyle." .. Object.ShapeStyle.Name)
+      AddCode("\n" .. CurrentInstance .. ".ShapeStyle = Enum." .. tostring(Object.ShapeStyle.EnumType) .. "." .. Object.ShapeStyle.Name)
    end
    if Check(Object, "Squash") and typeof(Object.Squash) == "NumberSequence" then
       local Keypoints = {}
@@ -686,10 +698,10 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".FlipbookFramerate = NumberRange.new(" .. Object.FlipbookFramerate.Min .. ", " .. Object.FlipbookFramerate.Max .. ")")
    end
    if Check(Object, "FlipbookLayout") and typeof(Object.FlipbookLayout) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".FlipbookLayout = Enum.ParticleFlipbookLayout." .. Object.FlipbookLayout.Name)
+      AddCode("\n" .. CurrentInstance .. ".FlipbookLayout = Enum." .. tostring(Object.FlipbookLayout.EnumType) .. "." .. Object.FlipbookLayout.Name)
    end
    if Check(Object, "FlipbookMode") and typeof(Object.FlipbookMode) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".FlipbookMode = Enum.ParticleFlipbookMode." .. Object.FlipbookMode.Name)
+      AddCode("\n" .. CurrentInstance .. ".FlipbookMode = Enum." .. tostring(Object.FlipbookMode.EnumType) .. "." .. Object.FlipbookMode.Name)
    end
    if Check(Object, "FlipbookSizeX") and typeof(Object.FlipbookSizeX) == "number" then
       AddCode("\n" .. CurrentInstance .. ".FlipbookSizeX = " .. Object.FlipbookSizeX)
@@ -722,7 +734,7 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".ToolPunchThroughDistance = " .. Object.ToolPunchThroughDistance)
    end
    if Check(Object, "ActuatorType") and typeof(Object.ActuatorType) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".ActuatorType = Enum.ActuatorType." .. Object.ActuatorType.Name)
+      AddCode("\n" .. CurrentInstance .. ".ActuatorType = Enum." .. tostring(Object.ActuatorType.EnumType) .. "." .. Object.ActuatorType.Name)
    end
    if Check(Object, "AngularResponsiveness") and typeof(Object.AngularResponsiveness) == "number" then
       AddCode("\n" .. CurrentInstance .. ".AngularResponsiveness = " .. Object.AngularResponsiveness)
@@ -786,10 +798,10 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".RootPriority = " .. Object.RootPriority)
    end
    if Check(Object, "LevelOfDetail") and typeof(Object.LevelOfDetail) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".LevelOfDetail = Enum.ModelLevelOfDetail." .. Object.LevelOfDetail.Name)
+      AddCode("\n" .. CurrentInstance .. ".LevelOfDetail = Enum." .. tostring(Object.LevelOfDetail.EnumType) .. "." .. Object.LevelOfDetail.Name)
    end
    if Check(Object, "ModelStreamingMode") and typeof(Object.ModelStreamingMode) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".ModelStreamingMode = Enum.ModelStreamingMode." .. Object.ModelStreamingMode.Name)
+      AddCode("\n" .. CurrentInstance .. ".ModelStreamingMode = Enum." .. tostring(Object.ModelStreamingMode.EnumType) .. "." .. Object.ModelStreamingMode.Name)
    end
    if Check(Object, "WalkSpeed") and typeof(Object.WalkSpeed) == "number" then
       AddCode("\n" .. CurrentInstance .. ".WalkSpeed = " .. Object.WalkSpeed)
@@ -888,22 +900,22 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".SelectionOrder = " .. Object.SelectionOrder)
    end
    if Check(Object, "SizeConstraint") and typeof(Object.SizeConstraint) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".SizeConstraint = Enum.SizeConstraint." .. Object.SizeConstraint.Name)
+      AddCode("\n" .. CurrentInstance .. ".SizeConstraint = Enum." .. tostring(Object.SizeConstraint.EnumType) .. "." .. Object.SizeConstraint.Name)
    end
    if Check(Object, "AutomaticCanvasSize") and typeof(Object.AutomaticCanvasSize) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".AutomaticCanvasSize = Enum.AutomaticSize." .. Object.AutomaticCanvasSize.Name)
+      AddCode("\n" .. CurrentInstance .. ".AutomaticCanvasSize = Enum." .. tostring(Object.AutomaticCanvasSize.EnumType) .. "." .. Object.AutomaticCanvasSize.Name)
    end
    if Check(Object, "HorizontalScrollBarInset") and typeof(Object.HorizontalScrollBarInset) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".HorizontalScrollBarInset = Enum.ScrollBarInset." .. Object.HorizontalScrollBarInset.Name)
+      AddCode("\n" .. CurrentInstance .. ".HorizontalScrollBarInset = Enum." .. tostring(Object.HorizontalScrollBarInset.EnumType) .. "." .. Object.HorizontalScrollBarInset.Name)
    end
    if Check(Object, "VerticalScrollBarInset") and typeof(Object.VerticalScrollBarInset) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".VerticalScrollBarInset = Enum.ScrollBarInset." .. Object.VerticalScrollBarInset.Name)
+      AddCode("\n" .. CurrentInstance .. ".VerticalScrollBarInset = Enum." .. tostring(Object.VerticalScrollBarInset.EnumType) .. "." .. Object.VerticalScrollBarInset.Name)
    end
    if Check(Object, "VerticalScrollBarPosition") and typeof(Object.VerticalScrollBarPosition) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".VerticalScrollBarPosition = Enum.VerticalScrollBarPosition." .. Object.VerticalScrollBarPosition.Name)
+      AddCode("\n" .. CurrentInstance .. ".VerticalScrollBarPosition = Enum." .. tostring(Object.VerticalScrollBarPosition.EnumType) .. "." .. Object.VerticalScrollBarPosition.Name)
    end
    if Check(Object, "AlphaMode") and typeof(Object.AlphaMode) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".AlphaMode = Enum.AlphaMode." .. Object.AlphaMode.Name)
+      AddCode("\n" .. CurrentInstance .. ".AlphaMode = Enum." .. tostring(Object.AlphaMode.EnumType) .. "." .. Object.AlphaMode.Name)
    end
    if Check(Object, "EmissiveStrength") and typeof(Object.EmissiveStrength) == "number" then
       AddCode("\n" .. CurrentInstance .. ".EmissiveStrength = " .. Object.EmissiveStrength)
@@ -912,7 +924,7 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".EmissiveTint = Color3.new(" .. Object.EmissiveTint.R .. ", " .. Object.EmissiveTint.G .. ", " .. Object.EmissiveTint.B .. ")")
    end
    if Check(Object, "ResampleMode") and typeof(Object.ResampleMode) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".ResampleMode = Enum.ResamplerMode." .. Object.ResampleMode.Name)
+      AddCode("\n" .. CurrentInstance .. ".ResampleMode = Enum." .. tostring(Object.ResampleMode.EnumType) .. "." .. Object.ResampleMode.Name)
    end
    if Check(Object, "StudsOffset") and typeof(Object.StudsOffset) == "Vector3" then
       AddCode("\n" .. CurrentInstance .. ".StudsOffset = Vector3.new(" .. Object.StudsOffset.X .. ", " .. Object.StudsOffset.Y .. ", " .. Object.StudsOffset.Z .. ")")
@@ -945,40 +957,40 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".BorderOffset = UDim.new(" .. Object.BorderOffset.Scale .. ", " .. Object.BorderOffset.Offset .. ")")
    end
    if Check(Object, "BorderStrokePosition") and typeof(Object.BorderStrokePosition) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".BorderStrokePosition = Enum.BorderStrokePosition." .. Object.BorderStrokePosition.Name)
+      AddCode("\n" .. CurrentInstance .. ".BorderStrokePosition = Enum." .. tostring(Object.BorderStrokePosition.EnumType) .. "." .. Object.BorderStrokePosition.Name)
    end
    if Check(Object, "StrokeSizingMode") and typeof(Object.StrokeSizingMode) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".StrokeSizingMode = Enum.StrokeSizingMode." .. Object.StrokeSizingMode.Name)
+      AddCode("\n" .. CurrentInstance .. ".StrokeSizingMode = Enum." .. tostring(Object.StrokeSizingMode.EnumType) .. "." .. Object.StrokeSizingMode.Name)
    end
    if Check(Object, "TileMode") and typeof(Object.TileMode) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".TileMode = Enum.GradientTileMode." .. Object.TileMode.Name)
+      AddCode("\n" .. CurrentInstance .. ".TileMode = Enum." .. tostring(Object.TileMode.EnumType) .. "." .. Object.TileMode.Name)
    end
    if Check(Object, "Type") and typeof(Object.Type) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".Type = Enum.GradientType." .. Object.Type.Name)
+      AddCode("\n" .. CurrentInstance .. ".Type = Enum." .. tostring(Object.Type.EnumType) .. "." .. Object.Type.Name)
    end
    if Check(Object, "AspectType") and typeof(Object.AspectType) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".AspectType = Enum.AspectType." .. Object.AspectType.Name)
+      AddCode("\n" .. CurrentInstance .. ".AspectType = Enum." .. tostring(Object.AspectType.EnumType) .. "." .. Object.AspectType.Name)
    end
    if Check(Object, "FillDirection") and typeof(Object.FillDirection) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".FillDirection = Enum.FillDirection." .. Object.FillDirection.Name)
+      AddCode("\n" .. CurrentInstance .. ".FillDirection = Enum." .. tostring(Object.FillDirection.EnumType) .. "." .. Object.FillDirection.Name)
    end
    if Check(Object, "HorizontalAlignment") and typeof(Object.HorizontalAlignment) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".HorizontalAlignment = Enum.HorizontalAlignment." .. Object.HorizontalAlignment.Name)
+      AddCode("\n" .. CurrentInstance .. ".HorizontalAlignment = Enum." .. tostring(Object.HorizontalAlignment.EnumType) .. "." .. Object.HorizontalAlignment.Name)
    end
    if Check(Object, "SortOrder") and typeof(Object.SortOrder) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".SortOrder = Enum.SortOrder." .. Object.SortOrder.Name)
+      AddCode("\n" .. CurrentInstance .. ".SortOrder = Enum." .. tostring(Object.SortOrder.EnumType) .. "." .. Object.SortOrder.Name)
    end
    if Check(Object, "VerticalAlignment") and typeof(Object.VerticalAlignment) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".VerticalAlignment = Enum.VerticalAlignment." .. Object.VerticalAlignment.Name)
+      AddCode("\n" .. CurrentInstance .. ".VerticalAlignment = Enum." .. tostring(Object.VerticalAlignment.EnumType) .. "." .. Object.VerticalAlignment.Name)
    end
    if Check(Object, "HorizontalFlex") and typeof(Object.HorizontalFlex) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".HorizontalFlex = Enum.UIFlexAlignment." .. Object.HorizontalFlex.Name)
+      AddCode("\n" .. CurrentInstance .. ".HorizontalFlex = Enum." .. tostring(Object.HorizontalFlex.EnumType) .. "." .. Object.HorizontalFlex.Name)
    end
    if Check(Object, "VerticalFlex") and typeof(Object.VerticalFlex) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".VerticalFlex = Enum.UIFlexAlignment." .. Object.VerticalFlex.Name)
+      AddCode("\n" .. CurrentInstance .. ".VerticalFlex = Enum." .. tostring(Object.VerticalFlex.EnumType) .. "." .. Object.VerticalFlex.Name)
    end
    if Check(Object, "ItemLineAlignment") and typeof(Object.ItemLineAlignment) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".ItemLineAlignment = Enum.ItemLineAlignment." .. Object.ItemLineAlignment.Name)
+      AddCode("\n" .. CurrentInstance .. ".ItemLineAlignment = Enum." .. tostring(Object.ItemLineAlignment.EnumType) .. "." .. Object.ItemLineAlignment.Name)
    end
    if Check(Object, "Wraps") and typeof(Object.Wraps) == "boolean" then
       AddCode("\n" .. CurrentInstance .. ".Wraps = " .. tostring(Object.Wraps))
@@ -993,7 +1005,7 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".FillDirectionMaxCells = " .. Object.FillDirectionMaxCells)
    end
    if Check(Object, "StartCorner") and typeof(Object.StartCorner) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".StartCorner = Enum.StartCorner." .. Object.StartCorner.Name)
+      AddCode("\n" .. CurrentInstance .. ".StartCorner = Enum." .. tostring(Object.StartCorner.EnumType) .. "." .. Object.StartCorner.Name)
    end
    if Check(Object, "Animated") and typeof(Object.Animated) == "boolean" then
       AddCode("\n" .. CurrentInstance .. ".Animated = " .. tostring(Object.Animated))
@@ -1002,10 +1014,10 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".Circular = " .. tostring(Object.Circular))
    end
    if Check(Object, "EasingDirection") and typeof(Object.EasingDirection) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".EasingDirection = Enum.EasingDirection." .. Object.EasingDirection.Name)
+      AddCode("\n" .. CurrentInstance .. ".EasingDirection = Enum." .. tostring(Object.EasingDirection.EnumType) .. "." .. Object.EasingDirection.Name)
    end
    if Check(Object, "EasingStyle") and typeof(Object.EasingStyle) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".EasingStyle = Enum.EasingStyle." .. Object.EasingStyle.Name)
+      AddCode("\n" .. CurrentInstance .. ".EasingStyle = Enum." .. tostring(Object.EasingStyle.EnumType) .. "." .. Object.EasingStyle.Name)
    end
    if Check(Object, "GamepadInputEnabled") and typeof(Object.GamepadInputEnabled) == "boolean" then
       AddCode("\n" .. CurrentInstance .. ".GamepadInputEnabled = " .. tostring(Object.GamepadInputEnabled))
@@ -1020,7 +1032,7 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".TweenTime = " .. Object.TweenTime)
    end
    if Check(Object, "FlexMode") and typeof(Object.FlexMode) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".FlexMode = Enum.UIFlexMode." .. Object.FlexMode.Name)
+      AddCode("\n" .. CurrentInstance .. ".FlexMode = Enum." .. tostring(Object.FlexMode.EnumType) .. "." .. Object.FlexMode.Name)
    end
    if Check(Object, "GrowRatio") and typeof(Object.GrowRatio) == "number" then
       AddCode("\n" .. CurrentInstance .. ".GrowRatio = " .. Object.GrowRatio)
@@ -1032,7 +1044,7 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".Padding = UDim.new(" .. Object.Padding.Scale .. ", " .. Object.Padding.Offset .. ")")
    end
    if Check(Object, "InputSink") and typeof(Object.InputSink) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".InputSink = Enum.InputSink." .. Object.InputSink.Name)
+      AddCode("\n" .. CurrentInstance .. ".InputSink = Enum." .. tostring(Object.InputSink.EnumType) .. "." .. Object.InputSink.Name)
    end
    if Check(Object, "AutoButtonColor") and typeof(Object.AutoButtonColor) == "boolean" then
       AddCode("\n" .. CurrentInstance .. ".AutoButtonColor = " .. tostring(Object.AutoButtonColor))
@@ -1071,10 +1083,10 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".ClipToDeviceSafeArea = " .. tostring(Object.ClipToDeviceSafeArea))
    end
    if Check(Object, "SafeAreaCompatibility") and typeof(Object.SafeAreaCompatibility) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".SafeAreaCompatibility = Enum.SafeAreaCompatibility." .. Object.SafeAreaCompatibility.Name)
+      AddCode("\n" .. CurrentInstance .. ".SafeAreaCompatibility = Enum." .. tostring(Object.SafeAreaCompatibility.EnumType) .. "." .. Object.SafeAreaCompatibility.Name)
    end
    if Check(Object, "ScreenInsets") and typeof(Object.ScreenInsets) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".ScreenInsets = Enum.ScreenInsets." .. Object.ScreenInsets.Name)
+      AddCode("\n" .. CurrentInstance .. ".ScreenInsets = Enum." .. tostring(Object.ScreenInsets.EnumType) .. "." .. Object.ScreenInsets.Name)
    end
    if Check(Object, "GroupColor3") and typeof(Object.GroupColor3) == "Color3" then
       AddCode("\n" .. CurrentInstance .. ".GroupColor3 = Color3.new(" .. Object.GroupColor3.R .. ", " .. Object.GroupColor3.G .. ", " .. Object.GroupColor3.B .. ")")
@@ -1104,16 +1116,16 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".DragAxis = Vector2.new(" .. Object.DragAxis.X .. ", " .. Object.DragAxis.Y .. ")")
    end
    if Check(Object, "DragRelativity") and typeof(Object.DragRelativity) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".DragRelativity = Enum.UIDragDetectorDragRelativity." .. Object.DragRelativity.Name)
+      AddCode("\n" .. CurrentInstance .. ".DragRelativity = Enum." .. tostring(Object.DragRelativity.EnumType) .. "." .. Object.DragRelativity.Name)
    end
    if Check(Object, "DragRotation") and typeof(Object.DragRotation) == "number" then
       AddCode("\n" .. CurrentInstance .. ".DragRotation = " .. Object.DragRotation)
    end
    if Check(Object, "DragSpace") and typeof(Object.DragSpace) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".DragSpace = Enum.UIDragDetectorDragSpace." .. Object.DragSpace.Name)
+      AddCode("\n" .. CurrentInstance .. ".DragSpace = Enum." .. tostring(Object.DragSpace.EnumType) .. "." .. Object.DragSpace.Name)
    end
    if Check(Object, "DragStyle") and typeof(Object.DragStyle) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".DragStyle = Enum.UIDragDetectorDragStyle." .. Object.DragStyle.Name)
+      AddCode("\n" .. CurrentInstance .. ".DragStyle = Enum." .. tostring(Object.DragStyle.EnumType) .. "." .. Object.DragStyle.Name)
    end
    if Check(Object, "DragUDim2") and typeof(Object.DragUDim2) == "UDim2" then
       AddCode("\n" .. CurrentInstance .. ".DragUDim2 = UDim2.new(" .. Object.DragUDim2.X.Scale .. ", " .. Object.DragUDim2.X.Offset .. ", " .. Object.DragUDim2.Y.Scale .. ", " .. Object.DragUDim2.Y.Offset .. ")")
@@ -1131,7 +1143,7 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".MinDragTranslation = UDim2.new(" .. Object.MinDragTranslation.X.Scale .. ", " .. Object.MinDragTranslation.X.Offset .. ", " .. Object.MinDragTranslation.Y.Scale .. ", " .. Object.MinDragTranslation.Y.Offset .. ")")
    end
    if Check(Object, "ResponseStyle") and typeof(Object.ResponseStyle) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".ResponseStyle = Enum.UIDragDetectorResponseStyle." .. Object.ResponseStyle.Name)
+      AddCode("\n" .. CurrentInstance .. ".ResponseStyle = Enum." .. tostring(Object.ResponseStyle.EnumType) .. "." .. Object.ResponseStyle.Name)
    end
    if Check(Object, "SelectionModeDragSpeed") and typeof(Object.SelectionModeDragSpeed) == "UDim2" then
       AddCode("\n" .. CurrentInstance .. ".SelectionModeDragSpeed = UDim2.new(" .. Object.SelectionModeDragSpeed.X.Scale .. ", " .. Object.SelectionModeDragSpeed.X.Offset .. ", " .. Object.SelectionModeDragSpeed.Y.Scale .. ", " .. Object.SelectionModeDragSpeed.Y.Offset .. ")")
@@ -1140,7 +1152,7 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".SelectionModeRotateSpeed = " .. Object.SelectionModeRotateSpeed)
    end
    if Check(Object, "UIDragSpeedAxisMapping") and typeof(Object.UIDragSpeedAxisMapping) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".UIDragSpeedAxisMapping = Enum.UIDragSpeedAxisMapping." .. Object.UIDragSpeedAxisMapping.Name)
+      AddCode("\n" .. CurrentInstance .. ".UIDragSpeedAxisMapping = Enum." .. tostring(Object.UIDragSpeedAxisMapping.EnumType) .. "." .. Object.UIDragSpeedAxisMapping.Name)
    end
    if Check(Object, "OutdoorAmbient") and typeof(Object.OutdoorAmbient) == "Color3" then
       AddCode("\n" .. CurrentInstance .. ".OutdoorAmbient = Color3.new(" .. Object.OutdoorAmbient.R .. ", " .. Object.OutdoorAmbient.G .. ", " .. Object.OutdoorAmbient.B .. ")")
@@ -1161,7 +1173,7 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".ShadowSoftness = " .. Object.ShadowSoftness)
    end
    if Check(Object, "LightingStyle") and typeof(Object.LightingStyle) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".LightingStyle = Enum.LightingStyle." .. Object.LightingStyle.Name)
+      AddCode("\n" .. CurrentInstance .. ".LightingStyle = Enum." .. tostring(Object.LightingStyle.EnumType) .. "." .. Object.LightingStyle.Name)
    end
    if Check(Object, "PrioritizeLightingQuality") and typeof(Object.PrioritizeLightingQuality) == "boolean" then
       AddCode("\n" .. CurrentInstance .. ".PrioritizeLightingQuality = " .. tostring(Object.PrioritizeLightingQuality))
@@ -1233,10 +1245,10 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".FieldOfView = " .. Object.FieldOfView)
    end
    if Check(Object, "FieldOfViewMode") and typeof(Object.FieldOfViewMode) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".FieldOfViewMode = Enum.FieldOfViewMode." .. Object.FieldOfViewMode.Name)
+      AddCode("\n" .. CurrentInstance .. ".FieldOfViewMode = Enum." .. tostring(Object.FieldOfViewMode.EnumType) .. "." .. Object.FieldOfViewMode.Name)
    end
    if Check(Object, "CameraType") and typeof(Object.CameraType) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".CameraType = Enum.CameraType." .. Object.CameraType.Name)
+      AddCode("\n" .. CurrentInstance .. ".CameraType = Enum." .. tostring(Object.CameraType.EnumType) .. "." .. Object.CameraType.Name)
    end
    if Check(Object, "Focus") and typeof(Object.Focus) == "CFrame" then
       local Components = {Object.Focus:GetComponents()}
@@ -1246,10 +1258,10 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".ApplyAtCenterOfMass = " .. tostring(Object.ApplyAtCenterOfMass))
    end
    if Check(Object, "ForceLimitMode") and typeof(Object.ForceLimitMode) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".ForceLimitMode = Enum.ForceLimitMode." .. Object.ForceLimitMode.Name)
+      AddCode("\n" .. CurrentInstance .. ".ForceLimitMode = Enum." .. tostring(Object.ForceLimitMode.EnumType) .. "." .. Object.ForceLimitMode.Name)
    end
    if Check(Object, "ForceRelativeTo") and typeof(Object.ForceRelativeTo) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".ForceRelativeTo = Enum.ActuatorRelativeTo." .. Object.ForceRelativeTo.Name)
+      AddCode("\n" .. CurrentInstance .. ".ForceRelativeTo = Enum." .. tostring(Object.ForceRelativeTo.EnumType) .. "." .. Object.ForceRelativeTo.Name)
    end
    if Check(Object, "MaxAxesForce") and typeof(Object.MaxAxesForce) == "Vector3" then
       AddCode("\n" .. CurrentInstance .. ".MaxAxesForce = Vector3.new(" .. Object.MaxAxesForce.X .. ", " .. Object.MaxAxesForce.Y .. ", " .. Object.MaxAxesForce.Z .. ")")
@@ -1258,10 +1270,10 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".MaxVelocity = " .. Object.MaxVelocity)
    end
    if Check(Object, "Mode") and typeof(Object.Mode) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".Mode = Enum.PositionAlignmentMode." .. Object.Mode.Name)
+      AddCode("\n" .. CurrentInstance .. ".Mode = Enum." .. tostring(Object.Mode.EnumType) .. "." .. Object.Mode.Name)
    end
    if Check(Object, "AlignType") and typeof(Object.AlignType) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".AlignType = Enum.AlignType." .. Object.AlignType.Name)
+      AddCode("\n" .. CurrentInstance .. ".AlignType = Enum." .. tostring(Object.AlignType.EnumType) .. "." .. Object.AlignType.Name)
    end
    if Check(Object, "LookAtPosition") and typeof(Object.LookAtPosition) == "Vector3" then
       AddCode("\n" .. CurrentInstance .. ".LookAtPosition = Vector3.new(" .. Object.LookAtPosition.X .. ", " .. Object.LookAtPosition.Y .. ", " .. Object.LookAtPosition.Z .. ")")
@@ -1291,7 +1303,7 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".PrimaryTangentAxis = Vector3.new(" .. Object.PrimaryTangentAxis.X .. ", " .. Object.PrimaryTangentAxis.Y .. ", " .. Object.PrimaryTangentAxis.Z .. ")")
    end
    if Check(Object, "RelativeTo") and typeof(Object.RelativeTo) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".RelativeTo = Enum.ActuatorRelativeTo." .. Object.RelativeTo.Name)
+      AddCode("\n" .. CurrentInstance .. ".RelativeTo = Enum." .. tostring(Object.RelativeTo.EnumType) .. "." .. Object.RelativeTo.Name)
    end
    if Check(Object, "SecondaryTangentAxis") and typeof(Object.SecondaryTangentAxis) == "Vector3" then
       AddCode("\n" .. CurrentInstance .. ".SecondaryTangentAxis = Vector3.new(" .. Object.SecondaryTangentAxis.X .. ", " .. Object.SecondaryTangentAxis.Y .. ", " .. Object.SecondaryTangentAxis.Z .. ")")
@@ -1300,7 +1312,7 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".VectorVelocity = Vector3.new(" .. Object.VectorVelocity.X .. ", " .. Object.VectorVelocity.Y .. ", " .. Object.VectorVelocity.Z .. ")")
    end
    if Check(Object, "VelocityConstraintMode") and typeof(Object.VelocityConstraintMode) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".VelocityConstraintMode = Enum.VelocityConstraintMode." .. Object.VelocityConstraintMode.Name)
+      AddCode("\n" .. CurrentInstance .. ".VelocityConstraintMode = Enum." .. tostring(Object.VelocityConstraintMode.EnumType) .. "." .. Object.VelocityConstraintMode.Name)
    end
    if Check(Object, "Force") and typeof(Object.Force) == "Vector3" then
       AddCode("\n" .. CurrentInstance .. ".Force = Vector3.new(" .. Object.Force.X .. ", " .. Object.Force.Y .. ", " .. Object.Force.Z .. ")")
@@ -1342,22 +1354,22 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".EvaluateStateMachine = " .. tostring(Object.EvaluateStateMachine))
    end
    if Check(Object, "DisplayDistanceType") and typeof(Object.DisplayDistanceType) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".DisplayDistanceType = Enum.HumanoidDisplayDistanceType." .. Object.DisplayDistanceType.Name)
+      AddCode("\n" .. CurrentInstance .. ".DisplayDistanceType = Enum." .. tostring(Object.DisplayDistanceType.EnumType) .. "." .. Object.DisplayDistanceType.Name)
    end
    if Check(Object, "HealthDisplayDistance") and typeof(Object.HealthDisplayDistance) == "number" then
       AddCode("\n" .. CurrentInstance .. ".HealthDisplayDistance = " .. Object.HealthDisplayDistance)
    end
    if Check(Object, "HealthDisplayType") and typeof(Object.HealthDisplayType) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".HealthDisplayType = Enum.HumanoidHealthDisplayType." .. Object.HealthDisplayType.Name)
+      AddCode("\n" .. CurrentInstance .. ".HealthDisplayType = Enum." .. tostring(Object.HealthDisplayType.EnumType) .. "." .. Object.HealthDisplayType.Name)
    end
    if Check(Object, "NameDisplayDistance") and typeof(Object.NameDisplayDistance) == "number" then
       AddCode("\n" .. CurrentInstance .. ".NameDisplayDistance = " .. Object.NameDisplayDistance)
    end
    if Check(Object, "NameOcclusion") and typeof(Object.NameOcclusion) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".NameOcclusion = Enum.NameOcclusion." .. Object.NameOcclusion.Name)
+      AddCode("\n" .. CurrentInstance .. ".NameOcclusion = Enum." .. tostring(Object.NameOcclusion.EnumType) .. "." .. Object.NameOcclusion.Name)
    end
    if Check(Object, "RigType") and typeof(Object.RigType) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".RigType = Enum.HumanoidRigType." .. Object.RigType.Name)
+      AddCode("\n" .. CurrentInstance .. ".RigType = Enum." .. tostring(Object.RigType.EnumType) .. "." .. Object.RigType.Name)
    end
    if Check(Object, "Sit") and typeof(Object.Sit) == "boolean" then
       AddCode("\n" .. CurrentInstance .. ".Sit = " .. tostring(Object.Sit))
@@ -1417,6 +1429,13 @@ local UseCollectionService = false
       local Components = {Object.Value:GetComponents()}
       AddCode("\n" .. CurrentInstance .. ".Value = CFrame.new(" .. table.concat(Components, ", ") .. ")")
    end
+   if Check(Object, "Value") and typeof(Object.Value) == "Instance" then
+      if InstanceVariables and InstanceVariables[Object.Value] then
+         local Position = CodeIndex + 1
+         AddCode("")
+         DeferredProperties[#DeferredProperties + 1] = {Position, CurrentInstance, "Value", Object.Value}
+      end
+   end
    if Check(Object, "Value") and typeof(Object.Value) == "Ray" then
       AddCode("\n" .. CurrentInstance .. ".Value = Ray.new(Vector3.new(" .. Object.Value.Origin.X .. ", " .. Object.Value.Origin.Y .. ", " .. Object.Value.Origin.Z .. "), Vector3.new(" .. Object.Value.Direction.X .. ", " .. Object.Value.Direction.Y .. ", " .. Object.Value.Direction.Z .. "))")
    end
@@ -1448,7 +1467,7 @@ local UseCollectionService = false
       AddCode("\n" .. CurrentInstance .. ".TextureContent = Content.fromUri(" .. '"' .. Object.TextureContent.Uri .. '"' .. ")")
    end
    if Check(Object, "BodyPart") and typeof(Object.BodyPart) == "EnumItem" then
-      AddCode("\n" .. CurrentInstance .. ".BodyPart = Enum.BodyPart." .. Object.BodyPart.Name)
+      AddCode("\n" .. CurrentInstance .. ".BodyPart = Enum." .. tostring(Object.BodyPart.EnumType) .. "." .. Object.BodyPart.Name)
    end
    if Check(Object, "BaseTextureId") and typeof(Object.BaseTextureId) == "number" then
       AddCode("\n" .. CurrentInstance .. ".BaseTextureId = " .. Object.BaseTextureId)
@@ -1462,44 +1481,154 @@ local UseCollectionService = false
    if Check(Object, "OverlayTextureContent") and typeof(Object.OverlayTextureContent) == "Content" then
       AddCode("\n" .. CurrentInstance .. ".OverlayTextureContent = Content.fromUri(" .. '"' .. Object.OverlayTextureContent.Uri .. '"' .. ")")
    end
+   if Check(Object, "PrimaryPart") and Object.PrimaryPart then
+      AddCode("")
+      DeferredProperties[#DeferredProperties + 1] = {CodeIndex + 1, CurrentInstance, "PrimaryPart", Object.PrimaryPart}
+   end
+   if Check(Object, "BottomImageContent") and Object.BottomImageContent and Object.BottomImageContent.Uri then
+      AddCode("\n" .. CurrentInstance .. ".BottomImageContent = Content.fromUri(" .. string.format("%q", Object.BottomImageContent.Uri) .. ")")
+   end
+   if Check(Object, "MidImageContent") and Object.MidImageContent and Object.MidImageContent.Uri then
+      AddCode("\n" .. CurrentInstance .. ".MidImageContent = Content.fromUri(" .. string.format("%q", Object.MidImageContent.Uri) .. ")")
+   end
+   if Check(Object, "TopImageContent") and Object.TopImageContent and Object.TopImageContent.Uri then
+      AddCode("\n" .. CurrentInstance .. ".TopImageContent = Content.fromUri(" .. string.format("%q", Object.TopImageContent.Uri) .. ")")
+   end
+   if Check(Object, "Attachment0") and Object.Attachment0 and InstanceVariables[Object.Attachment0] then
+      AddCode("")
+      DeferredProperties[#DeferredProperties + 1] = {CodeIndex + 1, CurrentInstance, "Attachment0", Object.Attachment0}
+   end
+   if Check(Object, "Attachment1") and Object.Attachment1 and InstanceVariables[Object.Attachment1] then
+      AddCode("")
+      DeferredProperties[#DeferredProperties + 1] = {CodeIndex + 1, CurrentInstance, "Attachment1", Object.Attachment1}
+   end
+   if Check(Object, "AudioContent") and Object.AudioContent and Object.AudioContent.Uri then
+      AddCode("\n" .. CurrentInstance .. ".AudioContent = Content.fromUri(" .. string.format("%q", Object.AudioContent.Uri) .. ")")
+   end
+   if Check(Object, "SoundGroup") and Object.SoundGroup and InstanceVariables[Object.SoundGroup] then
+      AddCode("")
+      DeferredProperties[#DeferredProperties + 1] = {CodeIndex + 1, CurrentInstance, "SoundGroup", Object.SoundGroup}
+   end
+   if Check(Object, "FogStart") then
+      AddCode("\n" .. CurrentInstance .. ".FogStart = " .. tostring(Object.FogStart))
+   end
+   if Check(Object, "FogColor") and typeof(Object.FogColor) == "Color3" then
+      AddCode("\n" .. CurrentInstance .. ".FogColor = Color3.new(" .. Object.FogColor.R .. ", " .. Object.FogColor.G .. ", " .. Object.FogColor.B .. ")")
+   end
+   if Check(Object, "FogEnd") then
+      AddCode("\n" .. CurrentInstance .. ".FogEnd = " .. tostring(Object.FogEnd))
+   end
+   if Check(Object, "SpectrumEnabled") and typeof(Object.SpectrumEnabled) == "boolean" then
+      AddCode("\n" .. CurrentInstance .. ".SpectrumEnabled = " .. tostring(Object.SpectrumEnabled))
+   end
+   if Check(Object, "WindowSize") and typeof(Object.WindowSize) == "EnumItem" then
+      AddCode("\n" .. CurrentInstance .. ".WindowSize = " .. tostring(Object.WindowSize.EnumType) .. "." .. Object.WindowSize.Name)
+   end
+   if Check(Object, "AcousticSimulationEnabled") and typeof(Object.AcousticSimulationEnabled) == "boolean" then
+      AddCode("\n" .. CurrentInstance .. ".AcousticSimulationEnabled = " .. tostring(Object.AcousticSimulationEnabled))
+   end
+   if Check(Object, "AudioInteractionGroup") and typeof(Object.AudioInteractionGroup) == "string" then
+      AddCode("\n" .. CurrentInstance .. ".AudioInteractionGroup = " .. string.format("%q", Object.AudioInteractionGroup))
+   end
+   if Check(Object, "DistanceAttenuationBounds") and typeof(Object.DistanceAttenuationBounds) == "Vector2" then
+      AddCode("\n" .. CurrentInstance .. ".DistanceAttenuationBounds = Vector2.new(" .. Object.DistanceAttenuationBounds.X .. ", " .. Object.DistanceAttenuationBounds.Y .. ")")
+   end
+   if Check(Object, "DistanceAttenuationMode") and typeof(Object.DistanceAttenuationMode) == "EnumItem" then
+      AddCode("\n" .. CurrentInstance .. ".DistanceAttenuationMode = " .. tostring(Object.DistanceAttenuationMode.EnumType) .. "." .. Object.DistanceAttenuationMode.Name)
+   end
+   if Check(Object, "PositionInstance") and Object.PositionInstance and InstanceVariables[Object.PositionInstance] then
+      AddCode("")
+      DeferredProperties[#DeferredProperties + 1] = {CodeIndex + 1, CurrentInstance, "PositionInstance", Object.PositionInstance}
+   end
+   if Check(Object, "PositionType") and typeof(Object.PositionType) == "EnumItem" then
+      AddCode("\n" .. CurrentInstance .. ".PositionType = " .. tostring(Object.PositionType.EnumType) .. "." .. Object.PositionType.Name)
+   end
+   if Check(Object, "Attack") and typeof(Object.Attack) == "number" then
+      AddCode("\n" .. CurrentInstance .. ".Attack = " .. tostring(Object.Attack))
+   end
+   if Check(Object, "Release") and typeof(Object.Release) == "number" then
+      AddCode("\n" .. CurrentInstance .. ".Release = " .. tostring(Object.Release))
+   end
+   if Check(Object, "Ratio") and typeof(Object.Ratio) == "number" then
+      AddCode("\n" .. CurrentInstance .. ".Ratio = " .. tostring(Object.Ratio))
+   end
+   if Check(Object, "Threshold") and typeof(Object.Threshold) == "number" then
+      AddCode("\n" .. CurrentInstance .. ".Threshold = " .. tostring(Object.Threshold))
+   end
+   if Check(Object, "MakeupGain") and typeof(Object.MakeupGain) == "number" then
+      AddCode("\n" .. CurrentInstance .. ".MakeupGain = " .. tostring(Object.MakeupGain))
+   end
+   if Check(Object, "Depth") and typeof(Object.Depth) == "number" then
+      AddCode("\n" .. CurrentInstance .. ".Depth = " .. tostring(Object.Depth))
+   end
+   if Check(Object, "Duty") and typeof(Object.Duty) == "number" then
+      AddCode("\n" .. CurrentInstance .. ".Duty = " .. tostring(Object.Duty))
+   end
+   if Check(Object, "Frequency") and typeof(Object.Frequency) == "number" then
+      AddCode("\n" .. CurrentInstance .. ".Frequency = " .. tostring(Object.Frequency))
+   end
+   if Check(Object, "Part0") and Object.Part0 and InstanceVariables[Object.Part0] then
+      AddCode("")
+      DeferredProperties[#DeferredProperties + 1] = {CodeIndex, CurrentInstance, "Part0", Object.Part0}
+   end
+   if Check(Object, "Part1") and Object.Part1 and InstanceVariables[Object.Part1] then
+      AddCode("")
+      DeferredProperties[#DeferredProperties + 1] = {CodeIndex, CurrentInstance, "Part1", Object.Part1}
+   end
+   if Check(Object, "Adornee") and Object.Adornee and InstanceVariables[Object.Adornee] then
+      AddCode("")
+      DeferredProperties[#DeferredProperties + 1] = {CodeIndex, CurrentInstance, "Adornee", Object.Adornee}
+   end
+   if Check(Object, "CameraSubject") and typeof(Object.CameraSubject) == "Instance" and Object.CameraSubject and InstanceVariables[Object.CameraSubject] then
+      AddCode("")
+      DeferredProperties[#DeferredProperties + 1] = {CodeIndex, CurrentInstance, "CameraSubject", Object.CameraSubject}
+   end
+   if Check(Object, "PlayerToHideFrom") and typeof(Object.PlayerToHideFrom) == "Instance" and Object.PlayerToHideFrom and InstanceVariables[Object.PlayerToHideFrom] then
+      AddCode("")
+      DeferredProperties[#DeferredProperties + 1] = {CodeIndex, CurrentInstance, "PlayerToHideFrom", Object.PlayerToHideFrom}
+   end
+   if Check(Object, "Generator") and typeof(Object.Generator) == "Instance" and Object.Generator and InstanceVariables[Object.Generator] then
+      AddCode("")
+      DeferredProperties[#DeferredProperties + 1] = {CodeIndex, CurrentInstance, "Generator", Object.Generator}
+   end
    for _, v in CollectionService:GetTags(Object) do
       UseCollectionService = true
-      AddCode("\n" .. 'CollectionService:AddTag(' .. CurrentInstance .. ', "' .. v .. '")')
+      AddCode("\n" .. "CollectionService:AddTag(" .. CurrentInstance .. ", " .. string.format("%q", v) .. ")")
    end
    for i, v in Object:GetAttributes() do
       if typeof(v) == "string" then
-         AddCode("\n" .. CurrentInstance .. ':SetAttribute("' .. i .. '", "' .. v .. '")')
+         AddCode("\n" .. CurrentInstance .. ":SetAttribute(" .. string.format("%q", i) .. ", " .. string.format("%q", v) .. ")")
       elseif typeof(v) == "number" or typeof(v) == "boolean" then
-         AddCode("\n" .. CurrentInstance .. ':SetAttribute("' .. i .. '", ' .. tostring(v) .. ")")
+         AddCode("\n" .. CurrentInstance .. ":SetAttribute(" .. string.format("%q", i) .. ", " .. tostring(v) .. ")")
       elseif typeof(v) == "Vector3" then
-         AddCode("\n" .. CurrentInstance .. ':SetAttribute("' .. i .. '", Vector3.new(' .. v.X .. ", " .. v.Y .. ", " .. v.Z .. "))")
+         AddCode("\n" .. CurrentInstance .. ":SetAttribute(" .. string.format("%q", i) .. ", Vector3.new(" .. v.X .. ", " .. v.Y .. ", " .. v.Z .. "))")
       elseif typeof(v) == "Vector2" then
-         AddCode("\n" .. CurrentInstance .. ':SetAttribute("' .. i .. '", Vector2.new(' .. v.X .. ", " .. v.Y .. "))")
+         AddCode("\n" .. CurrentInstance .. ":SetAttribute(" .. string.format("%q", i) .. ", Vector2.new(" .. v.X .. ", " .. v.Y .. "))")
       elseif typeof(v) == "Color3" then
-         AddCode("\n" .. CurrentInstance .. ':SetAttribute("' .. i .. '", Color3.new(' .. v.R .. ", " .. v.G .. ", " .. v.B .. "))")
+         AddCode("\n" .. CurrentInstance .. ":SetAttribute(" .. string.format("%q", i) .. ", Color3.new(" .. v.R .. ", " .. v.G .. ", " .. v.B .. "))")
       elseif typeof(v) == "CFrame" then
          local Components = {v:GetComponents()}
-         AddCode("\n" .. CurrentInstance .. ':SetAttribute("' .. i .. '", CFrame.new(' .. table.concat(Components, ", ") .. "))")
+         AddCode("\n" .. CurrentInstance .. ":SetAttribute(" .. string.format("%q", i) .. ", CFrame.new(" .. table.concat(Components, ", ") .. "))")
       elseif typeof(v) == "UDim" then
-         AddCode("\n" .. CurrentInstance .. ':SetAttribute("' .. i .. '", UDim.new(' .. v.Scale .. ", " .. v.Offset .. "))")
+         AddCode("\n" .. CurrentInstance .. ":SetAttribute(" .. string.format("%q", i) .. ", UDim.new(" .. v.Scale .. ", " .. v.Offset .. "))")
       elseif typeof(v) == "UDim2" then
-         AddCode("\n" .. CurrentInstance .. ':SetAttribute("' .. i .. '", UDim2.new(' .. v.X.Scale .. ", " .. v.X.Offset .. ", " .. v.Y.Scale .. ", " .. v.Y.Offset .. "))")
+         AddCode("\n" .. CurrentInstance .. ":SetAttribute(" .. string.format("%q", i) .. ", UDim2.new(" .. v.X.Scale .. ", " .. v.X.Offset .. ", " .. v.Y.Scale .. ", " .. v.Y.Offset .. "))")
       elseif typeof(v) == "NumberRange" then
-         AddCode("\n" .. CurrentInstance .. ':SetAttribute("' .. i .. '", NumberRange.new(' .. v.Min .. ", " .. v.Max .. "))")
+         AddCode("\n" .. CurrentInstance .. ":SetAttribute(" .. string.format("%q", i) .. ", NumberRange.new(" .. v.Min .. ", " .. v.Max .. "))")
       elseif typeof(v) == "ColorSequence" then
          local Keypoints = {}
          for _, k in v.Keypoints do
             Keypoints[#Keypoints + 1] = "ColorSequenceKeypoint.new(" .. k.Time .. ", Color3.new(" .. k.Value.R .. ", " .. k.Value.G .. ", " .. k.Value.B .. "))"
          end
-         AddCode("\n" .. CurrentInstance .. ':SetAttribute("' .. i .. '", ColorSequence.new({' .. table.concat(Keypoints, ", ") .. "}))")
+         AddCode("\n" .. CurrentInstance .. ":SetAttribute(" .. string.format("%q", i) .. ", ColorSequence.new({" .. table.concat(Keypoints, ", ") .. "}))")
       elseif typeof(v) == "NumberSequence" then
          local Keypoints = {}
          for _, k in v.Keypoints do
             Keypoints[#Keypoints + 1] = "NumberSequenceKeypoint.new(" .. k.Time .. ", " .. k.Value .. ", " .. k.Envelope .. ")"
          end
-         AddCode("\n" .. CurrentInstance .. ':SetAttribute("' .. i .. '", NumberSequence.new({' .. table.concat(Keypoints, ", ") .. "}))")
+         AddCode("\n" .. CurrentInstance .. ":SetAttribute(" .. string.format("%q", i) .. ", NumberSequence.new({" .. table.concat(Keypoints, ", ") .. "}))")
       elseif typeof(v) == "BrickColor" then
-         AddCode("\n" .. CurrentInstance .. ':SetAttribute("' .. i .. '", BrickColor.new(' .. v.Number .. "))")
+         AddCode("\n" .. CurrentInstance .. ":SetAttribute(" .. string.format("%q", i) .. ", BrickColor.new(" .. v.Number .. "))")
       end
    end
    if Parent then
@@ -1507,16 +1636,25 @@ local UseCollectionService = false
       AddCode("\n")
    end
    if not Parent then
+      AddCode("\n" .. CurrentInstance .. ".Parent = -- Enter Your Parent Here")
       AddCode("\n")
    end
    for _, v in Object:GetChildren() do
       SaveInstance(v, CurrentInstance)
    end
    if not Parent then
+      for _, v in DeferredProperties do
+         local Reference = InstanceVariables[v[4]]
+         if Reference then
+            Code[v[1]] = "\n" .. v[2] .. "." .. v[3] .. " = " .. Reference
+         else
+            Code[v[1]] = ""
+         end
+      end
       if not UseCollectionService then 
-         return "-- This Script Generated By Instance To Script v1.2\n" .. SplitCode(table.concat(Code), 190)
+         return "-- This Script Generated By Instance To Script v1.3\n" .. SplitCode(table.concat(Code), 190)
       else
-         return "-- This Script Generated By Instance To Script v1.2\n" .. 'local cloneref = cloneref or clonereference or function(...) return ... end\nlocal CollectionService = cloneref(game:GetService("CollectionService"))\n\n' .. SplitCode(table.concat(Code), 190)
+         return "-- This Script Generated By Instance To Script v1.3\n" .. 'local cloneref = cloneref or clonereference or function(...) return ... end\nlocal CollectionService = cloneref(game:GetService("CollectionService"))\n\n' .. SplitCode(table.concat(Code), 190)
       end
    end
    return ""
