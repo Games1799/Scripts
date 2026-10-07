@@ -24,7 +24,7 @@ local UseCollectionService = false
    end
    local PropertyCache = {}
    @native const function Check(Object: Instance, Property: string): boolean
-      local ClassName = Object.ClassName
+    local ClassName = Object.ClassName
   	local Properties = PropertyCache[ClassName]
   	if not Properties then
 	 	Properties = {}
