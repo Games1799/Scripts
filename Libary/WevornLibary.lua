@@ -502,27 +502,25 @@ Libary.Window = function(Name: string): table
       ScreenGui:Destroy()
    end)
    
-   local Dragging, DragStart, StartPosition, DragInput = false
+   local Dragging, DragStart, StartPosition = false
    Title.InputBegan:Connect(function(Input)
       if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
          Dragging = true
-         DragInput = Input
          DragStart = Input.Position
          StartPosition = Window.Position
       end
    end)
 
    UserInputService.InputChanged:Connect(function(Input)
-      if Dragging and Input == DragInput then
+      if Dragging and (Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch) then
          local Delta = Input.Position - DragStart
          Window.Position = UDim2.new(StartPosition.X.Scale, StartPosition.X.Offset + Delta.X, StartPosition.Y.Scale, StartPosition.Y.Offset + Delta.Y)
       end
    end)
 
-  UserInputService.InputEnded:Connect(function(Input)
-      if Input == DragInput then
+   UserInputService.InputEnded:Connect(function(Input)
+      if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
          Dragging = false
-         DragInput = nil
       end
    end)
    
